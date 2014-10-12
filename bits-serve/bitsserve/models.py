@@ -143,17 +143,49 @@ class TicketTypes(Base):
         """ Returns all of the ticket types for the project
         """
     
+class TicketPriorities(Base):
+
+    __tablename__ = 'ticketpriorities'
+    id = Column(Integer, primary_key=True)
+    author_id = Column(Integer, ForeignKey('users.id'))
+    project_id = Column(Integer, FreignKey('projects.id'))
+    name = Column(Text)
+    description = Column(Text)
+    weight = Column(Integer)
+    color = Column(Text)
+    creation_datetime = Column(DateTime)
+
+    @classmethod
+    def add_ticket_priority(cls, session, author_id, name, description, \
+            weight, color):
+        """ Adds a new ticket priority
+        """
+        with transaction.manager:
+            ticket_priority = cls(
+                author_id = author_id,
+                
+                name = name,
+                description = description,
+                weight = weight,
+                color = color,
+            )
+        return ticket_priority
+
+    @classmethod
+    def get_ticket_priorities_by_project_id(cls, session, project_id):
+        """ Returns the list of ticket priorities for a project.
+        """
+
 class Tickets(Base):
 
     __tablename__ = 'tickets'
     id = Column(Integer, primary_key=True)
     author_id = Column(Integer, ForeignKey('users.id'))
     project_id = Column(Integer, ForeignKey('projects.id'))
-    title = Column(Text)
-    contents = Column(Text)
+    ticket_type_id = Column(Integer, ForeignKey('tickettypes.id'))
     closed = Column(Boolean)
+    closed_datetime = Column(DateTime)
     creation_datetime = Column(DateTime)
-    
 
     @classmethod
     def add_ticket(cls, session, author_id, title, contents):
@@ -165,17 +197,148 @@ class Tickets(Base):
         """ Sets a ticket's status to closed
         """
 
+class TicketContents(Base):
+
+    """
+    """
+
+    __tablename__ = 'ticketcontents' 
+    id = Column(Integer, primary_key=True)
+    author_id = Column(Integer, ForeignKey('users.id'))
+    ticket_id = Column(Integer, ForeignKey('tickets.id'))
+    title = Column(Text)
+    contents = Column(Text)
+    version = Column(Integer)
+    creation_datetime = Column(DateTime)
+
+    @classmethod
+    def add_ticket_content(cls, session, author_id, ticket_id, title, \
+            contents):
+
+        """ Add new ticket contents.  version numbers always increase.
+        """
+
+    @classmethod
+    def get_all_versions_by_ticket_id(cls, session, ticket_id):
+        """ Get all versions of the ticket contents for ticket id.
+        """
+
 class TicketComments(Base):
 
     __tablename__ = 'ticketcomments'
+    id = Column(Integer, primary_key=True)
     author_id = Column(Integer, ForeignKey('users.id'))    
     ticket_id = Column(Integer, ForeignKey('tickets.id'))
     contents = Column(Text)
+    update_datetime = Column(DateTime, nullable=True)
+    flagged = Column(Boolean)
     creation_datetime = Column(DateTime)
     
     @classmethod
     def add_ticket_comment(cls, session, authod_id, ticket_id, contents):
         """ Adds a comment to a ticket
         """
+
+    @classmethod
+    def update_ticket_comment(cls, session, ticket_comment_id, content):
+        """ Updates the content of a ticket comment
+        """
+
+    @classmethod
+    def flag_ticket_comment(cls, session, ticket_comment_id):
+        """ Flaggs a ticket comment
+        """
+
+class RequirementTypes(Base):
+
+    __tablename__ = 'requirementtypes'
+    id = Column(Integer, primary_key=True)
+    author_id = Column(Integer, ForeignKey('users.id'))
+    project_id = Column(Integer, ForeignKey('projects.id'))
+    name = Column(Text)
+    description = Column(Text)
+
+    @classmethod
+    def add_requirement_type(cls, session, author_id, project_id, name, \
+            description):
+        """ Add a requirement type to a project.
+        """
+        with transaction.manager:
+            requirement_type = cls(
+                author_id = author_id,
+                project_id = project_id,
+                name = name,
+                description = description,
+            )
+            session.add(requirement_type)
+            transaction.commit()
+        return requirement_type
+
+    @class method
+    def remove_requirement_type(cls, session, requirement_type_id):
+        """ Removes a requirement type from a project.
+        """
+
+    @classmethod
+    def get_requirement_types_by_project_id(cls, session, project_id):
+        """ Get the requirement types for a project
+        """
+
+class Requirements(Base):
+
+    __tablename__ = 'requirements'
+    id = Column(Integer, primary_key=True)
+    author_id = Column(Integer, ForeignKey('users.id'))
+    project_id = Column(Integer, ForeignKey('projects.id'))
+    requirement_type_id = Column(Integer, ForeignKey('requirementtypes.id'))
+    version = Column(Integer)
+    removed = Column(Boolean)
+    creation_datetime = Column(DateTime)
+
+    @classmethod
+    def add_requirement(cls, session, author_id, project_id, \
+            requirement_type_id):
+        """ Adds a new requirement
+        """
+
+    @classmethod
+    def remove_requirement(cls, session, requirement_id):
+        """ Remove a requirement from a project (sets removed flag)
+        """
+
+    @classmethod
+    def get_requirements_by_project_id(cls, session, project_id):
+        """ Gets all of the requirements for a project
+        """
+
+    @classmethod
+    def get_all_versions_by_requirement_id(cls, session, requirement_id):
+        """ Returns all of the versions of the requirement
+        """
+
+class RequirementContents(Base):
+
+    __tablename__ = 'requirementcontents'
+    id = Column(Integer, primary_key=True)
+    author_id = Column(Integer, ForeignKey('users.id'))
+    requirement_id = Column(Integer, ForeignKey('requirements.id')) 
+    title = Column(Text)
+    contents = Column(Text)
+    version = Column(Integer)
+    creation_datetime = Column(DateTime)
+
+    @classmethod
+    def add_requirements_content(cls, session, requirement_id, title, \
+            contents):
+        """ Create a version of the contentents of a requirement.  Version
+            numbers always increase.
+        """
+
+    @classmethod
+    def get_all_versions_by_requirement_id(cls, session, requirement_id):
+        """ Gets all version of a requirements contents by requirement id
+        """
+
+
         
-    
+
