@@ -46,6 +46,10 @@ def check_auth(token):
     return user
 
 
+@view_config(route_name='index', renderer='templates/index.pt')
+def index(request):
+
+    return {}
 
 @view_config(route_name='authenticate.json')
 def authenticate(request):
@@ -140,7 +144,7 @@ def get_organizations(request):
 
     result = {}
     result['success'] = False
-    if True:
+
     try:
         try:
             user = check_auth(request.GET['token'])

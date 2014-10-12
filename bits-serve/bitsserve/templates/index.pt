@@ -1,0 +1,208 @@
+<!doctype html>
+<!--[if IE 9]><html class="lt-ie10" lang="en" > <![endif]-->
+<html>
+<head>
+
+    <title>bits - Requirements and Ticketing System</title>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+    
+    <link rel="stylesheet" href="static/foundation/css/foundation.css" />
+    
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css"> 
+    
+    <!--<script src="//code.jquery.com/jquery-1.10.2.js"></script>-->
+    
+    
+    <style>
+   
+        div.content-wrapper {
+            position: fixed;
+            height: 100%;
+            width: 100%;
+            float: left;
+            background-color: #FAFAFA;
+        }
+        
+        div.left-side {
+            font-weight: bold;
+            width: 10%;
+            /*min-width: 200px;*/
+            height: 100%;
+            border-right: 1px solid #333;
+            float: left;
+            background-color: #333;
+        }
+        
+        div.right-size {
+            width: 90%;
+            height: 100%;
+            float: left;
+        }
+        
+        #tabs {
+            height: 91%;
+            margin-bottom: 10px;
+            margin-left: 10px;
+            margin-right: 10px;
+            margin-top: 10px;
+        }
+        
+        .ui-widget-header {
+            background: none !important;
+            background-color: #333;
+        }
+    
+    </style>
+
+</head>
+<body class="home page page-id-4 page-template-default split home not-touch">
+
+    <div class="off-canvas-wrape" data-offcanvas="">
+    
+        <nav class="top-bar" data-topbar role="navigation">
+
+            <ul class="title-area">
+                <li class="name">
+                    <h1><a href="#">bits</a></h1>
+                </li> 
+                
+                <li class="toggle-topbar menu-icon">
+                    <a href="#"><span>Menu</span></a>
+                </li>
+            </ul>
+            
+            <section class="top-bar-section">
+                <ul class="right">
+                    <li class="has-dropdown">
+                        <a href="#">Menu</a>
+                        <ul class="dropdown">
+                            <li>
+                                <a id="main-menu-organizations" href="#">Organizations</a>
+                            </li>
+                            <li>
+                                <a id="main-menu-projects" href="#">Projects</a>
+                            </li>
+                            <li>
+                                <a id="main-menu-settings" href="#">Requirements</a>
+                            </li>
+                            <li class="#">
+                                <a id="main-menu-help" href="#">Tickets</a>
+                            </li>
+                            <li class="#">
+                                <a id="main-menu-help" href="#">Discussions</a>
+                            </li>
+                            <li class="#">
+                                <a id="main-menu-help" href="#">Notes</a>
+                            </li>
+                            <li class="#">
+                                <a id="main-menu-help" href="#">Help</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul> 
+            </section>
+        
+        </nav>
+              
+        <div class="content-wrapper">
+        
+            <div class="left-side">
+                
+                <div class="row">
+                    <div class="large-3 columns">
+                        <ul class="side-nav">
+                        <li><a href="#">Organizations</a></li>
+                        <li><a href="#">Projects</a></li>
+                        <li><a href="#">Requirements</a></li>
+                        <li><a href="#">Tickets</a></li>
+                        <li><a href="#">Discussions</a></li>
+                        <li><a href="#">Notes</a></li>
+                        <li><a href="#">Help</a></li>
+                        </ul>
+                    </div>
+                 </div>            
+                
+            </div>
+            
+            <div class="right-size">
+                <div id="tabs">
+                    <ul>
+                        <li>
+                            <a href="#tabs-organizations">Organizations</a>
+                        </li>
+                        <li>
+                            <a href="#tabs-projects">Projects</a>
+                        </li>
+                        <li>
+                            <a href="#tabs-requirements">Requirements</a>
+                        </li>
+                        <li>
+                            <a href="#tabs-tickets">Tickets</a>
+                        </li>
+                        <li>
+                            <a href="#tabs-discussions">Discussions</a>
+                        </li>
+                        <li>
+                            <a href="#tabs-notes">Notes</a>
+                        </li>
+                        <li>
+                            <a href="#tabs-help">Help</a>
+                        </li>
+                    </ul>
+                    <div id="tabs-organizations">
+                        <h2>Organizations</h2>
+                    </div>
+                    <div id="tabs-projects">
+                        <h2>Projects</h2>
+                    </div>
+                    <div id="tabs-requirements">
+                        <h2>Requirements</h2>
+                    </div>
+                    <div id="tabs-tickets">
+                        <h2>Tickets</h2>
+                    </div>
+                    <div id="tabs-discussions">
+                        <h2>Discussions</h2>
+                    </div>
+                    <div id="tabs-notes">
+                        <h2>Notes</h2>
+                    </div>
+                    <div id="tabs-help">
+                        <h2>Help</h2>
+                    </div>
+                </div>
+                <div id="tabid"></div>
+            </div>
+            
+        </div>
+    
+    </div>
+
+    <script src="static/foundation/js/vendor/jquery.js"></script>
+    <script src="static/foundation/js/foundation.min.js"></script>
+    <script src="static/foundation/js/vendor/modernizr.js"></script>
+    <!--<script src="Foundation/js/foundation/foundation.js"></script>-->
+    
+    <script src="//code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
+
+    <script>
+      $(document).foundation();
+
+      //var doc = document.documentElement;
+      //doc.setAttribute('data-useragent', navigator.userAgent);
+      
+        $("#tabs").tabs({
+            activate: function (event, ui) {
+                var active = $('#tabs').tabs('option', 'active');
+                //$("#tabid").html('the tab id is ' + $("#tabs ul>li a").eq(active).attr("href"));
+            }
+        });
+
+    </script>
+
+</body>
+</html>
