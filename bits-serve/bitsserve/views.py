@@ -1,3 +1,7 @@
+import json
+import datetime
+import time
+
 from pyramid.response import Response
 from pyramid.view import view_config
 
@@ -5,31 +9,122 @@ from sqlalchemy.exc import DBAPIError
 
 from .models import (
     DBSession,
-    MyModel,
+    UserTypes,
+    Users,
+    Organizations,
+    Projects,
+    UserProjectAssignments,
+    TicketTypes,
+    TicketPriorities,
+    Tickets,
+    TicketContents,
+    TicketComments,
+    RequirementTypes,
+    Requirements,
+    RequirementContents,
+    RequirementComments,
+)
+
+def make_response(resp_dict):
+
+    print "[DEBUG]"
+    print resp_dict
+    print '\n'
+    
+    resp = Response(json.dumps(resp_dict), content_type='application/json', charset='utf8')
+    resp.headerlist.append(('Access-Control-Allow-Origin', '*'))
+    
+    return resp
+
+def check_auth(token):
+    
+    user = Users.check_authentication(
+        session = DBSession,
+        token = token,
     )
+    return user
 
+@view_config(route_name='authenticate.json')
+def authenticate(request):
 
-@view_config(route_name='home', renderer='templates/mytemplate.pt')
-def my_view(request):
+    """ End-point to authenticate user, and return a login token
+    """
+
+    result = {}
+    result['success'] = False
     try:
-        one = DBSession.query(MyModel).filter(MyModel.name == 'one').first()
-    except DBAPIError:
-        return Response(conn_err_msg, content_type='text/plain', status_int=500)
-    return {'one': one, 'project': 'bits-serve'}
+        try:
+            email = request.GET['email']
+            password = request.GET['password']
+        except:
+            result['error_text'] = 'Missing Field'
+            result['error_code'] = 1
+            raise Exception('error')
 
-conn_err_msg = """\
-Pyramid is having a problem using your SQL database.  The problem
-might be caused by one of the following things:
+        token = Users.authenticate_user(
+            session = DBSession,
+            email = email,
+            password = password,
+        )
 
-1.  You may need to run the "initialize_bits-serve_db" script
-    to initialize your database tables.  Check your virtual 
-    environment's "bin" directory for this script and try to run it.
+        result['token'] = token
+        if token == None:
+            result['error_text'] = 'Invalid Credentials'
+            result['error_code'] = 2
+            raise Exception('error')
 
-2.  Your database server may not be running.  Check that the
-    database server referred to by the "sqlalchemy.url" setting in
-    your "development.ini" file is running.
+        result['success'] = True
 
-After you fix the problem, please restart the Pyramid application to
-try it again.
-"""
+    except:
+        pass
 
+    return make_response(result)
+
+@view_config(route_name='get_projects.json')
+def get_projects(request):
+
+    """ End-point to get the list of projects the user has access to
+    """
+
+    result = {}
+    result['success'] = False
+    if True:
+    #try:
+        try:
+            user = check_auth(request.GET['token'])
+            if user == None:
+                raise Exception('invalid or missing token')
+        except:
+            result['error_text'] = "Invalid or missing token"
+            raise Exception('error')
+        
+        projects = UserProjectAssignments.get_users_projects(
+            session = DBSession,
+            user_id = user.id,
+        )
+
+        ret_projects = []
+        for assignment_id, assignment_disabled, project_name,\
+                project_description, project_creation_datetime, \
+                project_disabled, user_first, user_last, user_email, \
+                in projects:
+            ret_projects.append({
+                'assignment_id': assignment_id,
+                'assignment_disabled': assignment_disabled,
+                'project_name': project_name,
+                'project_description': project_description,
+                'project_creation_datetime': str(project_creation_datetime),
+                'project_disabled': project_disabled,
+                'author_first': user_first,
+                'author_last': user_last,
+                'author_email': user_email, 
+            })
+
+        result['projects'] = ret_projects
+
+        result['success'] = True
+        
+    #except:
+    #    pass
+
+    return make_response(result)
