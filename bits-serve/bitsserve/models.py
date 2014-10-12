@@ -178,8 +178,8 @@ class Organizations(Base):
     author_id = Column(Integer, ForeignKey('users.id'))
     name = Column(Text)
     description = Column(Text)
+    disabled = Column(Boolean)
     creation_datetime = Column(DateTime)
-    removed = Column(Boolean)    
 
     @classmethod
     def add_organization(cls, session, author_id, name, description):
@@ -190,6 +190,7 @@ class Organizations(Base):
                 author_id = author_id,
                 name = name,
                 description = description,
+                disabled = False,
                 creation_datetime = datetime.datetime.now(),
             )
             session.add(organization)
@@ -197,8 +198,8 @@ class Organizations(Base):
         return organization
 
     @classmethod
-    def remove_organization(cls, session, organization_id):
-        """ Remove an orgnization
+    def disable_organization(cls, session, organization_id):
+        """ Disable an orgnization
         """
         with transaction.manager:
             organization = session.query(
@@ -206,7 +207,7 @@ class Organizations(Base):
             ).filter(
                 Organizations.id == organization_id,
             ).first()
-            organization.removed = True
+            organization.disabled= True
             session.add(organization)
             transaction.commit()
         return organization
@@ -226,6 +227,74 @@ class Organizations(Base):
             session.add(organization)
             transaction.commit()
         return organization
+
+class UserOrganizationAssignments(Base):
+
+    __tablename__ = 'userorganizationassignments'
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey('users.id'))
+    organization_id = Column(Integer, ForeignKey('organizations.id'))
+    disabled = Column(Boolean)
+    creation_datetime = Column(DateTime)
+
+
+    @classmethod
+    def assign_user_to_organization(cls, session, user_id, organization_id):
+        """ Assign a user to an organization
+        """
+        with transaction.manager:
+            user_organization_assignment = cls(
+                user_id = user_id,
+                organization_id = organization_id,
+                disabled = False,
+                creation_datetime = datetime.datetime.now(),
+            )
+            session.add(user_organization_assignment)
+            transaction.commit()
+        return user_organization_assignment
+
+    @classmethod
+    def unassign_user_from_organization(cls, session, \
+            user_organization_assignment_id):
+        """ Unassign a user form an organization
+        """
+        with transaction.manager:
+            user_organization_assignment = session.query(
+                UserOrganizationAssignments,
+            ).filter(
+                UserOrganizationAssignments.id == \
+                    user_organization_assignment_id,
+            ).first()
+            user_organization_assignment.disabled = True
+            session.add(user_organization_assignment)
+            transaction.commit()
+        return user_organization_assignment
+
+    @classmethod
+    def get_users_organizations(cls, session, user_id):
+        """ Get all organizations the user is assigned to
+        """
+        with transaction.manager:
+            organizations = session.query(
+                UserOrganizationAssignments.id,
+                UserOrganizationAssignments.disabled,
+                Organizations.name,
+                Organizations.description,
+                Organizations.creation_datetime,
+                Organizations.disabled,
+                Users.first,
+                Users.last,
+                Users.email,
+            ).join(
+                Organizations,Organizations.id == \
+                    UserOrganizationAssignments.organization_id,
+            ).join(
+                Users,Users.id == Organizations.author_id,
+            ).filter(
+                UserOrganizationAssignments.user_id == user_id,
+            ).all()
+        return organizations
+
 
 class Projects(Base):
 

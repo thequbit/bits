@@ -12,6 +12,7 @@ from .models import (
     UserTypes,
     Users,
     Organizations,
+    UserOrganizationAssignments,
     Projects,
     UserProjectAssignments,
     TicketTypes,
@@ -43,6 +44,8 @@ def check_auth(token):
         token = token,
     )
     return user
+
+
 
 @view_config(route_name='authenticate.json')
 def authenticate(request):
@@ -128,3 +131,53 @@ def get_projects(request):
     #    pass
 
     return make_response(result)
+
+@view_config(route_name='get_organizations.json')
+def get_organizations(request):
+    
+    """ Get all of the organizations that the user has access to
+    """
+
+    result = {}
+    result['success'] = False
+    if True:
+    try:
+        try:
+            user = check_auth(request.GET['token'])
+            if user == None:
+                raise Exception('invalid or missing token')
+        except:
+            result['error_text'] = "Invalid or missing token"
+            raise Exception('error')
+
+        projects = UserOrganizationAssignments.get_users_organizations(
+            session = DBSession,
+            user_id = user.id,
+        )
+
+        ret_organizations = []
+        for assignment_id, assignment_disabled, organization_name,\
+                organization_description, organization_creation_datetime, \
+                organization_disabled, user_first, user_last, user_email, \
+                in projects:
+            ret_organizations.append({
+                'assignment_id': assignment_id,
+                'assignment_disabled': assignment_disabled,
+                'organization_name': organization_name,
+                'organization_description': organization_description,
+                'organization_creation_datetime': str(organization_creation_datetime),
+                'organization_disabled': organization_disabled,
+                'author_first': user_first,
+                'author_last': user_last,
+                'author_email': user_email,
+            })
+
+        result['organizations'] = ret_organizations
+
+        result['success'] = True
+
+    except:
+        pass
+
+    return make_response(result)
+

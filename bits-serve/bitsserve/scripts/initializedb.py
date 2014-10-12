@@ -19,6 +19,7 @@ from ..models import (
     Organizations,
     Projects,
     UserProjectAssignments,
+    UserOrganizationAssignments,
 )
 
 
@@ -64,6 +65,13 @@ def main(argv=sys.argv):
         name = 'Default Organization',
         description = 'Default Organization.',
     )
+
+    default_user_organization_assignment = \
+        UserOrganizationAssignments.assign_user_to_organization(
+            session = DBSession,
+            user_id = system_user.id,
+            organization_id = default_organization.id,
+        )
 
     default_project = Projects.add_project(
         session = DBSession,

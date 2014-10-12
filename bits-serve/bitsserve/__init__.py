@@ -20,6 +20,7 @@ def main(global_config, **settings):
 
     config.add_route('authenticate.json', 'authenticate.json')
     config.add_route('get_projects.json', 'get_projects.json')
+    config.add_route('get_organizations.json', 'get_organizations.json')
 
     config.scan()
     return config.make_wsgi_app()
