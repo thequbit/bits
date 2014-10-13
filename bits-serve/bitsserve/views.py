@@ -51,6 +51,11 @@ def index(request):
 
     return {}
 
+@view_config(route_name='tickets', renderer='templates/tickets.mak')
+def index(request):
+
+    return {}
+
 @view_config(route_name='authenticate.json')
 def authenticate(request):
 
