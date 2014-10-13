@@ -186,3 +186,53 @@ def get_organizations(request):
 
     return make_response(result)
 
+@view_config(route_name='create_ticket.json')
+def create_ticket(request):
+
+    """ Get all of the organizations that the user has access to
+    """
+
+    result = {}
+    result['success'] = False
+
+    try:
+        try:
+            user = check_auth(request.GET['token'])
+            if user == None:
+                raise Exception('invalid or missing token')
+        except:
+            result['error_text'] = "Invalid or missing token"
+            raise Exception('error')
+
+        try:
+            author_id = request.GET['author_id']
+            project_id = request.GET['project_id']
+            #ticket_type_id = request.GET['ticket_type_id']
+            title = request.GET['title']
+            contents = request.GET['contents']
+        except:
+            result['error_text'] = "Missing fields."
+            raise Exception('error')
+
+        ticket = Ticket.add_ticket(
+            session = DBSession,
+            author_id = author_id,
+            project_id = project_id,
+            ticket_type_id = 1, #ticket_type_id,
+        )
+        ticket_contents = TicketContents.add_ticket_contents(
+            author_id = author_id,
+            ticket_id = ticket.id,
+            title = title,
+            contents = contents,
+        )
+
+        result['ticket_id'] = ticket.id
+
+        result['success'] = True
+
+    except:
+        pass
+
+    return make_response(result)
+
