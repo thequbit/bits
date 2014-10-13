@@ -20,6 +20,8 @@ from ..models import (
     Projects,
     UserProjectAssignments,
     UserOrganizationAssignments,
+    TicketTypes,
+    TicketPriorities,
 )
 
 
@@ -87,3 +89,29 @@ def main(argv=sys.argv):
             user_id = system_user.id,
             project_id = default_project.id,
         )
+
+    todo_ticket_type = TicketTypes.add_ticket_type(
+        session = DBSession,
+        author_id = system_user.id,
+        project_id = default_project.id,
+        name = "Todo",
+        description = "An item that needs to be completed",
+    )
+
+    fix_ticket_type = TicketTypes.add_ticket_type(
+        session = DBSession,
+        author_id = system_user.id,
+        project_id = default_project.id,
+        name = "Fix",
+        description = "An item that needs to be fixed",
+    )
+
+    today_ticket_priority = TicketPriorities.add_ticket_priority(
+        session = DBSession,
+        author_id = system_user.id,
+        project_id = default_project.id,
+        name = "Today",
+        description = "Must be completed today.",
+        weight = 1,
+        color = "red",
+    )

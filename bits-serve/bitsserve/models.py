@@ -460,8 +460,8 @@ class TicketPriorities(Base):
     creation_datetime = Column(DateTime)
 
     @classmethod
-    def add_ticket_priority(cls, session, author_id, name, description, \
-            weight, color):
+    def add_ticket_priority(cls, session, author_id, project_id, name, \
+            description, weight, color):
         """ Adds a new ticket priority
         """
         with transaction.manager:
@@ -503,7 +503,8 @@ class Tickets(Base):
     creation_datetime = Column(DateTime)
 
     @classmethod
-    def add_ticket(cls, session, author_id, project_id, ticket_type_id):
+    def add_ticket(cls, session, author_id, project_id, ticket_type_id,\
+                ticket_priority_id):
         """ Adds a new ticket to the system
         """
         with transaction.manager:
@@ -533,6 +534,91 @@ class Tickets(Base):
             session.add(ticket)
             transaction.commit()
         return ticket
+
+    @classmethod
+    def get_tickets_by_project_id(cls, session, project_id):
+        """ Get all of the tickets, and their conents by project id
+        """
+        with transaction.manager:
+            tickets = session.query(
+                Tickets.id,
+                Tickets.closed,
+                Tickets.closed_datetime,
+                Tickets.creation_datetime,
+                Users.first,
+                Users.last,
+                Users.email,
+                Projects.name,
+                Projects.description,
+                Projects.creation_datetime,
+                TicketTypes.name,
+                TicketTypes.description,
+                TicketPriorities.name,
+                TicketPriorities.description,
+                TicketPriorities.weight,
+                TicketPriorities.color,
+                TicketContents.title,
+                TicketContents.contents,
+                TicketContents.version,
+                TicketContents.creation_datetime,
+            ).join(
+                Users,Users.id == Tickets.author_id,
+            ).join(
+                Projects,Projects.id == Tickets.project_id,
+            ).join(
+                TicketTypes,TicketTypes.id == Tickets.ticket_type_id,
+            ).join(
+                TicketPriorities,TicketPriorities.id == \
+                    Tickets.ticket_priority_id,
+            #).join(
+            #    TicketContents,Tickets.id == TicketContents.ticket_id,
+            ).filter(
+                Tickets.project_id == project_id,
+            ).all()
+        return tickets
+
+    @classmethod
+    def get_ticket_by_ticket_id(cls, session, ticket_id):
+        """ Get all of the tickets, and their conents by project id
+        """
+        with transaction.manager:
+            ticket = session.query(
+                Tickets.id,
+                Tickets.closed,
+                Tickets.closed_datetime,
+                Tickets.creation_datetime,
+                Users.first,
+                Users.last,
+                Users.email,
+                Projects.name,
+                Projects.description,
+                Projects.creation_datetime,
+                TicketTypes.name,
+                TicketTypes.description,
+                TicketPriorities.name,
+                TicketPriorities.description,
+                TicketPriorities.weight,
+                TicketPriorities.color,
+                TicketContents.title,
+                TicketContents.contents,
+                TicketContents.version,
+                TicketContents.creation_datetime,
+            ).join(
+                Users,Users.id == Tickets.author_id,
+            ).join(
+                Projects,Projects.id == Tickets.project_id,
+            ).join(
+                TicketTypes,TicketTypes.id == Tickets.ticket_type_id,
+            ).join(
+                TicketPriorities,TicketPriorities.id == \
+                    Tickets.ticket_priority_id,
+            #).join(
+            #    TicketContents,Tickets.id == TicketContents.ticket_id,
+            ).filter(
+                Tickets.id == ticket_id,
+            ).first()
+        return ticket
+
 
 class TicketContents(Base):
 
@@ -588,7 +674,7 @@ class TicketComments(Base):
     creation_datetime = Column(DateTime)
     
     @classmethod
-    def add_ticket_comment(cls, session, authod_id, ticket_id, contents):
+    def add_ticket_comment(cls, session, author_id, ticket_id, contents):
         """ Adds a comment to a ticket
         """
         with transaction.manager:
@@ -635,6 +721,18 @@ class TicketComments(Base):
             session.add(ticket_comment)
             transaction.commit()
         return ticket_comment
+
+    @classmethod
+    def get_ticket_comments_by_ticket_id(cls, session, ticket_id):
+        """ Get all comments for a specific ticket
+        """
+        with transaction.manager:
+            comments = session.query(
+                TicketComments,
+            ).filter(
+                TicketComments.ticket_id == ticket_id,
+            ).all() 
+        return comments
 
 class RequirementTypes(Base):
 

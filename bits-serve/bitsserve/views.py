@@ -52,9 +52,49 @@ def index(request):
     return {}
 
 @view_config(route_name='tickets', renderer='templates/tickets.mak')
-def index(request):
+def tickets(request):
 
-    return {}
+    tickets = None
+    if True:
+    #try:
+
+        project_id = request.GET['project_id']
+        
+        tickets = Tickets.get_tickets_by_project_id(
+            session = DBSession,
+            project_id = project_id
+        )
+
+    #except:
+    #    pass
+
+    return {'tickets': tickets,'project_id':project_id}
+
+@view_config(route_name='ticket', renderer='templates/ticket.mak')
+def ticket(request):
+
+    tickets = None
+    if True:
+    #try:
+
+        ticket_id = request.GET['ticket_id']
+        project_id = request.GET['project_id']
+
+        ticket = Tickets.get_ticket_by_ticket_id(
+            session = DBSession,
+            ticket_id = ticket_id
+        )
+
+        comments = TicketComments.get_ticket_comments_by_ticket_id(
+            session = DBSession,
+            ticket_id = ticket.id,
+        )
+
+    #except:
+    #    pass
+
+    return {'ticket': ticket,'comments': comments,'project_id':project_id}
+
 
 @view_config(route_name='authenticate.json')
 def authenticate(request):
@@ -200,7 +240,8 @@ def create_ticket(request):
     result = {}
     result['success'] = False
 
-    try:
+    if True:
+    #try:
         try:
             user = check_auth(request.GET['token'])
             if user == None:
@@ -210,22 +251,25 @@ def create_ticket(request):
             raise Exception('error')
 
         try:
-            author_id = request.GET['author_id']
-            project_id = request.GET['project_id']
-            #ticket_type_id = request.GET['ticket_type_id']
-            title = request.GET['title']
-            contents = request.GET['contents']
+            author_id = request.POST['author_id']
+            project_id = request.POST['project_id']
+            #ticket_type_id = request.POST['ticket_type_id']
+            #ticket_priority_id = request.POST['ticket_priority_id']
+            title = request.POST['title']
+            contents = request.POST['contents']
         except:
             result['error_text'] = "Missing fields."
             raise Exception('error')
 
-        ticket = Ticket.add_ticket(
+        ticket = Tickets.add_ticket(
             session = DBSession,
             author_id = author_id,
             project_id = project_id,
             ticket_type_id = 1, #ticket_type_id,
+            ticket_priority_id = 1, #ticket_priority_id,
         )
-        ticket_contents = TicketContents.add_ticket_contents(
+        ticket_contents = TicketContents.add_ticket_content(
+            session = DBSession,
             author_id = author_id,
             ticket_id = ticket.id,
             title = title,
@@ -236,8 +280,50 @@ def create_ticket(request):
 
         result['success'] = True
 
-    except:
-        pass
+    #except:
+    #    pass
+
+    return make_response(result)
+
+@view_config(route_name='create_comment.json')
+def create_comment(request):
+
+    """ Get all of the organizations that the user has access to
+    """
+
+    result = {}
+    result['success'] = False
+
+    if True:
+    #try:
+        try:
+            user = check_auth(request.GET['token'])
+            if user == None:
+                raise Exception('invalid or missing token')
+        except:
+            result['error_text'] = "Invalid or missing token"
+            raise Exception('error')
+
+        try:
+            author_id = request.POST['author_id']
+            project_id = request.POST['ticket_id']
+            contents = request.POST['contents']
+        except:
+            result['error_text'] = "Missing fields."
+            raise Exception('error')
+
+        ticket_comment = TicketComments.add_ticket_comment(
+            author_id = author_id,
+            ticket_id = ticket_id,
+            contents = contents,
+        )
+
+        result['ticket_comment_id'] = ticket_comment.id
+
+        result['success'] = True
+
+    #except:
+    #    pass
 
     return make_response(result)
 

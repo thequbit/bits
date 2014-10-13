@@ -20,12 +20,14 @@ def main(global_config, **settings):
 
     config.add_route('index', '/')
     config.add_route('tickets', '/tickets')
+    config.add_route('ticket', '/ticket')
 
     config.add_route('authenticate.json', 'authenticate.json')
     config.add_route('get_projects.json', 'get_projects.json')
     config.add_route('get_organizations.json', 'get_organizations.json')
 
     config.add_route('create_ticket.json','create_ticket.json')
+    config.add_route('create_comment.json','create_comment.json')
     
 
     config.scan()
