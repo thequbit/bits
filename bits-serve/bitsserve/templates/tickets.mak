@@ -1,3 +1,7 @@
 <%inherit file="base.mak"/>
 
-    hi.
+    <ul>
+    % if tickets
+        % for ticket in tickets
+        <li>
+            <h3>${ticket['
