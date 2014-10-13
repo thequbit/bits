@@ -78,7 +78,7 @@ def main(argv=sys.argv):
         author_id = system_user.id,
         organization_id = default_organization.id,
         name = 'Default Project',
-        description = 'Default Organization.',
+        description = 'Default Project.',
     )
 
     default_user_project_assignment = \

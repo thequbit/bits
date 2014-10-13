@@ -160,13 +160,14 @@ def get_organizations(request):
         )
 
         ret_organizations = []
-        for assignment_id, assignment_disabled, organization_name,\
-                organization_description, organization_creation_datetime, \
-                organization_disabled, user_first, user_last, user_email, \
-                in projects:
+        for assignment_id, assignment_disabled, organization_id, \
+                organization_name, organization_description, \
+                organization_creation_datetime, organization_disabled, \
+                user_first, user_last, user_email in projects:
             ret_organizations.append({
                 'assignment_id': assignment_id,
                 'assignment_disabled': assignment_disabled,
+                'organization_id': organization_id,
                 'organization_name': organization_name,
                 'organization_description': organization_description,
                 'organization_creation_datetime': str(organization_creation_datetime),

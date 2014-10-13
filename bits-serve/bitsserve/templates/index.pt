@@ -18,166 +18,132 @@
     
     
     <style>
-   
+    
+        div.login-wrapper {
+            
+        }
+    
+        div.login-box {
+            width: 300px;
+            margin: auto;
+            padding: 15px;
+        }
+    
         div.content-wrapper {
-            position: fixed;
-            height: 100%;
-            width: 100%;
-            float: left;
-            background-color: #FAFAFA;
+            display: none;
+        }
+    
+        div.top-links a{
+            padding-left: 20px;
+        }
+    
+        div.right-padding a {
+            padding-right: 20px;
         }
         
-        div.left-side {
-            font-weight: bold;
-            width: 10%;
-            /*min-width: 200px;*/
-            height: 100%;
-            border-right: 1px solid #333;
-            float: left;
-            background-color: #333;
+        /*
+        div.pages div {
+            display: none;
+        }
+        */
+
+        div.left-padding {
+            padding-left: 20px;
         }
         
-        div.right-size {
-            width: 90%;
-            height: 100%;
-            float: left;
-        }
-        
-        #tabs {
-            height: 91%;
-            margin-bottom: 10px;
-            margin-left: 10px;
-            margin-right: 10px;
-            margin-top: 10px;
-        }
-        
-        .ui-widget-header {
-            background: none !important;
-            background-color: #333;
+        #current-organization {
+            color: #008CBA;
         }
     
     </style>
 
 </head>
-<body class="home page page-id-4 page-template-default split home not-touch">
+<body>
 
-    <div class="off-canvas-wrape" data-offcanvas="">
-    
-        <nav class="top-bar" data-topbar role="navigation">
-
-            <ul class="title-area">
-                <li class="name">
-                    <h1><a href="#">bits</a></h1>
-                </li> 
-                
-                <li class="toggle-topbar menu-icon">
-                    <a href="#"><span>Menu</span></a>
-                </li>
-            </ul>
-            
-            <section class="top-bar-section">
-                <ul class="right">
-                    <li class="has-dropdown">
-                        <a href="#">Menu</a>
-                        <ul class="dropdown">
-                            <li>
-                                <a id="main-menu-organizations" href="#">Organizations</a>
-                            </li>
-                            <li>
-                                <a id="main-menu-projects" href="#">Projects</a>
-                            </li>
-                            <li>
-                                <a id="main-menu-settings" href="#">Requirements</a>
-                            </li>
-                            <li class="#">
-                                <a id="main-menu-help" href="#">Tickets</a>
-                            </li>
-                            <li class="#">
-                                <a id="main-menu-help" href="#">Discussions</a>
-                            </li>
-                            <li class="#">
-                                <a id="main-menu-help" href="#">Notes</a>
-                            </li>
-                            <li class="#">
-                                <a id="main-menu-help" href="#">Help</a>
-                            </li>
-                        </ul>
-                    </li>
-                </ul> 
-            </section>
-        
-        </nav>
-              
-        <div class="content-wrapper">
-        
-            <div class="left-side">
-                
-                <div class="row">
-                    <div class="large-3 columns">
-                        <ul class="side-nav">
-                        <li><a href="#">Organizations</a></li>
-                        <li><a href="#">Projects</a></li>
-                        <li><a href="#">Requirements</a></li>
-                        <li><a href="#">Tickets</a></li>
-                        <li><a href="#">Discussions</a></li>
-                        <li><a href="#">Notes</a></li>
-                        <li><a href="#">Help</a></li>
-                        </ul>
-                    </div>
-                 </div>            
-                
+    <div class="row">
+        <div class="large-12 columns">
+            <div class="right">
+                <h3><div id="current-organization"></div><small><div id="current-project"></div></small></h3>
             </div>
-            
-            <div class="right-size">
-                <div id="tabs">
-                    <ul>
-                        <li>
-                            <a href="#tabs-organizations">Organizations</a>
-                        </li>
-                        <li>
-                            <a href="#tabs-projects">Projects</a>
-                        </li>
-                        <li>
-                            <a href="#tabs-requirements">Requirements</a>
-                        </li>
-                        <li>
-                            <a href="#tabs-tickets">Tickets</a>
-                        </li>
-                        <li>
-                            <a href="#tabs-discussions">Discussions</a>
-                        </li>
-                        <li>
-                            <a href="#tabs-notes">Notes</a>
-                        </li>
-                        <li>
-                            <a href="#tabs-help">Help</a>
-                        </li>
-                    </ul>
-                    <div id="tabs-organizations">
-                        <h2>Organizations</h2>
-                    </div>
-                    <div id="tabs-projects">
-                        <h2>Projects</h2>
-                    </div>
-                    <div id="tabs-requirements">
-                        <h2>Requirements</h2>
-                    </div>
-                    <div id="tabs-tickets">
-                        <h2>Tickets</h2>
-                    </div>
-                    <div id="tabs-discussions">
-                        <h2>Discussions</h2>
-                    </div>
-                    <div id="tabs-notes">
-                        <h2>Notes</h2>
-                    </div>
-                    <div id="tabs-help">
-                        <h2>Help</h2>
+            <h2>bits <small>Requirement and Ticketing System</small></h2>
+            <hr/>
+        </div>
+    </div>
+    
+    <div class="login-wrapper" id="login-wrapper">
+        <!--
+        <div class="row">
+            <div class="large-4 medium-4 columns">
+            -->
+                <div class="login-box">
+                    <h3>Login <small>you must login to continue</small></h3>
+                    <input placeholder="email" type="text" id="login-email">
+                    <input placeholder="password" type="text" id="login-password">
+                    <a href="#" class="small radius button right" id="login-button">Login</a>
+                </div>
+                <!--
+            </div>
+        </div>
+        -->
+    </div>
+    
+    <div class="content-wrapper" id="content-wrapper">
+    
+        <div class="row">
+            <div class="large-12 columns">
+                <div class="top-links">
+                    <a href="#" id="top-link-organizations">Organizations</a>
+                    <a href="#" id="top-link-projects">Projects</a>
+                    <a href="#" id="top-link-requirements">Requirements</a>
+                    <a href="#" id="top-link-tickets">Tickets</a>
+                    <a href="#" id="top-link-discussions">Discussions</a>
+                    <a href="#" id="top-link-notes">Notes</a>
+                    <div class="right right-padding">
+                        <a href="#" id="top-link-help">Help</a>
                     </div>
                 </div>
-                <div id="tabid"></div>
+                <hr/>
             </div>
-            
+        </div>    
+        
+        <div class="row">
+            <div class="large-10 columns" roll="content" id="main-content">
+                <div id="pages" class="pages">
+                    <div id="page-organizations">
+                        <h3>Organizations</h3>
+                    </div>
+                    <div id="page-projects">
+                        <h3>Projects</h3>
+                    </div>
+                    <div id="page-requirements">
+                        <h3>Requirements</h3>
+                    </div>
+                    <div id="page-tickets">
+                        <h3>Tickets</h3>
+                    </div>
+                    <div id="page-discussions">
+                        <h3>Discussions</h3>
+                    </div>
+                    <div id="page-notes">
+                        <h3>Notes</h3>
+                    </div>
+                    <div id="page-help">
+                        <h3>Help</h3>
+                    </div>
+                </div>
+            </div>
+            <aside class="large-2 columns" style="border-left: 1px solid #777;">
+                <h4>Options</h4>
+                <ul class="side-nav">
+                    <!--
+                    <li><a href="#">News</a></li>
+                    <li><a href="#">Code</a></li>
+                    <li><a href="#">Design</a></li>
+                    <li><a href="#">Fun</a></li>
+                    <li><a href="#">Weasels</a></li>
+                    -->
+                </ul>
+            </aside>
         </div>
     
     </div>
@@ -190,18 +156,230 @@
     <script src="//code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
 
     <script>
-      $(document).foundation();
-
-      //var doc = document.documentElement;
-      //doc.setAttribute('data-useragent', navigator.userAgent);
-      
-        $("#tabs").tabs({
-            activate: function (event, ui) {
-                var active = $('#tabs').tabs('option', 'active');
-                //$("#tabid").html('the tab id is ' + $("#tabs ul>li a").eq(active).attr("href"));
-            }
+        $(document).foundation();
+    </script>
+    
+    <script>
+        
+        // login stuff
+        var token = '';
+        var urls = {};
+        var current_organization = {
+            name: '',
+            id: 0
+        }
+        var current_project = {
+            name: '',
+            id: 0
+        }
+        
+        var pages = [
+            'organizations',
+            'projects',
+            'requirements',
+            'tickets',
+            'discussions',
+            'notes',
+            'help'
+        ]
+        
+        $(document).ready( function() {
+            
+            hide_content();
+            set_organization(0,'');
+            set_project(0,'');
+            
+            // setup our login button
+            $('#login-button').on('click', function(e) {
+                var email = $('#login-email').val();
+                var password = $('#login-password').val();
+                var url = "authenticate.json?email="+email+'&password='+password;
+                $.ajax({
+                    dataType:'json',
+                    url: url,
+                    success: function(data) {
+                        if( data.success == true ) {
+                            console.log('Login successful.');
+                            init_credentials(data.token);
+                            hide_login();
+                            switch_page('organizations');
+                        }
+                    },
+                    error: function(data) {
+                        console.log('error');
+                    }
+                });
+            });
+            
+            // setup our pages
+            pages.forEach( function(page) {
+                $('#top-link-'+page).on('click', function(e) {
+                    switch_page(page);
+                });
+            });
+        
         });
-
+        
+        function init_credentials(new_token) {
+            token = new_token;
+            
+            urls['get_organizations'] = 'get_organizations.json?token='+new_token;
+            urls['get_projects'] = 'get_projects.json?token='+new_token;
+            
+        }
+        
+        function hide_login() {
+            $('#login-wrapper').hide();
+        }
+        
+        function show_login() {
+            $('#login-wrapper').show();
+        }
+        
+        function hide_content() {
+            $('#content-wrapper').hide();
+        }
+        
+        function show_content() {
+            $('#content-wrapper').show();
+        }
+        
+        function hide_all_pages() {
+            pages.forEach( function(page) {
+                $('#page-'+page).hide()
+            });
+        }
+        
+        function show_page(page_name) {
+            $('#page-'+page_name).show()
+        }
+        
+        function switch_page(page_name) {
+            
+            $('#content-wrapper').show();
+            hide_all_pages();
+            show_page(page_name);
+            process_page(page_name);
+        }
+        
+        function process_page(page_name) {
+            switch (page_name) {
+                case 'organizations':
+                    $.ajax({
+                        dataType: 'json',
+                        url: urls['get_organizations'],
+                        success: function(data) {
+                            if (data.success == true ) {
+                                populate_organizations(data.organizations);
+                            }
+                            else {
+                                // TODO: redirect to login page
+                            }
+                        },
+                        error: function(data) {
+                            // TODO: report error
+                        }
+                    });
+                    
+                    break;
+                    
+                case 'projects':
+                    $.ajax({
+                        dataType: 'json',
+                        url: urls['get_projects'],
+                        success: function(data) {
+                            if (data.success == true ) {
+                                populate_projects(data.projects);
+                            }
+                            else {
+                                // TODO: redirect to login page
+                            }
+                        },
+                        error: function(data) {
+                            // TODO: report error
+                        }
+                    });
+                    break;
+                case 'requirements':
+                    break;
+                case 'tickets':
+                    break;
+                case 'discussions':
+                    break;
+                case 'notes':
+                    break;
+                case 'help':
+                    break;
+                default:
+                    break;
+            };
+            
+        }        
+        
+        // ------- organizations -------- //
+        
+        function populate_organizations(organizations) {
+            console.log('populating orgaization list');
+            html = '<h4>Your Organizations</h4><br/>';
+            organizations.forEach(function(org) {
+                html += '<div class="organization-wrapper left-padding">';
+                html += '<h4><a href="#" id="" class="large" orgname="' + org.organization_name + '" orgid="' + org.organization_id + '">' + org.organization_name + '</a> ';
+                html += '<small>' + org.organization_description + '</small></h4>';
+                html += 'Owner: <a href="#">' + org.auther_first + ' ' + org.auther_last + '( ' + org.author_email  + ' )</a>';
+                html += '<hr>';
+                html += '</div>';
+            });
+            console.log(html);
+            $('#page-organizations').html(html);
+            $('#page-organizations').on('click', function(e) {
+                console.log('click!');
+                //console.log(e.target.attr('organizationname'));
+                var orgid = $(e.target).attr('orgid');
+                var orgname = $(e.target).attr('orgname');
+                //console.log(orgname);
+                set_organization(orgid, orgname);
+                switch_page('projects');
+            });
+        }
+        
+        function set_organization(orgid, orgname) {
+            current_organization.name = orgname;
+            current_organization.id = orgid;
+            $('#current-organization').html(current_organization.name);
+        }
+        
+        
+        
+        // ------ projects ------ ///
+        
+        function populate_projects(projects) {
+            console.log('populating project list');
+            html = '<h4>Current Projects</h4><br/>';
+            projects.forEach(function(project) {
+                html += '<div class="project-wrapper left-padding">';
+                html += '<h4><a href="#" id="" class="large" projectname="' + project.project_name + '" projectid="' + project.project_id + '">' + project.project_name + '</a> ';
+                html += '<small>' + project.project_description + '</small></h4>';
+                html += 'Owner: <a href="#">' + project.auther_first + ' ' + project.auther_last + '( ' + project.author_email  + ' )</a>';
+                html += '<hr>';
+                html += '</div>';
+            });
+            console.log(html);
+            $('#page-projects').html(html);
+            $('#page-projects').on('click', function(e) {
+                console.log('click!');
+                var projectid = $(e.target).attr('projectid');
+                var projectname = $(e.target).attr('projectname');
+                set_project(projectid, projectname);
+                switch_page('projects');
+            });
+        }
+        
+        function set_project(projectid, projectname) {
+            current_project.name = projectname;
+            current_project.id = projectid;
+            $('#current-project').html(current_project.name);
+        }
+        
     </script>
 
 </body>

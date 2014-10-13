@@ -278,6 +278,7 @@ class UserOrganizationAssignments(Base):
             organizations = session.query(
                 UserOrganizationAssignments.id,
                 UserOrganizationAssignments.disabled,
+                Organizations.id,
                 Organizations.name,
                 Organizations.description,
                 Organizations.creation_datetime,
@@ -317,6 +318,7 @@ class Projects(Base):
                 author_id = author_id,
                 organization_id = organization_id,
                 name = name,
+                description = description,
                 creation_datetime = datetime.datetime.now(),
                 disabled = False,
             )
