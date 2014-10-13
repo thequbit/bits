@@ -110,25 +110,30 @@
             <div class="large-10 columns" roll="content" id="main-content">
                 <div id="pages" class="pages">
                     <div id="page-organizations">
-                        <h3>Organizations</h3>
+                        <h4>Organizations You Below To</h4>
+                        <br/>
+                        <div id="page-organizations-inside"></div>
                     </div>
                     <div id="page-projects">
-                        <h3>Projects</h3>
+                        <a href="#" class="small radius button right">New Project</a>
+                        <h4>Your Projects</h4>
+                        <br/>
+                        <div id="page-projects-inside"></div>
                     </div>
                     <div id="page-requirements">
-                        <h3>Requirements</h3>
+                        <div id="page-requirements-inside"></div>
                     </div>
                     <div id="page-tickets">
-                        <h3>Tickets</h3>
+                        <div id="page-tickets-inside"></div>
                     </div>
                     <div id="page-discussions">
-                        <h3>Discussions</h3>
+                        <div id="page-discussions-inside"></div>
                     </div>
                     <div id="page-notes">
-                        <h3>Notes</h3>
+                        <div id="page-notes-inside"></div>
                     </div>
                     <div id="page-help">
-                        <h3>Help</h3>
+                        <div id="page-help-inside"></div>
                     </div>
                 </div>
             </div>
@@ -320,7 +325,7 @@
         
         function populate_organizations(organizations) {
             console.log('populating orgaization list');
-            html = '<h4>Your Organizations</h4><br/>';
+            html = '';
             organizations.forEach(function(org) {
                 html += '<div class="organization-wrapper left-padding">';
                 html += '<h4><a href="#" id="" class="large" orgname="' + org.organization_name + '" orgid="' + org.organization_id + '">' + org.organization_name + '</a> ';
@@ -330,7 +335,7 @@
                 html += '</div>';
             });
             console.log(html);
-            $('#page-organizations').html(html);
+            $('#page-organizations-inside').html(html);
             $('#page-organizations').on('click', function(e) {
                 console.log('click!');
                 //console.log(e.target.attr('organizationname'));
@@ -354,7 +359,7 @@
         
         function populate_projects(projects) {
             console.log('populating project list');
-            html = '<h4>Current Projects</h4><br/>';
+            html = '';
             projects.forEach(function(project) {
                 html += '<div class="project-wrapper left-padding">';
                 html += '<h4><a href="#" id="" class="large" projectname="' + project.project_name + '" projectid="' + project.project_id + '">' + project.project_name + '</a> ';
@@ -364,7 +369,7 @@
                 html += '</div>';
             });
             console.log(html);
-            $('#page-projects').html(html);
+            $('#page-projects-inside').html(html);
             $('#page-projects').on('click', function(e) {
                 console.log('click!');
                 var projectid = $(e.target).attr('projectid');
