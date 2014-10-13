@@ -65,7 +65,7 @@
             <div class="right">
                 <h3><div id="current-organization"></div><small><div id="current-project"></div></small></h3>
             </div>
-            <h2>bits <small>Requirement and Ticketing System</small></h2>
+            <h2>bits</h2>
             <hr/>
         </div>
     </div>
@@ -132,18 +132,20 @@
                     </div>
                 </div>
             </div>
+            <!--
             <aside class="large-2 columns" style="border-left: 1px solid #777;">
                 <h4>Options</h4>
                 <ul class="side-nav">
-                    <!--
+                    
                     <li><a href="#">News</a></li>
                     <li><a href="#">Code</a></li>
                     <li><a href="#">Design</a></li>
                     <li><a href="#">Fun</a></li>
                     <li><a href="#">Weasels</a></li>
-                    -->
+                    
                 </ul>
             </aside>
+           --> 
         </div>
     
     </div>
