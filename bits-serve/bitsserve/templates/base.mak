@@ -6,7 +6,7 @@
     <title>bits - Requirements and Ticketing System</title>
 
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1.0" />-->
    
     <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'> 
     <link rel="stylesheet" href="static/foundation/css/foundation.css" />
@@ -18,23 +18,59 @@
             
         }
 
-        div.indent {
-            padding-left: 20px;
+        div.row {
+            max-width: 70.0rem;
         }
 
-        div.double-indent {
-            padding-left: 40px;
+        aside.side-menu {
+            border-left: 1px solid #DDD;
         }
 
-        div.tripple-indent {
-            padding-left: 60px;
+        div.shadow {
+             box-shadow: 0px 0px 0px 1px #DDD, 0px 4px 8px rgba(221, 221, 221, 0.9);
         }
+
+        div.small-light-text {
+            font-size: 80%;
+            color: #BBB;
+        }
+
+        div.extra-small-light-text {
+            font-size: 60%;
+            color: #BBB;
+        }
+
+        div.box {
+            margin-top: 20px;
+            padding: 5px;
+            border: 2px solid #DDD;
+            #border-radius: 4px;
+        }
+
+        div.box-title {
+            margin-bottom: 6px;
+            border-bottom: 2px solid #DDD;
+            #border-top-left-radius: 4px;
+            #border-rop-right-radius: 4px;
+            padding-bottom: 2px;
+        }
+
+        div.box-small-text {
+            font-size: 80%;
+        }
+
+        div.box-small-text b {
+            padding-right: 5px;
+        }
+
+
 
         div.block-container {
             border: 1px solid #DDD;
-            border-radius: 8px;
+            border-radius: 2px;
         }
 
+        /*
         div.block-title {
             border-top-left-radius: 8px;
             border-top-right-radius: 8px;
@@ -43,19 +79,16 @@
             color: #333;
             border-bottom: 1px solid #DDD;
         }
+        */
 
         div.block-contents {
             padding: 10px;
         }
 
-        p.small {
-            font-size: 60%;
-            margin-bottom: 0px !important;
-        }
-
-        div.inner-block-contents {
-            padding: 4px;
-            border: solid 1px #F9F9F9;
+        div.block-contents-inner {
+            margin-top: 5px;
+            padding: 5px;
+            border: 1px solid #F9F9F9;
         }
 
         div.block-type {
@@ -73,6 +106,21 @@
             color: white !important;
         }
 
+        div.indent {
+            padding-left: 20px;
+        }  
+ 
+        div.title-bar {
+            width: 100%;
+            border-bottom: 1px solid #DDD;
+            margin-bottom: 15px;
+            background-color: #EEE;
+        }
+
+        div.title-bar h3 {
+            margin-bottom: 0.2rem !important;
+        }
+
 
     </style>
 
@@ -82,31 +130,18 @@
 <body>
 
     % if token == None or user == None:
+
         <script>
             window.location.href = "/login";
         </script>
-    % endif
 
-    <script>
-        // make sure we are logged in
-        if( localStorage.token == '' || localStorage.token == undefined ) {
-            window.location.href = "/login";
-        }
-    </script>
+    % else:
 
-    <div class="row">
-        <div class="large-12 columns">
-            <div class="right">
-                % if user != None:
-                <h4>${user.first} ${user.last} 
-                    % if project:
-                    <small>${project['name']}</small>
-                    % endif
-                </h4>
-                % endif
+    <div class="title-bar"> 
+        <div class="row">
+            <div class="large-12 columns">
+                <h3>bits</h3>
             </div>
-            <h2>bits</h2>
-            <hr/>
         </div>
     </div>
 
@@ -117,31 +152,18 @@
     <script>
         $(document).foundation();
     </script>
-    
     <div class="row">
-        
-        <aside class="large-2 columns" style="border-right: 1px solid #DDD;">
-            <ul class="side-nav">
-                <!--<li><a href="/?token=${token}">Home</a></li>-->
-                <li><a href="/?token=${token}">Projects</a></li>
-                <!--
-                <li><a href="/newrequirement?token=${token}">New Requirement</a></li>
-                <li><a href="/newtickets?token=${token}">New Ticket</a></li>
-                <li><a href="/newnote?token=${token}">New Note</a></li>
-                -->
-                <!--<li style="border-bottom: 1px solid #DDD;"><a href="#"></a></li>-->
-                <hr/>
-                <li><a href="/settings">Settings</a></li>
-                <li><a href="/help">Help</a></li>
-                <hr/>
-            </ul>
-        </aside>
-        <div class="large-10 columns">
+        <div class="large-12 columns">
+            <a href="/">Home</a>
+        </div>
+    </div>
+    <div class="row">
+         <div class="large-12 columns">
             ${self.body()}
         </div>
     </div>
     
-    
+    % endif
     
 
 </body>

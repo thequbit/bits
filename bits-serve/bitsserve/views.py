@@ -53,27 +53,29 @@ def login(request):
 @view_config(route_name='index', renderer='templates/index.mak')
 def index(request):
 
-    token = None
-    user = None
+    result = {}
     #if True:
     try:
-        token = request.GET['token']
+        result['user'] = None
+        result['token'] = None
+
+        token = request.cookies['token']
         user = check_auth(token)
         if user == None:
-            token = None
             raise Exception('invalid token')
-    except:
-        pass
 
-    projects = []
-    #if True:
-    try:
+        result['user'] = user
+        result['token'] = token
+
         raw_projects = Projects.get_projects_from_user_id(
             session = DBSession,
             user_id = user.id,
         )
+
+        projects = []
         for upa_id, upa_disabled, p_id, p_name, p_desc, p_created, \
-                p_disabled, o_first, o_last, o_email in raw_projects:
+                p_disabled, o_first, o_last, o_email, r_count, t_count \
+                in raw_projects:
             if upa_disabled == False and p_disabled == False:
                 projects.append({
                     'id': p_id,
@@ -82,12 +84,18 @@ def index(request):
                     'created': p_created.strftime("%b %d, %Y"),
                     'owner': '{0} {1}'.format(o_first, o_last),
                     'owner_email': o_email,
+                    'requirement_count': r_count,
+                    'ticket_count': t_count,
+                    'note_count': 0,
                 })
+
+        result['projects'] = projects;
+
         #print projects
     except:
         pass
 
-    return {'token': token, 'user': user, 'projects': projects}
+    return result #{'token': token, 'user': user, 'projects': projects}
 
 @view_config(route_name='project', renderer='templates/project.mak')
 def project(request):
@@ -95,11 +103,12 @@ def project(request):
     result = {}
     #if True:
     try:
-        token = request.GET['token']
+        result['user'] = None
+        result['token'] = None
+
+        token = request.cookies['token']
         user = check_auth(token)
         if user == None:
-            result['user'] = None
-            result['token'] = None
             raise Exception('invalid token')
 
         result['user'] = user
@@ -116,7 +125,7 @@ def project(request):
             raise Exception('invalid project')
 
         p_id, p_name, p_desc, p_created, p_disabled, o_first, o_last, \
-                o_email = _project
+                o_email, r_count, t_count  = _project
         project = {
             'id': p_id,
             'name': p_name,
@@ -125,6 +134,9 @@ def project(request):
             'disabled': p_disabled,
             'owner': '{0} {1}'.format(o_first, o_last),
             'owner_email': o_email,
+            'requirement_count': r_count,
+            'ticket_count': t_count,
+            'note_count': 0,
         }
 
         valid = UserProjectAssignments.check_project_assignment(
@@ -144,7 +156,7 @@ def project(request):
 
         tickets = []
         for t_id, t_closed, t_closed_dt, t_created, o_first, o_last, \
-                o_email, p_name, p_desc, p_created, tt_name, tt_desc, \
+                o_email, p_id, p_name, p_desc, p_created, tt_name, tt_desc, \
                 tt_color, tc_title, tc_contents, tc_version, tc_created \
                 in _tickets:
             if t_closed == False:
@@ -191,21 +203,22 @@ def tickets(request):
 def ticket(request):
 
     result = {}
-    #if True:
-    try:
+    if True:
+    #try:
 
-        token = request.GET['token']
+        result['user'] = None
+        result['token'] = None
+
+        token = request.cookies['token']
         user = check_auth(token)
         if user == None:
-            result['user'] = None
-            result['token'] = None
             raise Exception('invalid token')
 
         result['user'] = user
         result['token'] = token
 
         ticket_id = request.GET['ticket_id']
-        project_id = request.GET['project_id']
+        #project_id = request.GET['project_id']
 
         _ticket = Tickets.get_ticket_by_ticket_id(
             session = DBSession,
@@ -216,7 +229,7 @@ def ticket(request):
             raise Exception('no such ticket')
         
         t_id, t_closed, t_closed_dt, t_created, o_first, o_last, \
-            o_email, p_name, p_desc, p_created, tt_name, tt_desc, \
+            o_email, p_id, p_name, p_desc, p_created, tt_name, tt_desc, \
             tt_color, tc_title, tc_contents, tc_version, tc_created  = _ticket
         ticket = None
         if t_closed == False:
@@ -242,7 +255,7 @@ def ticket(request):
 
         _project = Projects.get_from_id(
             session = DBSession,
-            project_id = project_id,
+            project_id = p_id,
         )
 
         if _project == None:
@@ -260,7 +273,7 @@ def ticket(request):
         valid = UserProjectAssignments.check_project_assignment(
             session = DBSession,
             user_id = user.id,
-            project_id = project_id,
+            project_id = p_id,
         )
 
         if valid == False:
@@ -270,8 +283,8 @@ def ticket(request):
         result['comments'] = comments
         result['project'] = project
 
-    except:
-        pass
+    #except:
+    #    pass
 
     return result
 

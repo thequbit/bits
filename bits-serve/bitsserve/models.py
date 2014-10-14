@@ -14,6 +14,8 @@ from sqlalchemy import (
     ForeignKey,
     )
 
+from sqlalchemy import func
+
 from sqlalchemy.ext.declarative import declarative_base
 
 from sqlalchemy.orm import (
@@ -367,8 +369,14 @@ class Projects(Base):
                 Users.first,
                 Users.last,
                 Users.email,
+                func.count(Requirements.id),
+                func.count(Tickets.id),
             ).join(
                 Users,Users.id == Projects.author_id,
+            ).outerjoin(
+                Requirements,Requirements.project_id == Projects.id,
+            ).outerjoin(
+                Tickets,Tickets.project_id == Projects.id,
             ).filter(
                 Projects.id == project_id,
             ).first()
@@ -439,10 +447,17 @@ class UserProjectAssignments(Base):
                 Users.first,
                 Users.last,
                 Users.email,
+                func.count(Requirements.id),
+                func.count(Tickets.id),
+                #func.count(Notes.id),
             ).join(
                 Projects,Projects.id == UserProjectAssignments.project_id,
             ).join(
                 Users,Users.id == Projects.author_id,
+            ).outerjoin(
+                Requirements,Requirements.project_id == Projects.id,
+            ).outerjoin(
+                Tickets,Tickets.project_id == Projects.id,
             ).filter(
                 UserProjectAssignments.user_id == user_id,
             ).all()
@@ -604,6 +619,7 @@ class Tickets(Base):
                 Users.first,
                 Users.last,
                 Users.email,
+                Projects.id,
                 Projects.name,
                 Projects.description,
                 Projects.creation_datetime,
@@ -647,6 +663,7 @@ class Tickets(Base):
                 Users.first,
                 Users.last,
                 Users.email,
+                Projects.id,
                 Projects.name,
                 Projects.description,
                 Projects.creation_datetime,
@@ -943,5 +960,43 @@ class RequirementComments(Base):
             transaction.commit()
         return requirement_comment
 
- 
+class Actions(Base):
+
+    __tablename__ = 'actions'
+    id = Column(Integer, primary_key=True)
+    organization_id = Column(Integer, ForeignKey('organizations.id'))
+    user_id = Column(Integer, ForeignKey('users.id'))
+    project_id = Column(Integer, ForeignKey('projects.id'))
+    action = Column(Text)
+    subject = Column(Text)
+    creation_datetime = Column(DateTime)
+
+    @classmethod
+    def add_action(cls, session, organization_id, user_id, project_id, \
+            action, subject):
+        """ Add an action
+        """
+        with transaction.manager:
+            action = cls(
+                organization_id = organization_id,
+                user_id = user_id,
+                project_id = project_id,
+                action = action,
+                subject = subject,
+            )
+            session.add(action)
+            transaction.commit()
+        return action
+
+    @classmethod
+    def get_latest_actions_by_org_id(cls, session, organization_id, limit):
+        """ Get latest actions
+        """
+        with transaction.manager:
+            actions = session.query(
+                Actions,
+            ).filter(
+                Actions.organization_id == organization_id,
+            ).limit(limit)
+        return actions
 

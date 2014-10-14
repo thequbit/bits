@@ -68,15 +68,18 @@
                         console.log(data);
                         if ( data.success == true ) {
                             // save token to local store
-                            localStorage.token = data.token;
-                            localStorage.first = data.user.first;
-                            localStorage.last = data.user.last;
-                            localStorage.email = data.user.email;
-                            localStorage.user_type = data.user.user_type;
-                            localStorage.user_type_description = data.user.user_type_description;
+                            //localStorage.token = data.token;
+                            //localStorage.first = data.user.first;
+                            //localStorage.last = data.user.last;
+                            //localStorage.email = data.user.email;
+                            //localStorage.user_type = data.user.user_type;
+                            //localStorage.user_type_description = data.user.user_type_description;
+
+                            // save our token to a cookie, so it gets sent to the server each time
+                            document.cookie="token="+data.token;
 
                             // do redirect
-                            window.location.href = "/?token="+data.token
+                            window.location.href = "/"
 
                         } else {
                             // TODO: report invalid creds

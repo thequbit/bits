@@ -25,9 +25,11 @@
            min-height: 150px;
         }
 
-        div.indent {
-            padding-left: 25px;
+        div.ticket-container h3 {
+            margin-bottom: 0rem !important;
         }
+
+        
  
     </style>
 
@@ -37,22 +39,20 @@
         <br/>
         <br/>
         % if ticket:
+            <div class="ticket-container">
+            <h3>${ticket['title']}</h3>
+            <div class="small-light-text">
+                Opened by ${ticket['owner']} on ${ticket['created']}<br/><br/>
+            </div>
             <div class="block-container">
-                <div class="block-title">
-                    ${ticket['title']}
-                </div>
                 <div class="block-contents">
-                    <p class="small">
-                        Created: ${ticket['created']}<br/>
-                        Owner: ${ticket['owner']}<br/>
-                    </p>
-                    <div class="inner-block-contents">
-                        ${ticket['contents']}
-                    </div>
                     <div class="block-types">
                         <div class="block-type" style="background-color: ${ticket['type_color']};">
                             <a href="/projecttype?token=${token}&type=${ticket['type']}">${ticket['type']}</a>
                         </div>
+                    </div>
+                    <div class="block-contents-inner">
+                        ${ticket['contents']}
                     </div>
                 </div>
             </div>
