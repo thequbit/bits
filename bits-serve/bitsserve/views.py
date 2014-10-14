@@ -45,11 +45,128 @@ def check_auth(token):
     )
     return user
 
-
-@view_config(route_name='index', renderer='templates/index.pt')
-def index(request):
+@view_config(route_name='login', renderer='templates/login.mak')
+def login(request):
 
     return {}
+
+@view_config(route_name='index', renderer='templates/index.mak')
+def index(request):
+
+    token = None
+    user = None
+    #if True:
+    try:
+        token = request.GET['token']
+        user = check_auth(token)
+        if user == None:
+            token = None
+            raise Exception('invalid token')
+    except:
+        pass
+
+    projects = []
+    #if True:
+    try:
+        raw_projects = Projects.get_projects_from_user_id(
+            session = DBSession,
+            user_id = user.id,
+        )
+        for upa_id, upa_disabled, p_id, p_name, p_desc, p_created, \
+                p_disabled, o_first, o_last, o_email in raw_projects:
+            if upa_disabled == False and p_disabled == False:
+                projects.append({
+                    'id': p_id,
+                    'name': p_name,
+                    'description': p_desc,
+                    'created': p_created.strftime("%b %d, %Y"),
+                    'owner': '{0} {1}'.format(o_first, o_last),
+                    'owner_email': o_email,
+                })
+        #print projects
+    except:
+        pass
+
+    return {'token': token, 'user': user, 'projects': projects}
+
+@view_config(route_name='project', renderer='templates/project.mak')
+def project(request):
+
+    result = {}
+    #if True:
+    try:
+        token = request.GET['token']
+        user = check_auth(token)
+        if user == None:
+            result['user'] = None
+            result['token'] = None
+            raise Exception('invalid token')
+
+        result['user'] = user
+        result['token'] = token
+
+        project_id = request.GET['project_id']
+            
+        _project = Projects.get_from_id(
+            session = DBSession,
+            project_id = project_id,
+        )
+
+        if _project == None:
+            raise Exception('invalid project')
+
+        p_id, p_name, p_desc, p_created, p_disabled, o_first, o_last, \
+                o_email = _project
+        project = {
+            'id': p_id,
+            'name': p_name,
+            'description': p_desc,
+            'created': p_created.strftime("%b %d, %Y"),
+            'disabled': p_disabled,
+            'owner': '{0} {1}'.format(o_first, o_last),
+            'owner_email': o_email,
+        }
+
+        valid = UserProjectAssignments.check_project_assignment(
+            session = DBSession,
+            user_id = user.id,
+            project_id = project_id,
+        )
+        if valid == False:
+            raise Exception('unauthorized project')
+
+        result['project'] = project
+
+        _tickets = Tickets.get_tickets_by_project_id(
+            session = DBSession,
+            project_id = project_id,
+        )
+
+        tickets = []
+        for t_id, t_closed, t_closed_dt, t_created, o_first, o_last, \
+                o_email, p_name, p_desc, p_created, tt_name, tt_desc, \
+                tt_color, tc_title, tc_contents, tc_version, tc_created \
+                in _tickets:
+            if t_closed == False:
+                tickets.append({
+                    'id': t_id,
+                    'created': t_created.strftime("%b %d, %Y"),
+                    'owner': '{0} {1}'.format(o_first, o_last),
+                    'owner_email': o_email,
+                    'type': tt_name,
+                    'type_description': tt_desc,
+                    'type_color': tt_color,
+                    'title': tc_title,
+                    'contents': tc_contents,
+                })
+
+        result['tickets'] = tickets            
+
+    except:
+        pass
+
+    return result
+
 
 @view_config(route_name='tickets', renderer='templates/tickets.mak')
 def tickets(request):
@@ -73,28 +190,141 @@ def tickets(request):
 @view_config(route_name='ticket', renderer='templates/ticket.mak')
 def ticket(request):
 
-    tickets = None
-    if True:
-    #try:
+    result = {}
+    #if True:
+    try:
+
+        token = request.GET['token']
+        user = check_auth(token)
+        if user == None:
+            result['user'] = None
+            result['token'] = None
+            raise Exception('invalid token')
+
+        result['user'] = user
+        result['token'] = token
 
         ticket_id = request.GET['ticket_id']
         project_id = request.GET['project_id']
 
-        ticket = Tickets.get_ticket_by_ticket_id(
+        _ticket = Tickets.get_ticket_by_ticket_id(
             session = DBSession,
             ticket_id = ticket_id
         )
 
+        if _ticket == None:
+            raise Exception('no such ticket')
+        
+        t_id, t_closed, t_closed_dt, t_created, o_first, o_last, \
+            o_email, p_name, p_desc, p_created, tt_name, tt_desc, \
+            tt_color, tc_title, tc_contents, tc_version, tc_created  = _ticket
+        ticket = None
+        if t_closed == False:
+            ticket = {
+                'id': t_id,
+                'created': t_created.strftime("%b %d, %Y"),
+                'owner': '{0} {1}'.format(o_first, o_last),
+                'owner_email': o_email,
+                'type': tt_name,
+                'type_description': tt_desc,
+                'type_color': tt_color,
+                'title': tc_title,
+                'contents': tc_contents,
+            }
+
         comments = TicketComments.get_ticket_comments_by_ticket_id(
             session = DBSession,
-            ticket_id = ticket.id,
+            ticket_id = _ticket.id,
         )
 
+        if comments == None:
+            raise Exception('invalid comments')
+
+        _project = Projects.get_from_id(
+            session = DBSession,
+            project_id = project_id,
+        )
+
+        if _project == None:
+            project = None
+            raise Exception('invalid project')
+        project = None
+        if _project.disabled == False:
+            project = {
+                'id': _project.id,
+                'name': _project.name,
+                'description': _project.description,
+                'created': _project.creation_datetime.strftime("%b %d, %Y"),
+            }
+
+        valid = UserProjectAssignments.check_project_assignment(
+            session = DBSession,
+            user_id = user.id,
+            project_id = project_id,
+        )
+
+        if valid == False:
+            raise Exception('unauthorized project')
+
+        result['ticket'] = ticket
+        result['comments'] = comments
+        result['project'] = project
+
+    except:
+        pass
+
+    return result
+
+@view_config(route_name='newticket', renderer='templates/newticket.mak')
+def new_ticket(request):
+
+    result = {}
+    if True:
+    #try:
+        token = request.GET['token']
+        user = check_auth(token)
+        if user == None:
+            result['user'] = None
+            result['token'] = None
+            raise Exception('invalid token')
+
+        result['user'] = user
+        result['token'] = token
+
+        project_id = request.GET['project_id']
+
+        _project = Projects.get_from_id(
+            session = DBSession,
+            project_id = project_id,
+        )
+
+        if _project == None:
+            project = None
+            raise Exception('invalid project')
+        project = None
+        if _project.disabled == False:
+            project = {
+                'id': _project.id,
+                'name': _project.name,
+                'description': _project.description,
+                'created': _project.creation_datetime.strftime("%b %d, %Y"),
+            }
+
+        valid = UserProjectAssignments.check_project_assignment(
+            session = DBSession,
+            user_id = user.id,
+            project_id = project_id,
+        )
+
+        if valid == False:
+            raise Exception('unauthorized project')
+    
+        result['project'] = project
+    
     #except:
     #    pass
 
-    return {'ticket': ticket,'comments': comments,'project_id':project_id}
-
+    return result
 
 @view_config(route_name='authenticate.json')
 def authenticate(request):
@@ -104,7 +334,8 @@ def authenticate(request):
 
     result = {}
     result['success'] = False
-    try:
+    if True:
+    #try:
         try:
             email = request.GET['email']
             password = request.GET['password']
@@ -113,22 +344,35 @@ def authenticate(request):
             result['error_code'] = 1
             raise Exception('error')
 
-        token = Users.authenticate_user(
+        token, user = Users.authenticate_user(
             session = DBSession,
             email = email,
             password = password,
         )
 
-        result['token'] = token
         if token == None:
             result['error_text'] = 'Invalid Credentials'
             result['error_code'] = 2
             raise Exception('error')
 
+        user_type = UserTypes.user_type_from_id(
+            session = DBSession,
+            user_type_id = user.user_type_id,
+        )
+
+        result['token'] = token
+        result['user'] = {
+            'first': user.first,
+            'last': user.last,
+            'email': user.email,
+            'user_type': user_type.name,
+            'user_type_description': user_type.description,
+        }
+
         result['success'] = True
 
-    except:
-        pass
+    #except:
+    #    pass
 
     return make_response(result)
 
@@ -150,7 +394,7 @@ def get_projects(request):
             result['error_text'] = "Invalid or missing token"
             raise Exception('error')
         
-        projects = UserProjectAssignments.get_users_projects(
+        projects = Projects.get_projects_from_user_id(
             session = DBSession,
             user_id = user.id,
         )
@@ -253,7 +497,7 @@ def create_ticket(request):
         try:
             author_id = request.POST['author_id']
             project_id = request.POST['project_id']
-            #ticket_type_id = request.POST['ticket_type_id']
+            ticket_type_id = request.POST['ticket_type_id']
             #ticket_priority_id = request.POST['ticket_priority_id']
             title = request.POST['title']
             contents = request.POST['contents']
@@ -265,8 +509,8 @@ def create_ticket(request):
             session = DBSession,
             author_id = author_id,
             project_id = project_id,
-            ticket_type_id = 1, #ticket_type_id,
-            ticket_priority_id = 1, #ticket_priority_id,
+            ticket_type_id = ticket_type_id,
+            #ticket_priority_id = 1, #ticket_priority_id,
         )
         ticket_contents = TicketContents.add_ticket_content(
             session = DBSession,

@@ -1,5 +1,13 @@
 <%inherit file="base.mak"/>
 
+    % if not ticket:
+        <script>
+            window.location.href = "/?token=${token}"
+        </script>
+    % endif
+
+    % if token and user and ticket and project:
+
     <style>
     
         div.ticket-container {
@@ -13,7 +21,7 @@
             padding: 15px;15px
         }
 
-        div.ticket textarea {
+        textarea {
            min-height: 150px;
         }
 
@@ -23,36 +31,55 @@
  
     </style>
 
-    <div class="ticket">
+    <div class="row">
+        <div class="medium-12 columns">
+        <a href="/project?token=${token}&project_id=${project['id']}">Back to project</a>
+        <br/>
+        <br/>
         % if ticket:
-            <h4>${ticket[16]}</h4>
-            <div class="indent"><small>Opened by: ${ticket[4]} ${ticket[5]} </small><br/></div>
-            <div class="indent"><small>Opened on: ${ticket[3]}</small><br/></div>
-            <div class="ticket">
-                <p>${ticket[17]}</p>
+            <div class="block-container">
+                <div class="block-title">
+                    ${ticket['title']}
+                </div>
+                <div class="block-contents">
+                    <p class="small">
+                        Created: ${ticket['created']}<br/>
+                        Owner: ${ticket['owner']}<br/>
+                    </p>
+                    <div class="inner-block-contents">
+                        ${ticket['contents']}
+                    </div>
+                    <div class="block-types">
+                        <div class="block-type" style="background-color: ${ticket['type_color']};">
+                            <a href="/projecttype?token=${token}&type=${ticket['type']}">${ticket['type']}</a>
+                        </div>
+                    </div>
+                </div>
             </div>
-
+            <br/> 
+            
+            <!-- TODO: make this pretty -->
             % for comment in comments:
                 <p>${comment.contents}</p>
             % endfor
 
             <label>Comment</label>
             <textarea id="comment-contents" placeholder="markdown supported"></textarea>
-            <a href="#" onclick="submit_comment();" id="submit-comment" class="small radius button">Submit</a>
+            <a href="#" id="submit-comment" class="small radius button">Submit</a>
+            <div class="right">
+                <a href="#" id="submit-comment-and-close" class="small radius button">Submit and Close</a>
+            </div>
         % endif
     </div>
 
     <script>
 
-        console.log('log test');
-
-        
         $('#submit-comment').on('click', function(e) {
             console.log('sending comment')
                 
             url = '/create_comment.json?token=' + localStorage.getItem("token");
             author_id = localStorage.getItem("user_id")
-            project_id = ${project_id};
+            project_id = ${project['id']};
             contents = $('#comment-contents').val();
             $.ajax({
                 dataType: 'json',
@@ -76,4 +103,8 @@
            
         });
 
+        // TODO: hook up submit and close button
+
     </script>
+
+    % endif

@@ -96,14 +96,16 @@ def main(argv=sys.argv):
         project_id = default_project.id,
         name = "Todo",
         description = "An item that needs to be completed",
+        color = "#0066FF",
     )
 
-    fix_ticket_type = TicketTypes.add_ticket_type(
+    bug_ticket_type = TicketTypes.add_ticket_type(
         session = DBSession,
         author_id = system_user.id,
         project_id = default_project.id,
-        name = "Fix",
+        name = "bug",
         description = "An item that needs to be fixed",
+        color = "#FF00CC",
     )
 
     today_ticket_priority = TicketPriorities.add_ticket_priority(

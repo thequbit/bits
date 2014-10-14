@@ -19,8 +19,12 @@ def main(global_config, **settings):
     config.add_static_view('static', 'static', cache_max_age=3600)
 
     config.add_route('index', '/')
+    config.add_route('login', '/login')
+    config.add_route('project', '/project')
     config.add_route('tickets', '/tickets')
     config.add_route('ticket', '/ticket')
+    config.add_route('newticket', '/newticket')
+ 
 
     config.add_route('authenticate.json', 'authenticate.json')
     config.add_route('get_projects.json', 'get_projects.json')

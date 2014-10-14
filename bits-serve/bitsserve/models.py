@@ -66,6 +66,18 @@ class UserTypes(Base):
         return id
 
     @classmethod
+    def user_type_from_id(cls, session, user_type_id):
+        """ Returns the user type from it's id
+        """
+        with transaction.manager:
+            user_type = session.query(
+                UserTypes,
+            ).filter(
+                UserTypes.id == user_type_id,
+            ).first()
+        return user_type
+
+    @classmethod
     def get_all_user_types(cls, session):
         """ Returns all available user types
         """
@@ -156,7 +168,7 @@ class Users(Base):
                     user.token = token
                     session.add(user)
                     transaction.commit()
-        return token
+        return token, user
 
     @classmethod
     def check_authentication(cls, session, token):
@@ -342,9 +354,35 @@ class Projects(Base):
         return project
 
     @classmethod
-    def get_projects_from_user_id(cls, session, user_id):
-        """ get all of the projects the user has access to
+    def get_from_id(cls, session, project_id):
+        """ Get a project from it's id
         """
+        with transaction.manager:
+            project = session.query(
+                Projects.id,
+                Projects.name,
+                Projects.description,
+                Projects.creation_datetime,
+                Projects.disabled,
+                Users.first,
+                Users.last,
+                Users.email,
+            ).join(
+                Users,Users.id == Projects.author_id,
+            ).filter(
+                Projects.id == project_id,
+            ).first()
+        return project
+
+    @classmethod
+    def get_projects_from_user_id(cls, session, user_id):
+        """ Get all of the projects the user has access to
+        """
+        projects = UserProjectAssignments.get_user_projects(
+            session = session,
+            user_id = user_id,
+        )
+        return projects
 
 class UserProjectAssignments(Base):
 
@@ -354,7 +392,6 @@ class UserProjectAssignments(Base):
     project_id = Column(Integer, ForeignKey('projects.id'))
     disabled = Column(Boolean)
     creation_datetime = Column(DateTime)    
-
 
     @classmethod
     def assign_user_to_project(cls, session, user_id, project_id):
@@ -387,13 +424,14 @@ class UserProjectAssignments(Base):
         return user_project_assignment
 
     @classmethod
-    def get_users_projects(cls, session, user_id):
+    def get_user_projects(cls, session, user_id):
         """ Get all projects the user is assigned to
         """
         with transaction.manager:
             projects = session.query(
                 UserProjectAssignments.id,
                 UserProjectAssignments.disabled,
+                Projects.id,
                 Projects.name,
                 Projects.description,
                 Projects.creation_datetime,
@@ -410,6 +448,23 @@ class UserProjectAssignments(Base):
             ).all()
         return projects
 
+    @classmethod
+    def check_project_assignment(cls, session, user_id, project_id):
+        """ Checks to ensure that a user and project are matched
+        """
+        with transaction.manager:
+            assignment = session.query(
+                UserProjectAssignments,
+            ).filter(
+                UserProjectAssignments.user_id == user_id,
+                UserProjectAssignments.project_id == project_id,
+                UserProjectAssignments.disabled == False,
+            ).first()
+            valid = False
+            if assignment != None:
+                valid = True
+        return valid
+
 class TicketTypes(Base):
 
     __tablename__ = 'tickettypes'
@@ -418,11 +473,12 @@ class TicketTypes(Base):
     project_id = Column(Integer, ForeignKey('projects.id'))
     name = Column(Text)
     description = Column(Text)
+    color = Column(Text)
     creation_datetime = Column(DateTime)
     
     @classmethod
     def add_ticket_type(cls, session, author_id, project_id, name, \
-            description):
+            description, color):
         """ Adds a new ticket type
         """
         with transaction.manager:
@@ -431,6 +487,7 @@ class TicketTypes(Base):
                 project_id = project_id,
                 name = name,
                 description = description,
+                color = color,
                 creation_datetime = datetime.datetime.now(),
             )
             session.add(ticket_type)
@@ -497,14 +554,13 @@ class Tickets(Base):
     author_id = Column(Integer, ForeignKey('users.id'))
     project_id = Column(Integer, ForeignKey('projects.id'))
     ticket_type_id = Column(Integer, ForeignKey('tickettypes.id'))
-    ticket_priority_id = Column(Integer, ForeignKey('ticketpriorities.id'))
+    #ticket_priority_id = Column(Integer, ForeignKey('ticketpriorities.id'))
     closed = Column(Boolean)
     closed_datetime = Column(DateTime, nullable=True)
     creation_datetime = Column(DateTime)
 
     @classmethod
-    def add_ticket(cls, session, author_id, project_id, ticket_type_id,\
-                ticket_priority_id):
+    def add_ticket(cls, session, author_id, project_id, ticket_type_id):
         """ Adds a new ticket to the system
         """
         with transaction.manager:
@@ -512,7 +568,7 @@ class Tickets(Base):
                 author_id = author_id,
                 project_id = project_id,
                 ticket_type_id = ticket_type_id,
-                ticket_priority_id = ticket_priority_id,
+                #ticket_priority_id = ticket_priority_id,
                 closed = False,
                 closed_datetime = None,
                 creation_datetime = datetime.datetime.now(),
@@ -553,10 +609,11 @@ class Tickets(Base):
                 Projects.creation_datetime,
                 TicketTypes.name,
                 TicketTypes.description,
-                TicketPriorities.name,
-                TicketPriorities.description,
-                TicketPriorities.weight,
-                TicketPriorities.color,
+                TicketTypes.color,
+                #TicketPriorities.name,
+                #TicketPriorities.description,
+                #TicketPriorities.weight,
+                #TicketPriorities.color,
                 TicketContents.title,
                 TicketContents.contents,
                 TicketContents.version,
@@ -567,11 +624,11 @@ class Tickets(Base):
                 Projects,Projects.id == Tickets.project_id,
             ).join(
                 TicketTypes,TicketTypes.id == Tickets.ticket_type_id,
-            ).join(
-                TicketPriorities,TicketPriorities.id == \
-                    Tickets.ticket_priority_id,
             #).join(
-            #    TicketContents,Tickets.id == TicketContents.ticket_id,
+            #    TicketPriorities,TicketPriorities.id == \
+            #        Tickets.ticket_priority_id,
+            ).join(
+                TicketContents,Tickets.id == TicketContents.ticket_id,
             ).filter(
                 Tickets.project_id == project_id,
             ).all()
@@ -595,10 +652,11 @@ class Tickets(Base):
                 Projects.creation_datetime,
                 TicketTypes.name,
                 TicketTypes.description,
-                TicketPriorities.name,
-                TicketPriorities.description,
-                TicketPriorities.weight,
-                TicketPriorities.color,
+                TicketTypes.color,
+                #TicketPriorities.name,
+                #TicketPriorities.description,
+                #TicketPriorities.weight,
+                #TicketPriorities.color,
                 TicketContents.title,
                 TicketContents.contents,
                 TicketContents.version,
@@ -609,11 +667,11 @@ class Tickets(Base):
                 Projects,Projects.id == Tickets.project_id,
             ).join(
                 TicketTypes,TicketTypes.id == Tickets.ticket_type_id,
-            ).join(
-                TicketPriorities,TicketPriorities.id == \
-                    Tickets.ticket_priority_id,
             #).join(
-            #    TicketContents,Tickets.id == TicketContents.ticket_id,
+            #    TicketPriorities,TicketPriorities.id == \
+            #        Tickets.ticket_priority_id,
+            ).join(
+                TicketContents,Tickets.id == TicketContents.ticket_id,
             ).filter(
                 Tickets.id == ticket_id,
             ).first()
@@ -885,5 +943,5 @@ class RequirementComments(Base):
             transaction.commit()
         return requirement_comment
 
-        
+ 
 
