@@ -393,6 +393,55 @@ def new_ticket(request):
 
     return result
 
+@view_config(route_name='newproject', renderer='templates/newproject.mak')
+def new_project(request):
+
+   
+    result = {}
+    #if True:
+    try:
+
+        result['user'] = None
+        result['token'] = None
+
+        token = request.cookies['token']
+        user = check_auth(token)
+        if user == None:
+            raise Exception('invalid token')
+
+        result['user'] = user
+        result['token'] = token
+
+        raw_projects = Projects.get_projects_from_user_id(
+            session = DBSession,
+            user_id = user.id,
+        )
+
+        projects = []
+        for upa_id, upa_disabled, p_id, p_name, p_desc, p_created, \
+                p_disabled, o_first, o_last, o_email, r_count, t_count \
+                in raw_projects:
+            if upa_disabled == False and p_disabled == False:
+                projects.append({
+                    'id': p_id,
+                    'name': p_name,
+                    'description': p_desc,
+                    'created': p_created.strftime("%b %d, %Y"),
+                    'owner': '{0} {1}'.format(o_first, o_last),
+                    'owner_email': o_email,
+                    'requirement_count': r_count,
+                    'ticket_count': t_count,
+                    'note_count': 0,
+                })
+
+        result['projects'] = projects;
+
+    except:
+        pass
+
+    return result
+ 
+
 @view_config(route_name='authenticate.json')
 def authenticate(request):
 
@@ -446,7 +495,7 @@ def authenticate(request):
 @view_config(route_name='create_ticket.json')
 def create_ticket(request):
 
-    """ Get all of the organizations that the user has access to
+    """ Create a new ticket
     """
 
     result = {}
@@ -494,6 +543,64 @@ def create_ticket(request):
     #    pass
 
     return make_response(result)
+
+@view_config(route_name='create_project.json')
+def create_project(request):
+
+    """ Create a new project
+    """
+
+    result = {}
+    result['success'] = False
+
+    if True:
+    #try:
+
+        #result['user'] = None
+        #result['token'] = None
+
+        token = request.cookies['token']
+        user = check_auth(token)
+        if user == None:
+            raise Exception('invalid token')
+
+        #result['user'] = user
+        #result['token'] = token
+
+        #project_id = request.POST['project_id']
+        print "\n\n"
+        print request.POST
+        print "\n\n"
+        name = request.POST['name']
+        description = request.POST['description']
+        #ticket_type_id = 1 # request.POST['ticket_type_id']
+
+        project = Projects.add_project(
+            session = DBSession,
+            author_id = user.id,
+            organization_id = 1,
+            name = name,
+            description = description,
+            #project_id = project_id,
+            #ticket_type_id = ticket_type_id,
+            #ticket_priority_id = 1, #ticket_priority_id,
+        )
+
+        assignment = UserProjectAssignments.assign_user_to_project(
+            session = DBSession,
+            user_id = user.id,
+            project_id = project.id,
+        )
+
+        result['project_id'] = project.id
+
+        result['success'] = True
+
+    #except:
+    #    pass
+
+    return make_response(result)
+
 
 @view_config(route_name='create_comment.json')
 def create_comment(request):

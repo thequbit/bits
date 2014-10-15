@@ -8,12 +8,6 @@
 
     </style>
 
-    % if project == None:
-        <script>
-            window.location.href = "/?token=${token}"
-        </script>
-    % endif
-
     % if user and token and project:
 
     <div class="row">
@@ -25,9 +19,9 @@
     <div class="row">
         <div class="medium-8 columns">
             <div class="new-ticket-container box shadow">
-            <h5>New Ticket<h5>
-            <input type="text" id="ticket-title" placeholder="ticket title"></text>
-            <textarea id="ticket-contents" placeholder="markdown supported"></textarea>
+                <h5>New Ticket<h5>
+                <input type="text" id="ticket-title" placeholder="ticket title"></text>
+                <textarea id="ticket-contents" placeholder="markdown supported"></textarea>
             </div>
             <br/>
             <a href="#" id="submit-ticket" class="small radius button">Submit</a>
