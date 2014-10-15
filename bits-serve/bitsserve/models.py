@@ -803,7 +803,20 @@ class TicketComments(Base):
         """
         with transaction.manager:
             comments = session.query(
-                TicketComments,
+                TicketComments.id,
+                TicketComments.contents,
+                TicketComments.flagged,
+                TicketComments.flagged_author_id,
+                TicketComments.update_datetime,
+                TicketComments.creation_datetime,
+                Users.id,
+                Users.first,
+                Users.last,
+                Users.email,
+            ).outerjoin(
+                Users, Users.id == TicketComments.flagged_author_id,
+            ).join(
+                Users, Users.id == TicketComments.author_id,
             ).filter(
                 TicketComments.ticket_id == ticket_id,
             ).all() 

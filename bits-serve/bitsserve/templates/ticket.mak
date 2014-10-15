@@ -1,11 +1,5 @@
 <%inherit file="base.mak"/>
 
-    % if not ticket:
-        <script>
-            window.location.href = "/?token=${token}"
-        </script>
-    % endif
-
     % if token and user and ticket and project:
 
     <style>
@@ -29,70 +23,118 @@
             margin-bottom: 0rem !important;
         }
 
+        div.comment-container {
+            
+        }
+
+        div.comment-container-inner {
+            padding: 10px;
+            
+        }
         
  
     </style>
 
     <div class="row">
-        <div class="medium-12 columns">
-        <a href="/project?token=${token}&project_id=${project['id']}">Back to project</a>
-        <br/>
-        <br/>
+        <div class="large-12 columns">
+            <a href="/">Back to Project</a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="medium-8 columns">
         % if ticket:
             <div class="ticket-container">
-            <h3>${ticket['title']}</h3>
-            <div class="small-light-text">
-                Opened by ${ticket['owner']} on ${ticket['created']}<br/><br/>
-            </div>
-            <div class="block-container">
-                <div class="block-contents">
-                    <div class="block-types">
-                        <div class="block-type" style="background-color: ${ticket['type_color']};">
-                            <a href="/projecttype?token=${token}&type=${ticket['type']}">${ticket['type']}</a>
+                <h3>${ticket['title']}</h3>
+                <div class="small-light-text">
+                    Opened by ${ticket['owner']} on ${ticket['created']}
+                </div>
+                <div class="block-type" style="background-color: ${ticket['type_color']};">
+                    <a href="/projecttype?token=${token}&type=${ticket['type']}">${ticket['type']}</a>
+                </div>
+                <div class="indent indent-right">
+                    <div class="box shadow">
+                        <div class="comment-container-inner">
+                            ${ticket['contents']}
                         </div>
                     </div>
-                    <div class="block-contents-inner">
-                        ${ticket['contents']}
+                </div>
+                <br/>           
+ 
+                <h5>Comments</h5>            
+
+                % for comment in comments:
+                    <div class="comment-containeri box shadow">
+                        <div class="small-light-text">On ${comment['created']} <a href="/user?user_id=${comment['owner_id']}">${comment['owner']}</a> write:</div>
+                        <div class="comment-container-inner">
+                            ${comment['contents']}
+                        </div>
+                    </div>
+                % endfor
+                <br/>
+
+                <div>
+                    <label>Add Comment</label>
+                    <textarea id="comment-contents" placeholder="markdown supported"></textarea>
+                    <a href="#" id="submit-comment" class="small radius button">Submit</a>
+                    <div class="right">
+                        <a href="#" id="submit-comment-and-close" class="small radius button">Submit and Close</a>
                     </div>
                 </div>
             </div>
-            <br/> 
-            
-            <!-- TODO: make this pretty -->
-            % for comment in comments:
-                <p>${comment.contents}</p>
-            % endfor
-
-            <label>Comment</label>
-            <textarea id="comment-contents" placeholder="markdown supported"></textarea>
-            <a href="#" id="submit-comment" class="small radius button">Submit</a>
-            <div class="right">
-                <a href="#" id="submit-comment-and-close" class="small radius button">Submit and Close</a>
-            </div>
         % endif
+        </div>
+        <div class="medium-4 columns">
+            <div class="box shadow">
+                <div class="box-title">
+                    Existing Tickets
+                    <!--<div class="right">
+                        <a href="/newticket?project_id=${project['id']}">New</a>
+                    </div>-->
+                </div>
+                % if not tickets:
+                    <div class="indent">
+                        <div class="small-light-text">No tickets for this project.</div>
+                    </div>
+                % else:
+                    % for existing_ticket in tickets:
+                        <div class="box-inner-container">
+                            <a href="/ticket?ticket_id=${existing_ticket['id']}">${existing_ticket['title']}</a>
+                            <div class="short-line-height extra-small-light-text"> opened by ${existing_ticket['owner']} on ${existing_ticket['created']}</div>
+                        </div>
+                    % endfor
+                % endif
+            </div>
+        </div> 
     </div>
 
     <script>
 
         $('#submit-comment').on('click', function(e) {
+            
             console.log('sending comment')
-                
-            url = '/create_comment.json?token=' + localStorage.getItem("token");
-            author_id = localStorage.getItem("user_id")
-            project_id = ${project['id']};
-            contents = $('#comment-contents').val();
+            
+            var token = document.cookie.split('=')[1]; 
+            var url = '/create_comment.json?token=' + token;
+            var ticket_id = ${ticket['id']}
+            //var author_id = localStorage.getItem("user_id")
+            //var project_id = ${project['id']};
+            var contents = $('#comment-contents').val();
+            
             $.ajax({
                 dataType: 'json',
                 type: 'POST',
                 data: {
-                    author_id : author_id,
-                    project_id : project_id,
+                    ticket_id : ticket_id,
+                    //author_id : author_id,
+                    //project_id : project_id,
                     contents : contents
                 },
                 url: url,
                 success: function(data) {
                     if( data.success == true ) {
                         console.log('SUCCESS!');
+                        window.location.href="/ticket?ticket_id=${ticket['id']}";
                     }
                 },
                 error: function(data) {

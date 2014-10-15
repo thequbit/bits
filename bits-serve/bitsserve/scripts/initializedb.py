@@ -46,6 +46,13 @@ def main(argv=sys.argv):
 #        model = MyModel(name='one', value=1)
 #        DBSession.add(model)
 
+    #default_organization = Organizations.add_organization(
+    #    session = DBSession,
+    #    author_id = system_user.id,
+    #    name = 'Default Organization',
+    #    description = 'Default Organization.',
+    #)
+
     system_user_type = UserTypes.add_user_type(
         session = DBSession,
         name = "System User",
@@ -61,39 +68,50 @@ def main(argv=sys.argv):
         password = "password",
     )
 
-    default_organization = Organizations.add_organization(
+    tim_user = Users.add_user(
         session = DBSession,
-        author_id = system_user.id,
-        name = 'Default Organization',
-        description = 'Default Organization.',
+        user_type_id = system_user_type.id,
+        first = "Tim",
+        last = "Duffy",
+        email = "tim@timduffy.me",
+        password = "password",
     )
 
-    default_user_organization_assignment = \
-        UserOrganizationAssignments.assign_user_to_organization(
-            session = DBSession,
-            user_id = system_user.id,
-            organization_id = default_organization.id,
-        )
-
-    default_project = Projects.add_project(
+    megan_user = Users.add_user(
         session = DBSession,
-        author_id = system_user.id,
-        organization_id = default_organization.id,
-        name = 'Default Project',
-        description = 'Default Project.',
+        user_type_id = system_user_type.id,
+        first = "Megan",
+        last = "Duffy",
+        email = "megan@meganduffy.me",
+        password = "password",
     )
 
-    default_user_project_assignment = \
-        UserProjectAssignments.assign_user_to_project(
-            session = DBSession,
-            user_id = system_user.id,
-            project_id = default_project.id,
-        )
+    #default_user_organization_assignment = \
+    #    UserOrganizationAssignments.assign_user_to_organization(
+    #        session = DBSession,
+    #        user_id = system_user.id,
+    #        organization_id = default_organization.id,
+    #    )
+ 
+    #default_project = Projects.add_project(
+    #    session = DBSession,
+    #    author_id = system_user.id,
+    #    organization_id = default_organization.id,
+    #    name = 'Default Project',
+    #    description = 'Default Project.',
+    #)
+
+    #default_user_project_assignment = \
+    #    UserProjectAssignments.assign_user_to_project(
+    #        session = DBSession,
+    #        user_id = system_user.id,
+    #        project_id = default_project.id,
+    #    )
 
     todo_ticket_type = TicketTypes.add_ticket_type(
         session = DBSession,
         author_id = system_user.id,
-        project_id = default_project.id,
+        project_id = 1, #default_project.id,
         name = "Todo",
         description = "An item that needs to be completed",
         color = "#0066FF",
@@ -102,7 +120,7 @@ def main(argv=sys.argv):
     bug_ticket_type = TicketTypes.add_ticket_type(
         session = DBSession,
         author_id = system_user.id,
-        project_id = default_project.id,
+        project_id = 1, #default_project.id,
         name = "bug",
         description = "An item that needs to be fixed",
         color = "#FF00CC",
@@ -111,7 +129,7 @@ def main(argv=sys.argv):
     today_ticket_priority = TicketPriorities.add_ticket_priority(
         session = DBSession,
         author_id = system_user.id,
-        project_id = default_project.id,
+        project_id = 1, #default_project.id,
         name = "Today",
         description = "Must be completed today.",
         weight = 1,

@@ -6,7 +6,7 @@
     <title>bits - Requirements and Ticketing System</title>
 
     <meta charset="utf-8" />
-    <!--<meta name="viewport" content="width=device-width, initial-scale=1.0" />-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
    
     <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'> 
     <link rel="stylesheet" href="static/foundation/css/foundation.css" />
@@ -18,12 +18,18 @@
             
         }
 
+        /*
         div.row {
             max-width: 70.0rem;
         }
+        */
 
         aside.side-menu {
             border-left: 1px solid #DDD;
+        }
+
+        textarea {
+            min-height: 150px;
         }
 
         div.shadow {
@@ -43,16 +49,28 @@
         div.box {
             margin-top: 20px;
             padding: 5px;
-            border: 2px solid #DDD;
+            /*border: 1px solid #DDD;*/
             #border-radius: 4px;
         }
 
         div.box-title {
-            margin-bottom: 6px;
-            border-bottom: 2px solid #DDD;
+            margin-bottom: 8px;
+            border-bottom: 1px solid #DDD;
             #border-top-left-radius: 4px;
             #border-rop-right-radius: 4px;
             padding-bottom: 2px;
+        }
+
+        div.box-inner-container {
+            border-bottom: 1px solid #DDD;
+            margin-bottom: 10px;
+            margin-left: 20px;
+            margin-right: 20px;
+            padding-bottom: 10px;
+        }
+
+        div.short-line-height {
+            line-height: 100% !important;
         }
 
         div.box-small-text {
@@ -90,10 +108,11 @@
             padding: 5px;
             border: 1px solid #F9F9F9;
         }
-
+        
         div.block-type {
             color: white;
-            margin-top: 10px;
+            margin-top: 5px;
+            margin-bottom: 10px;
             padding-left: 6px;
             padding-top: 2px;
             padding-bottom: 2px;
@@ -109,6 +128,10 @@
         div.indent {
             padding-left: 20px;
         }  
+ 
+        div.indent-right {
+            padding-right: 20px;
+        }
  
         div.title-bar {
             width: 100%;
@@ -152,11 +175,6 @@
     <script>
         $(document).foundation();
     </script>
-    <div class="row">
-        <div class="large-12 columns">
-            <a href="/">Home</a>
-        </div>
-    </div>
     <div class="row">
          <div class="large-12 columns">
             ${self.body()}
