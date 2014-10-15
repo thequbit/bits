@@ -460,6 +460,8 @@ class UserProjectAssignments(Base):
                 Tickets,Tickets.project_id == Projects.id,
             ).filter(
                 UserProjectAssignments.user_id == user_id,
+            ).group_by (
+                UserProjectAssignments.id,
             ).all()
         return projects
 
@@ -979,23 +981,25 @@ class Actions(Base):
     id = Column(Integer, primary_key=True)
     organization_id = Column(Integer, ForeignKey('organizations.id'))
     user_id = Column(Integer, ForeignKey('users.id'))
-    project_id = Column(Integer, ForeignKey('projects.id'))
     action = Column(Text)
     subject = Column(Text)
+    project_id = Column(Integer, ForeignKey('projects.id'), nullable=True)
+    ticket_id = Column(Integer, ForeignKey('tickets.id'), nullable=True)
     creation_datetime = Column(DateTime)
 
     @classmethod
-    def add_action(cls, session, organization_id, user_id, project_id, \
-            action, subject):
+    def add_action(cls, session, organization_id, user_id, action, subject,
+            project_id, ticket_id):
         """ Add an action
         """
         with transaction.manager:
             action = cls(
                 organization_id = organization_id,
                 user_id = user_id,
-                project_id = project_id,
                 action = action,
                 subject = subject,
+                project_id = project_id,
+                ticket_id = ticket_id,
             )
             session.add(action)
             transaction.commit()

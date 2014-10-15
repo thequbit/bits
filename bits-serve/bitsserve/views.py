@@ -7,6 +7,8 @@ from pyramid.view import view_config
 
 from sqlalchemy.exc import DBAPIError
 
+import markdown
+
 from .models import (
     DBSession,
     UserTypes,
@@ -24,6 +26,7 @@ from .models import (
     Requirements,
     RequirementContents,
     RequirementComments,
+    Actions,
 )
 
 def make_response(resp_dict):
@@ -56,6 +59,7 @@ def index(request):
     result = {}
     #if True:
     try:
+
         result['user'] = None
         result['token'] = None
 
@@ -67,7 +71,7 @@ def index(request):
         result['user'] = user
         result['token'] = token
 
-        raw_projects = Projects.get_projects_from_user_id(
+        _projects = Projects.get_projects_from_user_id(
             session = DBSession,
             user_id = user.id,
         )
@@ -75,7 +79,7 @@ def index(request):
         projects = []
         for upa_id, upa_disabled, p_id, p_name, p_desc, p_created, \
                 p_disabled, o_first, o_last, o_email, r_count, t_count \
-                in raw_projects:
+                in _projects:
             if upa_disabled == False and p_disabled == False:
                 projects.append({
                     'id': p_id,
@@ -90,6 +94,18 @@ def index(request):
                 })
 
         result['projects'] = projects;
+
+        _actions = Actions.get_latest_actions_by_org_id(
+            session = DBSession,
+            organization_id = 1,
+            limit = 25,
+        )
+        
+        actions = {
+        
+        }
+ 
+        result['actions'] = actions
 
         #print projects
     except:
@@ -169,7 +185,7 @@ def project(request):
                     'type_description': tt_desc,
                     'type_color': tt_color,
                     'title': tc_title,
-                    'contents': tc_contents,
+                    'contents': markdown.markdown(tc_contents),
                 })
 
         result['tickets'] = tickets            
@@ -222,7 +238,7 @@ def ticket(request):
                 'type_description': tt_desc,
                 'type_color': tt_color,
                 'title': tc_title,
-                'contents': tc_contents,
+                'contents': markdown.markdown(tc_contents),
             }
 
         result['ticket'] = ticket
@@ -246,7 +262,7 @@ def ticket(request):
                 updated_datetime = tc_updated_dt.strftime("%b %d, %Y")
             comments.append({
                 'id': tc_id,
-                'contents': tc_contents,
+                'contents': markdown.markdown(tc_contents),
                 'flagged': tc_flagged,
                 'flagged_datetime': flagged_datetime,
                 'updated_datetime': updated_datetime,
@@ -276,7 +292,7 @@ def ticket(request):
                     'type_description': tt_desc,
                     'type_color': tt_color,
                     'title': tc_title,
-                    'contents': tc_contents,
+                    'contents': markdown.markdown(tc_contents),
                 })
 
         result['tickets'] = tickets
@@ -383,7 +399,7 @@ def new_ticket(request):
                     'type_description': tt_desc,
                     'type_color': tt_color,
                     'title': tc_title,
-                    'contents': tc_contents,
+                    'contents': markdown.markdown(tc_contents),
                 })
 
         result['tickets'] = tickets
@@ -537,6 +553,17 @@ def create_ticket(request):
 
         result['ticket_id'] = ticket.id
 
+        action = Actions.add_action(
+            session = DBSession,
+            organization_id = 1,
+            user_id = user.id,
+            action = "created",
+            subject = "project",
+            project_id = project_id,
+            ticket_id = None,
+        )
+
+
         result['success'] = True
 
     #except:
@@ -568,9 +595,6 @@ def create_project(request):
         #result['token'] = token
 
         #project_id = request.POST['project_id']
-        print "\n\n"
-        print request.POST
-        print "\n\n"
         name = request.POST['name']
         description = request.POST['description']
         #ticket_type_id = 1 # request.POST['ticket_type_id']
@@ -593,6 +617,16 @@ def create_project(request):
         )
 
         result['project_id'] = project.id
+
+        action = Actions.add_action(
+            session = DBSession,
+            organization_id = 1,
+            user_id = user.id,
+            action = "created",
+            subject = "project",
+            project_id = project.id,
+            ticket_id = None,
+        )
 
         result['success'] = True
 
@@ -632,6 +666,16 @@ def create_comment(request):
         )
 
         result['ticket_comment_id'] = ticket_comment.id
+
+        action = Actions.add_action(
+            session = DBSession,
+            organization_id = 1,
+            user_id = user.id,
+            action = "created",
+            subject = "comment",
+            project_id = None,
+            ticket_id = ticket_id,
+        )
 
         result['success'] = True
 

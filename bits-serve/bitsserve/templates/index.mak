@@ -73,14 +73,15 @@
                     </div>
                 </div>
                 % if projects:
-                % for project in projects:
-                <div class="indent">
-                    <a href="/project?project_id=${project['id']}">${project['name']}</a>
-                    <div class="right">
-                        <div class="box-small-text">r:<b>${project['requirement_count']}</b>t:<b>${project['ticket_count']}</b>n:<b>${project['note_count']}</b></div>
+                    % for project in projects:
+                    <!--<div class="indent">-->
+                    <div class="box-inner-container">
+                        <a href="/project?project_id=${project['id']}">${project['name']}</a>
+                        <div class="right">
+                            <div class="box-small-text">r:<b>${project['requirement_count']}</b>t:<b>${project['ticket_count']}</b>n:<b>${project['note_count']}</b></div>
+                        </div>
                     </div>
-                </div>
-                % endfor
+                    % endfor
                 % endif
             </div>
             <hr/>
@@ -93,14 +94,27 @@
             <h5>Actions Feed<h5>
             <div class="row">
                 <div class="small-12 columns">
-                    <div class="action-box shadow">
-                        <div class="small-light-text">10 Minutes ago</div>
-                            <a href="/user?user_id=1">Tim Duffy</a>
-                            Created a new ticket in 
-                            <a href="/project?project_id=1">House Stuff</a>
-                            <p>The front of the garage needs to be cleaned</p>
+                    % if actions:
+                        % for action in actions:
+                        <div class="action-box shadow">
+                            <div class="small-light-text">10 Minutes ago</div>
+                                <a href="/user?user_id=1">Tim Duffy</a>
+                                % if action['action'] == 'created':
+                                    Created a new ${action['subject']} 
+                                % endif
+                                % if action['subject'] == 'project':
+                                    : <a href="/project?project_id=${action['project_id']}">${action['project_name']}</a>
+                                % elif action['subject'] == 'ticket':
+                                    in ticket in <a href="/project?project_id=${action['project_id']}">${action['project_name']}</a> : 
+                                    <a href="/ticket?ticket_id=${action['ticket_id']}">${action['ticket_title']}</a>
+                                % elif action['subject'] == 'comment':
+                                     in <a href="/ticket?ticket_id=${action['ticket_id']}">${action['ticket_title']}</a>
+                                % endif
+                                on ${action['created']}
+                            </div>
                         </div>
-                    </div>
+                        % endfor
+                    % endif
                 </div>
             </div>
         </div>

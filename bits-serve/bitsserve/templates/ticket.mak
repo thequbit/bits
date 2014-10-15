@@ -55,7 +55,7 @@
                 <div class="indent indent-right">
                     <div class="box shadow">
                         <div class="comment-container-inner">
-                            ${ticket['contents']}
+                            ${ticket['contents'] | n}
                         </div>
                     </div>
                 </div>
@@ -65,9 +65,11 @@
 
                 % for comment in comments:
                     <div class="comment-containeri box shadow">
-                        <div class="small-light-text">On ${comment['created']} <a href="/user?user_id=${comment['owner_id']}">${comment['owner']}</a> write:</div>
+                        <div class="small-light-text">
+                            On ${comment['created']} <a href="/user?user_id=${comment['owner_id']}">${comment['owner']}</a> wrote:
+                        </div>
                         <div class="comment-container-inner">
-                            ${comment['contents']}
+                            ${comment['contents'] | n}
                         </div>
                     </div>
                 % endfor
