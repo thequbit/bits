@@ -46,13 +46,6 @@ def main(argv=sys.argv):
 #        model = MyModel(name='one', value=1)
 #        DBSession.add(model)
 
-    #default_organization = Organizations.add_organization(
-    #    session = DBSession,
-    #    author_id = system_user.id,
-    #    name = 'Default Organization',
-    #    description = 'Default Organization.',
-    #)
-
     system_user_type = UserTypes.add_user_type(
         session = DBSession,
         name = "System User",
@@ -86,6 +79,13 @@ def main(argv=sys.argv):
         password = "password",
     )
 
+    default_organization = Organizations.add_organization(
+        session = DBSession,
+        author_id = system_user.id,
+        name = 'Default Organization',
+        description = 'Default Organization.',
+    )
+
     #default_user_organization_assignment = \
     #    UserOrganizationAssignments.assign_user_to_organization(
     #        session = DBSession,
@@ -93,20 +93,20 @@ def main(argv=sys.argv):
     #        organization_id = default_organization.id,
     #    )
  
-    #default_project = Projects.add_project(
-    #    session = DBSession,
-    #    author_id = system_user.id,
-    #    organization_id = default_organization.id,
-    #    name = 'Default Project',
-    #    description = 'Default Project.',
-    #)
+    default_project = Projects.add_project(
+        session = DBSession,
+        author_id = system_user.id,
+        organization_id = default_organization.id,
+        name = 'Default Project',
+        description = 'Default Project.',
+    )
 
-    #default_user_project_assignment = \
-    #    UserProjectAssignments.assign_user_to_project(
-    #        session = DBSession,
-    #        user_id = system_user.id,
-    #        project_id = default_project.id,
-    #    )
+    tim_user_project_assignment = \
+        UserProjectAssignments.assign_user_to_project(
+            session = DBSession,
+            user_id = tim_user.id,
+            project_id = default_project.id,
+        )
 
     todo_ticket_type = TicketTypes.add_ticket_type(
         session = DBSession,

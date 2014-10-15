@@ -54,8 +54,8 @@ def login(request):
 def index(request):
 
     result = {}
-    if True:
-    #try:
+    #if True:
+    try:
         result['user'] = None
         result['token'] = None
 
@@ -92,8 +92,8 @@ def index(request):
         result['projects'] = projects;
 
         #print projects
-    #except:
-    #    pass
+    except:
+        pass
 
     return result #{'token': token, 'user': user, 'projects': projects}
 
