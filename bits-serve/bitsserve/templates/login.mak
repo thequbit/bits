@@ -35,7 +35,7 @@
             <div class="login-box">
                 <h3>Login <small>you must login to continue</small></h3>
                 <input placeholder="email" type="text" id="login-email">
-                <input placeholder="password" type="text" id="login-password">
+                <input placeholder="password" type="password" id="login-password">
                 <a href="#" class="small radius button right" id="login-button">Login</a>
             </div>
         </div>
