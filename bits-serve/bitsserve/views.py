@@ -13,6 +13,7 @@ from .models import (
     DBSession,
     UserTypes,
     Users,
+    LoginTokens,
     Organizations,
     UserOrganizationAssignments,
     Projects,
@@ -42,7 +43,7 @@ def make_response(resp_dict):
 
 def check_auth(token):
     
-    user = Users.check_authentication(
+    user = LoginTokens.check_authentication(
         session = DBSession,
         token = token,
     )
@@ -57,8 +58,8 @@ def login(request):
 def index(request):
 
     result = {}
-    #if True:
-    try:
+    if True:
+    #try:
 
         result['user'] = None
         result['token'] = None
@@ -95,11 +96,18 @@ def index(request):
 
         result['projects'] = projects;
 
-        _actions = Actions.get_latest_actions_by_org_id(
+        _actions = Actions.get_user_action_list( #get_latest_actions_by_org_id(
             session = DBSession,
-            organization_id = 1,
+            user_id = user.id,
+            #organization_id = 1,
             limit = 25,
         )
+
+        print "\n\n"
+        print "Actions:"
+        print "" 
+        print _actions
+        print "\n\n"
         
         actions = {
         
@@ -107,9 +115,8 @@ def index(request):
  
         result['actions'] = actions
 
-        #print projects
-    except:
-        pass
+    #except:
+    #    pass
 
     return result #{'token': token, 'user': user, 'projects': projects}
 
@@ -171,10 +178,9 @@ def project(request):
         )
 
         tickets = []
-        for t_id, t_closed, t_closed_dt, t_created, o_first, o_last, \
-                o_email, p_id, p_name, p_desc, p_created, tt_name, tt_desc, \
-                tt_color, tc_title, tc_contents, tc_version, tc_created \
-                in _tickets:
+        for t_id, t_title, t_contents, t_closed, t_closed_dt, t_created, \
+                o_first, o_last, o_email, p_id, p_name, p_desc, p_created, \
+                tt_name, tt_desc, tt_color in _tickets:
             if t_closed == False:
                 tickets.append({
                     'id': t_id,
@@ -184,8 +190,8 @@ def project(request):
                     'type': tt_name,
                     'type_description': tt_desc,
                     'type_color': tt_color,
-                    'title': tc_title,
-                    'contents': markdown.markdown(tc_contents),
+                    'title': t_title,
+                    'contents': markdown.markdown(t_contents),
                 })
 
         result['tickets'] = tickets            
@@ -216,7 +222,7 @@ def ticket(request):
         ticket_id = request.GET['ticket_id']
         #project_id = request.GET['project_id']
 
-        _ticket = Tickets.get_ticket_by_ticket_id(
+        _ticket = Tickets.get_ticket_by_id(
             session = DBSession,
             ticket_id = ticket_id
         )
@@ -224,9 +230,9 @@ def ticket(request):
         if _ticket == None:
             raise Exception('no such ticket')
         
-        t_id, t_closed, t_closed_dt, t_created, o_first, o_last, \
-            o_email, p_id, p_name, p_desc, p_created, tt_name, tt_desc, \
-            tt_color, tc_title, tc_contents, tc_version, tc_created  = _ticket
+        t_id, t_title, t_contents, t_closed, t_closed_dt, t_created, o_first, \
+            o_last, o_email, p_id, p_name, p_desc, p_created, tt_name, \
+            tt_desc, tt_color = _ticket
         ticket = None
         if t_closed == False:
             ticket = {
@@ -237,8 +243,8 @@ def ticket(request):
                 'type': tt_name,
                 'type_description': tt_desc,
                 'type_color': tt_color,
-                'title': tc_title,
-                'contents': markdown.markdown(tc_contents),
+                'title': t_title,
+                'contents': markdown.markdown(t_contents),
             }
 
         result['ticket'] = ticket
@@ -280,8 +286,7 @@ def ticket(request):
         tickets = []
         for t_id, t_closed, t_closed_dt, t_created, o_first, o_last, \
                 o_email, p_id, p_name, p_desc, p_created, tt_name, tt_desc, \
-                tt_color, tc_title, tc_contents, tc_version, tc_created \
-                in _tickets:
+                tt_color in _tickets:
             if t_closed == False:
                 tickets.append({
                     'id': t_id,
@@ -291,8 +296,8 @@ def ticket(request):
                     'type': tt_name,
                     'type_description': tt_desc,
                     'type_color': tt_color,
-                    'title': tc_title,
-                    'contents': markdown.markdown(tc_contents),
+                    'title': t_title,
+                    'contents': markdown.markdown(t_contents),
                 })
 
         result['tickets'] = tickets
@@ -385,10 +390,9 @@ def new_ticket(request):
         )
 
         tickets = []
-        for t_id, t_closed, t_closed_dt, t_created, o_first, o_last, \
-                o_email, p_id, p_name, p_desc, p_created, tt_name, tt_desc, \
-                tt_color, tc_title, tc_contents, tc_version, tc_created \
-                in _tickets:
+        for t_id, t_title, t_contents, t_closed, t_closed_dt, t_created, \
+                o_first, o_last, o_email, p_id, p_name, p_desc, p_created, \
+                tt_name, tt_desc, tt_color in _tickets:
             if t_closed == False:
                 tickets.append({
                     'id': t_id,
@@ -398,8 +402,8 @@ def new_ticket(request):
                     'type': tt_name,
                     'type_description': tt_desc,
                     'type_color': tt_color,
-                    'title': tc_title,
-                    'contents': markdown.markdown(tc_contents),
+                    'title': t_title,
+                    'contents': markdown.markdown(t_contents),
                 })
 
         result['tickets'] = tickets
@@ -476,7 +480,7 @@ def authenticate(request):
             result['error_code'] = 1
             raise Exception('error')
 
-        token, user = Users.authenticate_user(
+        user, token = LoginTokens.do_login(
             session = DBSession,
             email = email,
             password = password,
@@ -557,10 +561,11 @@ def create_ticket(request):
             session = DBSession,
             organization_id = 1,
             user_id = user.id,
-            action = "created",
-            subject = "project",
+            action_type = "created",
+            subject = "ticket",
             project_id = project_id,
-            ticket_id = None,
+            ticket_id = ticket.id,
+            requirement_id = None,
         )
 
 
@@ -622,10 +627,11 @@ def create_project(request):
             session = DBSession,
             organization_id = 1,
             user_id = user.id,
-            action = "created",
+            action_type = "created",
             subject = "project",
             project_id = project.id,
             ticket_id = None,
+            requirement_id = None,
         )
 
         result['success'] = True
@@ -658,10 +664,15 @@ def create_comment(request):
         ticket_id = request.POST['ticket_id']
         contents = request.POST['contents']
 
+        ticket = Tickets.get_by_id(
+            session = DBSession,
+            ticket_id = ticket_id,
+        )
+
         ticket_comment = TicketComments.add_ticket_comment(
             session = DBSession,
             author_id = user.id,
-            ticket_id = ticket_id,
+            ticket_id = ticket.id,
             contents = contents,
         )
 
@@ -671,10 +682,11 @@ def create_comment(request):
             session = DBSession,
             organization_id = 1,
             user_id = user.id,
-            action = "created",
+            action_type = "created",
             subject = "comment",
-            project_id = None,
+            project_id = ticket.project_id,
             ticket_id = ticket_id,
+            requirement_id = None,
         )
 
         result['success'] = True

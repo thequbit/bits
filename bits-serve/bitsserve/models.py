@@ -101,8 +101,6 @@ class Users(Base):
     pass_hash = Column(Text)
     pass_salt = Column(Text)
     disabled = Column(Boolean)
-    token = Column(Text, nullable=True)
-    token_expire_datetime = Column(DateTime, nullable=True)
     creation_datetime = Column(DateTime)
  
     @classmethod
@@ -125,7 +123,6 @@ class Users(Base):
                 pass_hash = pass_hash,
                 pass_salt = pass_salt,
                 disabled = False,
-                token = None,
                 creation_datetime = datetime.datetime.now(),
             )
             session.add(user)
@@ -151,38 +148,83 @@ class Users(Base):
     def authenticate_user(cls, session, email, password):
         """ Authenticates a users login.  Returns a token if successful
         """
-        token = None
         with transaction.manager:
-            user = session.query(
+            user = None
+            _user = session.query(
                 Users,
             ).filter(
                 Users.email == email,
             ).first()
-            if user != None:
+            if _user != None:
                 pass_hash = hashlib.sha256('{0}{1}'.format(
                     password,
-                    user.pass_salt,
+                    _user.pass_salt,
                 )).hexdigest()
-                if user.pass_hash == pass_hash:
-                    token = str(uuid.uuid4())
-                    user.token_expire_datetime = datetime.datetime.now() + \
-                        datetime.timedelta(hours=24)
-                    user.token = token
-                    session.add(user)
-                    transaction.commit()
-        return token, user
+                if _user.pass_hash == pass_hash:
+                    user = _user
+        return user
+
+    @classmethod
+    def get_by_id(cls, session, user_id):
+        """ Get a user by their ID
+        """
+        with transaction.manager:
+            user = session.query(
+                Users,
+            ).filter(
+                Users.id == user_id,
+            ).first()
+
+        return user
+
+class LoginTokens(Base):
+
+    __tablename__ = 'logintokens'
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey('users.id'))
+    token = Column(Text, nullable=True)
+    token_expire_datetime = Column(DateTime)
+    login_datetime = Column(DateTime) 
+
+    @classmethod
+    def do_login(cls, session, email, password):
+        """ Login a user
+        """
+        with transaction.manager:
+            user = Users.authenticate_user(
+                session = session,
+                email = email,
+                password = password,
+            )
+            if user != None:
+                login_token = cls(
+                    user_id = user.id,
+                    token = str(uuid.uuid4()),
+                    token_expire_datetime = datetime.datetime.now() + \
+                        datetime.timedelta(hours=24),
+                    login_datetime = datetime.datetime.now(),
+                )
+                session.add(login_token)
+                transaction.commit() 
+        return user, login_token.token
 
     @classmethod
     def check_authentication(cls, session, token):
         """ Check to see if the token is valid for the user
         """
         with transaction.manager:
-            user = session.query(
-                Users,
+            user = None
+            login_token = session.query(
+                LoginTokens,
             ).filter(
-                Users.token == token,
-                Users.token_expire_datetime > datetime.datetime.now(),
+                LoginTokens.token == token,
+                LoginTokens.token_expire_datetime > datetime.datetime.now(),
             ).first()
+            if login_token != None:
+                user = Users.get_by_id(
+                    session = session,
+                    user_id = login_token.user_id,
+                )
         return user
 
 class Organizations(Base):
@@ -571,13 +613,16 @@ class Tickets(Base):
     author_id = Column(Integer, ForeignKey('users.id'))
     project_id = Column(Integer, ForeignKey('projects.id'))
     ticket_type_id = Column(Integer, ForeignKey('tickettypes.id'))
+    title = Column(Text)
+    contents = Column(Text)
     #ticket_priority_id = Column(Integer, ForeignKey('ticketpriorities.id'))
     closed = Column(Boolean)
     closed_datetime = Column(DateTime, nullable=True)
     creation_datetime = Column(DateTime)
 
     @classmethod
-    def add_ticket(cls, session, author_id, project_id, ticket_type_id):
+    def add_ticket(cls, session, author_id, project_id, ticket_type_id, \
+            title, contents):
         """ Adds a new ticket to the system
         """
         with transaction.manager:
@@ -585,7 +630,8 @@ class Tickets(Base):
                 author_id = author_id,
                 project_id = project_id,
                 ticket_type_id = ticket_type_id,
-                #ticket_priority_id = ticket_priority_id,
+                title = title,
+                contents = contents,
                 closed = False,
                 closed_datetime = None,
                 creation_datetime = datetime.datetime.now(),
@@ -593,7 +639,17 @@ class Tickets(Base):
             session.add(ticket)
             transaction.commit()
         return ticket
-        
+
+    @classmethod
+    def get_by_id(cls, session, ticket_id):
+        with transaction.manager:
+             ticket = session.query(
+                Tickets,
+            ).filter(
+                Tickets.id == ticket_id,
+            ).first()
+        return ticket
+
     @classmethod
     def close_ticket(cls, session, ticket_id):
         """ Sets a ticket's status to closed
@@ -602,8 +658,10 @@ class Tickets(Base):
             ticket = session.query(
                 Tickets,
             ).filter(
-                Tickets.ticket_id == ticket_id,
+                Tickets.id == ticket_id,
             ).first()
+            ticket.closed = True
+            ticket.closed_datetime = datetime.datetime.now()
             session.add(ticket)
             transaction.commit()
         return ticket
@@ -615,6 +673,8 @@ class Tickets(Base):
         with transaction.manager:
             tickets = session.query(
                 Tickets.id,
+                Tickets.title,
+                Tickets.contents,
                 Tickets.closed,
                 Tickets.closed_datetime,
                 Tickets.creation_datetime,
@@ -632,10 +692,6 @@ class Tickets(Base):
                 #TicketPriorities.description,
                 #TicketPriorities.weight,
                 #TicketPriorities.color,
-                TicketContents.title,
-                TicketContents.contents,
-                TicketContents.version,
-                TicketContents.creation_datetime,
             ).join(
                 Users,Users.id == Tickets.author_id,
             ).join(
@@ -653,12 +709,14 @@ class Tickets(Base):
         return tickets
 
     @classmethod
-    def get_ticket_by_ticket_id(cls, session, ticket_id):
+    def get_ticket_by_id(cls, session, ticket_id):
         """ Get all of the tickets, and their conents by project id
         """
         with transaction.manager:
             ticket = session.query(
                 Tickets.id,
+                Tickets.title,
+                Tickets.contents,
                 Tickets.closed,
                 Tickets.closed_datetime,
                 Tickets.creation_datetime,
@@ -676,10 +734,6 @@ class Tickets(Base):
                 #TicketPriorities.description,
                 #TicketPriorities.weight,
                 #TicketPriorities.color,
-                TicketContents.title,
-                TicketContents.contents,
-                TicketContents.version,
-                TicketContents.creation_datetime,
             ).join(
                 Users,Users.id == Tickets.author_id,
             ).join(
@@ -975,35 +1029,146 @@ class RequirementComments(Base):
             transaction.commit()
         return requirement_comment
 
+class ActionTypes(Base):
+
+    """ These are actions that can be applied to a subject.
+        Examples include create, delete, edit, close, etc.
+    """
+
+    __tablename__ = 'actiontypes'
+    id = Column(Integer, primary_key=True)
+    name = Column(Text)
+
+    @classmethod
+    def add(cls, session, name):
+        with transaction.manager:
+            action_type = cls(
+                name = name,
+            )
+            session.add(action_type)
+            transaction.commit()
+        return action_type
+
+    @classmethod
+    def get_by_name(cls, session, name):
+        with transaction.manager:
+            action_type = session.query(
+                ActionTypes,
+            ).filter(
+                ActionTypes.name == name,
+            ).first()
+        return action_type
+
+class ActionSubjects(Base):
+
+    """ These are the subjects actions can be applied to.
+        Examples include projects, tickets, requirements, etc.
+    """
+
+    __tablename__ = 'actionsubjects'
+    id = Column(Integer, primary_key=True)
+    name = Column(Text)
+
+    @classmethod
+    def add(cls, session, name):
+        with transaction.manager:
+            action_subject = cls(
+                name = name,
+            )
+            session.add(action_subject)
+            transaction.commit()
+        return action_subject
+
+    @classmethod
+    def get_by_name(cls, session, name):
+        with transaction.manager:
+            action_subject = session.query(
+                ActionSubjects,
+            ).filter(
+                ActionSubjects.name == name,
+            ).first()
+        return action_subject
+
 class Actions(Base):
 
     __tablename__ = 'actions'
     id = Column(Integer, primary_key=True)
     organization_id = Column(Integer, ForeignKey('organizations.id'))
     user_id = Column(Integer, ForeignKey('users.id'))
-    action = Column(Text)
+    action_type = Column(Text)
     subject = Column(Text)
+    target_id = Column(Integer)
     project_id = Column(Integer, ForeignKey('projects.id'), nullable=True)
     ticket_id = Column(Integer, ForeignKey('tickets.id'), nullable=True)
+    requirement_id = Column(Integer, ForeignKey('requirements.id'), 
+        nullable=True)
     creation_datetime = Column(DateTime)
 
     @classmethod
-    def add_action(cls, session, organization_id, user_id, action, subject,
-            project_id, ticket_id):
+    def add_action(cls, session, organization_id, user_id, action_type, \
+            subject, project_id, ticket_id, requirement_id):
         """ Add an action
         """
         with transaction.manager:
             action = cls(
                 organization_id = organization_id,
                 user_id = user_id,
-                action = action,
+                action_type = action_type,
                 subject = subject,
+                #target_id = target_id,
                 project_id = project_id,
                 ticket_id = ticket_id,
+                requirement_id = requirement_id,
             )
             session.add(action)
             transaction.commit()
         return action
+
+    @classmethod
+    def get_user_action_list(cls, session, user_id, limit=25):
+        """ Get's the action feed for a user
+        """ 
+        with transaction.manager:
+            actions = session.query(
+                Actions.id,
+                Actions.action_type,
+                Actions.subject,
+                Actions.creation_datetime,
+                Users.id,
+                Users.first,
+                Users.last,
+                Users.email,
+                Projects.id,
+                Projects.name,
+                #Tickets.id,
+                #Tickets.title,
+                #TicketComments.id,
+                #Requirements.id,
+                #Requirements.title,
+            ).join(
+                Users, Users.id == Actions.user_id,
+            ).join(
+                Projects, Projects.id == Actions.project_id,
+            ).outerjoin(
+                UserProjectAssignments,
+                UserProjectAssignments.project_id == \
+                    Actions.project_id && \
+                UserProjectAssignments.user_id == \
+                    user_id,
+            #).outerjoin(
+            #    UserProjectAssignments, UserProjectAssignments.user_id == user_id,
+            #).outerjoin(
+            #    Tickets, Tickets.project_id == Actions.project_id,
+            #).outerjoin(
+            #    TicketComments, TicketComments.ticket_id == Actions.ticket_id,
+            #).filter(
+            #    UserProjectAssignments.user_id == user_id,
+            #    UserProjectAssignments.project_id == Projects.id,
+            #    Tickets.project_id == Actions.project_id,
+            #).group_by(
+            #    Actions.id,
+            ).all()
+        return actions
 
     @classmethod
     def get_latest_actions_by_org_id(cls, session, organization_id, limit):
