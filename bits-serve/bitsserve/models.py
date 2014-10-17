@@ -14,7 +14,7 @@ from sqlalchemy import (
     ForeignKey,
     )
 
-from sqlalchemy import func
+from sqlalchemy import func, desc
 
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -359,6 +359,7 @@ class Projects(Base):
     id = Column(Integer, primary_key=True)
     author_id = Column(Integer, ForeignKey('users.id'))
     organization_id = Column(Integer, ForeignKey('projects.id'))
+    number = Column(Integer, autoincrement=True)
     name = Column(Text)
     description = Column(Text)
     creation_datetime = Column(DateTime)
@@ -401,6 +402,9 @@ class Projects(Base):
     def get_from_id(cls, session, project_id):
         """ Get a project from it's id
         """
+
+        print "\n\nProjects.get_from_id: project_id: {0}\n\n".format(project_id)
+
         with transaction.manager:
             project = session.query(
                 Projects.id,
@@ -408,6 +412,7 @@ class Projects(Base):
                 Projects.description,
                 Projects.creation_datetime,
                 Projects.disabled,
+                Users.id,
                 Users.first,
                 Users.last,
                 Users.email,
@@ -422,6 +427,9 @@ class Projects(Base):
             ).filter(
                 Projects.id == project_id,
             ).first()
+
+            print "\n\nProjects.get_from_id: project.id: {0}\n\n".format(project[0])
+
         return project
 
     @classmethod
@@ -613,6 +621,7 @@ class Tickets(Base):
     author_id = Column(Integer, ForeignKey('users.id'))
     project_id = Column(Integer, ForeignKey('projects.id'))
     ticket_type_id = Column(Integer, ForeignKey('tickettypes.id'))
+    number = Column(Integer, autoincrement=True)
     title = Column(Text)
     contents = Column(Text)
     #ticket_priority_id = Column(Integer, ForeignKey('ticketpriorities.id'))
@@ -641,16 +650,6 @@ class Tickets(Base):
         return ticket
 
     @classmethod
-    def get_by_id(cls, session, ticket_id):
-        with transaction.manager:
-             ticket = session.query(
-                Tickets,
-            ).filter(
-                Tickets.id == ticket_id,
-            ).first()
-        return ticket
-
-    @classmethod
     def close_ticket(cls, session, ticket_id):
         """ Sets a ticket's status to closed
         """
@@ -667,11 +666,10 @@ class Tickets(Base):
         return ticket
 
     @classmethod
-    def get_tickets_by_project_id(cls, session, project_id):
-        """ Get all of the tickets, and their conents by project id
-        """
-        with transaction.manager:
-            tickets = session.query(
+    def _build_ticket_query(cls, session):
+        #with transaction.manager:
+        if True:
+            ticket_query = session.query(
                 Tickets.id,
                 Tickets.title,
                 Tickets.contents,
@@ -701,9 +699,16 @@ class Tickets(Base):
             #).join(
             #    TicketPriorities,TicketPriorities.id == \
             #        Tickets.ticket_priority_id,
-            ).join(
-                TicketContents,Tickets.id == TicketContents.ticket_id,
-            ).filter(
+            )
+        return ticket_query
+
+    @classmethod
+    def get_tickets_by_project_id(cls, session, project_id):
+        """ Get all of the tickets, and their conents by project id
+        """
+        with transaction.manager:
+            ticket_query = Tickets._build_ticket_query(session)
+            tickets = ticket_query.filter(
                 Tickets.project_id == project_id,
             ).all()
         return tickets
@@ -713,84 +718,11 @@ class Tickets(Base):
         """ Get all of the tickets, and their conents by project id
         """
         with transaction.manager:
-            ticket = session.query(
-                Tickets.id,
-                Tickets.title,
-                Tickets.contents,
-                Tickets.closed,
-                Tickets.closed_datetime,
-                Tickets.creation_datetime,
-                Users.first,
-                Users.last,
-                Users.email,
-                Projects.id,
-                Projects.name,
-                Projects.description,
-                Projects.creation_datetime,
-                TicketTypes.name,
-                TicketTypes.description,
-                TicketTypes.color,
-                #TicketPriorities.name,
-                #TicketPriorities.description,
-                #TicketPriorities.weight,
-                #TicketPriorities.color,
-            ).join(
-                Users,Users.id == Tickets.author_id,
-            ).join(
-                Projects,Projects.id == Tickets.project_id,
-            ).join(
-                TicketTypes,TicketTypes.id == Tickets.ticket_type_id,
-            #).join(
-            #    TicketPriorities,TicketPriorities.id == \
-            #        Tickets.ticket_priority_id,
-            ).join(
-                TicketContents,Tickets.id == TicketContents.ticket_id,
-            ).filter(
+            ticket_query = Tickets._build_ticket_query(session)
+            ticket = ticket_query.filter(
                 Tickets.id == ticket_id,
             ).first()
         return ticket
-
-
-class TicketContents(Base):
-
-    __tablename__ = 'ticketcontents' 
-    id = Column(Integer, primary_key=True)
-    author_id = Column(Integer, ForeignKey('users.id'))
-    ticket_id = Column(Integer, ForeignKey('tickets.id'))
-    title = Column(Text)
-    contents = Column(Text)
-    version = Column(Integer, autoincrement=True)
-    creation_datetime = Column(DateTime)
-
-    @classmethod
-    def add_ticket_content(cls, session, author_id, ticket_id, title, \
-            contents):
-        """ Add new ticket contents.  version numbers always increase.
-        """
-        with transaction.manager:
-            ticket_contents = cls(
-                author_id = author_id,
-                ticket_id = ticket_id,
-                title = title,
-                contents = contents,
-                #version = ,    # auto increment
-                creation_datetime = datetime.datetime.now(),
-            )
-            session.add(ticket_contents)
-            transaction.commit()
-        return ticket_contents
-
-    @classmethod
-    def get_all_versions_by_ticket_id(cls, session, ticket_id):
-        """ Get all versions of the ticket contents for ticket id.
-        """
-        with transaction.manager:
-            ticket_contents = session.query(
-                TicketContents,
-            ).filter(
-                TicketContents.ticket_id == ticket_id,
-            ).all()
-        return ticket_contents
 
 class TicketComments(Base):
 
@@ -920,20 +852,49 @@ class Requirements(Base):
     author_id = Column(Integer, ForeignKey('users.id'))
     project_id = Column(Integer, ForeignKey('projects.id'))
     requirement_type_id = Column(Integer, ForeignKey('requirementtypes.id'))
+    number = Column(Integer, autoincrement=True)
+    title = Column(Text)
+    contents = Column(Text)
     version = Column(Integer)
+    modified_datetime = Column(DateTime, nullable=True)
     removed = Column(Boolean)
     creation_datetime = Column(DateTime)
 
     @classmethod
     def add_requirement(cls, session, author_id, project_id, \
-            requirement_type_id):
+            requirement_type_id, title, contents):
         """ Adds a new requirement
         """
+        with transaction.manager:
+            requirement = cls(
+                author_id = author_id,
+                project_id = project_id,
+                requirement_type_id = requirement_type_id,
+                title = title,
+                contents = contents,
+                version = 1,
+                modified_datetime = None,
+                removed = False,
+                creation_datetime = datetime.datetime.now(),
+            )
+            session.add(requirement)
+            transaction.commit()
+        return requirement
 
     @classmethod
     def remove_requirement(cls, session, requirement_id):
         """ Remove a requirement from a project (sets removed flag)
         """
+        with transaction.manager:
+            requirement = session.querty(
+                Requirements,
+            ).filter(
+                Requirements.id == requirement_id,
+            ).first()
+            requirement.removed = True
+            session.add(requirement)
+            transaction.commit()
+        return requirement
 
     @classmethod
     def get_requirements_by_project_id(cls, session, project_id):
@@ -943,29 +904,6 @@ class Requirements(Base):
     @classmethod
     def get_all_versions_by_requirement_id(cls, session, requirement_id):
         """ Returns all of the versions of the requirement
-        """
-
-class RequirementContents(Base):
-
-    __tablename__ = 'requirementcontents'
-    id = Column(Integer, primary_key=True)
-    author_id = Column(Integer, ForeignKey('users.id'))
-    requirement_id = Column(Integer, ForeignKey('requirements.id')) 
-    title = Column(Text)
-    contents = Column(Text)
-    version = Column(Integer)
-    creation_datetime = Column(DateTime)
-
-    @classmethod
-    def add_requirements_content(cls, session, requirement_id, title, \
-            contents):
-        """ Create a version of the contentents of a requirement.  Version
-            numbers always increase.
-        """
-
-    @classmethod
-    def get_all_versions_by_requirement_id(cls, session, requirement_id):
-        """ Gets all version of a requirements contents by requirement id
         """
 
 class RequirementComments(Base):
@@ -1119,6 +1057,7 @@ class Actions(Base):
                 project_id = project_id,
                 ticket_id = ticket_id,
                 requirement_id = requirement_id,
+                creation_datetime = datetime.datetime.now(),
             )
             session.add(action)
             transaction.commit()
@@ -1140,8 +1079,9 @@ class Actions(Base):
                 Users.email,
                 Projects.id,
                 Projects.name,
-                #Tickets.id,
-                #Tickets.title,
+                UserProjectAssignments.id,
+                Tickets.id,
+                Tickets.title,
                 #TicketComments.id,
                 #Requirements.id,
                 #Requirements.title,
@@ -1149,24 +1089,26 @@ class Actions(Base):
                 Users, Users.id == Actions.user_id,
             ).join(
                 Projects, Projects.id == Actions.project_id,
-            ).outerjoin(
+            ).join(
                 UserProjectAssignments,
                 UserProjectAssignments.project_id == \
-                    Actions.project_id && \
-                UserProjectAssignments.user_id == \
-                    user_id,
+                    Actions.project_id, # and \ 
+                #UserProjectAssignments.user_id == \
+                #    user_id,
             #).outerjoin(
             #    UserProjectAssignments, UserProjectAssignments.user_id == user_id,
-            #).outerjoin(
-            #    Tickets, Tickets.project_id == Actions.project_id,
+            ).outerjoin(
+                Tickets, Tickets.project_id == Actions.project_id,
             #).outerjoin(
             #    TicketComments, TicketComments.ticket_id == Actions.ticket_id,
-            #).filter(
-            #    UserProjectAssignments.user_id == user_id,
+            ).filter(
+                UserProjectAssignments.user_id == user_id,
             #    UserProjectAssignments.project_id == Projects.id,
-            #    Tickets.project_id == Actions.project_id,
+                #Tickets.project_id == Actions.project_id,
             #).group_by(
             #    Actions.id,
+            ).order_by(
+                desc(Actions.creation_datetime),
             ).all()
         return actions
 

@@ -79,6 +79,15 @@ def main(argv=sys.argv):
         password = "password",
     )
 
+    temp_user = Users.add_user(
+        session = DBSession,
+        user_type_id = system_user_type.id,
+        first = 'Temp',
+        last = 'User',
+        email = 'temp',
+        password = 'password',
+    )
+
     default_organization = Organizations.add_organization(
         session = DBSession,
         author_id = system_user.id,
@@ -93,20 +102,20 @@ def main(argv=sys.argv):
     #        organization_id = default_organization.id,
     #    )
  
-    default_project = Projects.add_project(
-        session = DBSession,
-        author_id = system_user.id,
-        organization_id = default_organization.id,
-        name = 'Default Project',
-        description = 'Default Project.',
-    )
+    #default_project = Projects.add_project(
+    #    session = DBSession,
+    #    author_id = system_user.id,
+    #    organization_id = default_organization.id,
+    #    name = 'Default Project',
+    #    description = 'Default Project.',
+    #)
 
-    tim_user_project_assignment = \
-        UserProjectAssignments.assign_user_to_project(
-            session = DBSession,
-            user_id = tim_user.id,
-            project_id = default_project.id,
-        )
+    #system_user_project_assignment = \
+    #    UserProjectAssignments.assign_user_to_project(
+    #        session = DBSession,
+    #        user_id = system_user.id,
+    #        project_id = default_project.id,
+    #    )
 
     todo_ticket_type = TicketTypes.add_ticket_type(
         session = DBSession,

@@ -64,10 +64,10 @@
          <div class="medium-4 columns">
             <div class="row">
             <div class="medium-12 columns">
-            <h5>Projects</h5>
+            <h5>Collections</h5>
             <div class="box shadow">
                 <div class="box-title">
-                    Current Projects
+                    Projects
                     <div class="right">
                         <a href="/newproject">New Project</a>
                     </div>
@@ -91,27 +91,25 @@
 
         <div class="medium-8 columns">
         
-            <h5>Actions Feed<h5>
+            <h5>Activity<h5>
             <div class="row">
                 <div class="small-12 columns">
                     % if actions:
                         % for action in actions:
                         <div class="action-box shadow">
-                            <div class="small-light-text">10 Minutes ago</div>
+                            <div class="small-light-text">${action['created']}</div>
                                 <a href="/user?user_id=1">Tim Duffy</a>
-                                % if action['action'] == 'created':
-                                    Created a new ${action['subject']} 
-                                % endif
+                                ${action['action'][0].upper()}${action['action'][1:]} 
                                 % if action['subject'] == 'project':
-                                    : <a href="/project?project_id=${action['project_id']}">${action['project_name']}</a>
+                                    a new project <a href="/project?project_id=${action['project_id']}">${action['project_name']}</a>.
                                 % elif action['subject'] == 'ticket':
-                                    in ticket in <a href="/project?project_id=${action['project_id']}">${action['project_name']}</a> : 
-                                    <a href="/ticket?ticket_id=${action['ticket_id']}">${action['ticket_title']}</a>
+                                    a new ticket <a href="/project?project_id=${action['project_id']}">${action['project_name']}</a> 
+                                    <a href="/ticket?ticket_id=${action['ticket_id']}">${action['ticket_title']}</a>.
                                 % elif action['subject'] == 'comment':
-                                     in <a href="/ticket?ticket_id=${action['ticket_id']}">${action['ticket_title']}</a>
+                                     a comment to a ticket <a href="/ticket?ticket_id=${action['ticket_id']}">${action['ticket_title']}</a>.
                                 % endif
-                                on ${action['created']}
-                            </div>
+                                
+                            
                         </div>
                         % endfor
                     % endif

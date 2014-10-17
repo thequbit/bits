@@ -27,9 +27,12 @@
             
         }
 
-        div.comment-container-inner {
-            padding: 10px;
-            
+        div.container-inner {
+            padding: 10px;            
+        }
+        
+        div.container-inner p {
+            margin-bottom: 0px !important;
         }
         
  
@@ -37,7 +40,7 @@
 
     <div class="row">
         <div class="large-12 columns">
-            <a href="/">Back to Project</a>
+            <a href="/project?project_id=${project['id']}">Back to Project</a>
         </div>
     </div>
 
@@ -54,7 +57,7 @@
                 </div>
                 <div class="indent indent-right">
                     <div class="box shadow">
-                        <div class="comment-container-inner">
+                        <div class="container-inner">
                             ${ticket['contents'] | n}
                         </div>
                     </div>
@@ -68,7 +71,7 @@
                         <div class="small-light-text">
                             On ${comment['created']} <a href="/user?user_id=${comment['owner_id']}">${comment['owner']}</a> wrote:
                         </div>
-                        <div class="comment-container-inner">
+                        <div class="container-inner">
                             ${comment['contents'] | n}
                         </div>
                     </div>

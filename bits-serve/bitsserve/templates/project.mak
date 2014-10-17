@@ -10,25 +10,40 @@
             line-height: 75% !important;
         }
 
+        div.project-description {
+            padding: 10px;
+        }
+
     </style>
 
     % if user and token and project:
 
     <div class="row">
         <div class="large-12 columns">
-            <a href="/">Home</a>
+            <div class="bottom-border" style="display: inline-block;">
+                <a href="/">Home</a>
+            </div>
+            % if user.id == project['owner_id']:
+             <div class="right bottom-border">
+                 <a href='/settings'>Project Settings</a>
+             </div>
+            % endif
         </div>
     </div>
 
     <div class="row">
-        <div class="medium-4 columns">
+        <div class="medium-12 columns">
             <h5>${project['name']} <small>${project['owner']}</small></h5>
+            <div class="box shadow">
+                <div class="container-inner">
+                    <p>${project['description']}</p>
+                </div>
+            </div>
         </div>
-        <hr/>
     </div>
     <div class="row">
         <div class="medium-4 columns">
-            <div class="box shadow">
+            <div class="box shadow list-container">
                 <div class="box-title"> 
                     Requirements
                     <div class="right">
@@ -50,7 +65,7 @@
             </div>
         </div>
         <div class="medium-4 columns">
-            <div class="box shadow">
+            <div class="box shadow list-container">
                 <div class="box-title">
                     Tickets
                     <div class="right">
@@ -68,11 +83,18 @@
                             <div class="short-line-height extra-small-light-text"> opened by ${ticket['owner']} on ${ticket['created']}</div>
                         </div>
                     % endfor
+                    <div class="row">
+                    <div class="medium-12 columns">
+                    <div class="right" style="padding-right: 5px;">
+                        <a href="/tickets?project_id=${project['id']}">view all</a>
+                    </div>
+                    </div>
+                    </div>
                 % endif
             </div>
         </div>
         <div class="medium-4 columns">
-            <div class="box shadow">
+            <div class="box shadow list-container">
                 <div class="box-title">
                     Notes
                     <div class="right">
@@ -96,5 +118,84 @@
             </div>
         </div>
     </div>
+
+
+    <div class="row">
+        <div class="medium-4 columns">
+            <div class="box shadow list-container">
+                <div class="box-title">
+                    Tasks
+                    <div class="right">
+                        <a href="/newrequirment?project_id=${project['id']}">New</a>
+                    </div>
+                </div>
+                % if not tasks:
+                    <div class="indent">
+                        <div class="small-light-text">No tasks for this project.</div>
+                    </div>
+                % else:
+                    % for requirement in requirements:
+                        <div class="box-inner-container">
+                            <a href="/requirement?requirement_id=${requirement['id']}">${requirement['name']}</a>
+                            <div class="short-line-height extra-small-light-text"> opened by ${requirement['owner']} on ${requirement['created']}</div>
+                        </div>
+                    % endfor
+                % endif
+            </div>
+        </div>
+        <div class="medium-4 columns">
+            <div class="box shadow list-container">
+                <div class="box-title">
+                    Lists
+                    <div class="right">
+                        <a href="/newticket?project_id=${project['id']}">New</a>
+                    </div>
+                </div>
+                % if not lists:
+                    <div class="indent">
+                        <div class="small-light-text">No lists for this project.</div>
+                    </div>
+                % else:
+                    % for ticket in tickets:
+                        <div class="box-inner-container">
+                            <a href="/ticket?ticket_id=${ticket['id']}">${ticket['title']}</a>
+                            <div class="short-line-height extra-small-light-text"> opened by ${ticket['owner']} on ${ticket['created']}</div>
+                        </div>
+                    % endfor
+                    <div class="row">
+                    <div class="medium-12 columns">
+                    <div class="right" style="padding-right: 5px;">
+                        <a href="/tickets?project_id=${project['id']}">view all</a>
+                    </div>
+                    </div>
+                    </div>
+                % endif
+            </div>
+        </div>
+        <div class="medium-4 columns">
+            <div class="box shadow list-container">
+                <div class="box-title">
+                    Milestones
+                    <div class="right">
+                        <a href="/newnote?project_id=${project['id']}">New</a>
+                    </div>
+                </div>
+                % if not milestones:
+                    <div class="indent">
+                        <div class="small-light-text">No milestones for this project.</div>
+                    </div>
+                % else:
+                    % for note in notes:
+                        <div class="box-inner-container">
+                            <div class="indent">
+                                <a href="/note?ticket_id=${note['id']}">${note['title']}</a>
+                                <div class="short-line-height extra-small-light-text"> opened by ${note['owner']} on ${note['created']}</div>
+                            </div>
+                        </div>
+                    % endfor
+                % endif
+            </div>
+        </div>
+
 
     % endif

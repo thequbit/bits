@@ -36,6 +36,30 @@
              box-shadow: 0px 0px 0px 1px #DDD, 0px 4px 8px rgba(221, 221, 221, 0.9);
         }
 
+        div.top-border {
+            padding-top: 3px;
+            border-top: 1px solid #DDD;
+        }
+
+        div.bottom-border {
+            padding-bottom: 3px;
+            border-bottom: 1px solid #DDD;
+        }
+
+        div.left-border {
+            padding-left: 3px;
+            border-left: 1px solid #DDD;
+        }
+
+        div.right-border {
+            padding-right: 3px;
+            border-right: 1px solid #DDD;
+        }
+
+        div.light-text {
+            color: #DDD;
+        }
+
         div.small-light-text {
             font-size: 80%;
             color: #BBB;
@@ -44,6 +68,10 @@
         div.extra-small-light-text {
             font-size: 60%;
             color: #BBB;
+        }
+
+        div.list-container {
+            min-height: 342px;
         }
 
         div.box {
@@ -67,6 +95,14 @@
             margin-left: 20px;
             margin-right: 20px;
             padding-bottom: 10px;
+        }
+
+        div.container-inner {
+            padding: 10px;
+        }
+
+        div.container-inner p {
+            margin-bottom: 0px !important;
         }
 
         div.short-line-height {
@@ -163,6 +199,9 @@
     <div class="title-bar"> 
         <div class="row">
             <div class="large-12 columns">
+                <div class="right" style="padding-top: 10px;">
+                    <a href="/logout">Logout</a>
+                </div>
                 <h3>bits</h3>
             </div>
         </div>
@@ -175,6 +214,7 @@
     <script>
         $(document).foundation();
     </script>
+    
     <div class="row">
          <div class="large-12 columns">
             ${self.body()}

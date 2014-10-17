@@ -9,6 +9,15 @@ from sqlalchemy.exc import DBAPIError
 
 import markdown
 
+from utils import (
+    get_actions,
+    get_user_projects,
+    get_project,
+    get_tickets,
+    get_ticket,
+    get_comments,
+)
+
 from .models import (
     DBSession,
     UserTypes,
@@ -21,11 +30,9 @@ from .models import (
     TicketTypes,
     TicketPriorities,
     Tickets,
-    TicketContents,
     TicketComments,
     RequirementTypes,
     Requirements,
-    RequirementContents,
     RequirementComments,
     Actions,
 )
@@ -72,48 +79,10 @@ def index(request):
         result['user'] = user
         result['token'] = token
 
-        _projects = Projects.get_projects_from_user_id(
-            session = DBSession,
-            user_id = user.id,
-        )
+        result['projects'] = get_user_projects(user)
 
-        projects = []
-        for upa_id, upa_disabled, p_id, p_name, p_desc, p_created, \
-                p_disabled, o_first, o_last, o_email, r_count, t_count \
-                in _projects:
-            if upa_disabled == False and p_disabled == False:
-                projects.append({
-                    'id': p_id,
-                    'name': p_name,
-                    'description': p_desc,
-                    'created': p_created.strftime("%b %d, %Y"),
-                    'owner': '{0} {1}'.format(o_first, o_last),
-                    'owner_email': o_email,
-                    'requirement_count': r_count,
-                    'ticket_count': t_count,
-                    'note_count': 0,
-                })
+        result['actions'] = get_actions(user, limit=25)
 
-        result['projects'] = projects;
-
-        _actions = Actions.get_user_action_list( #get_latest_actions_by_org_id(
-            session = DBSession,
-            user_id = user.id,
-            #organization_id = 1,
-            limit = 25,
-        )
-
-        print "\n\n"
-        print "Actions:"
-        print "" 
-        print _actions
-        print "\n\n"
-        
-        actions = {
-        
-        }
- 
-        result['actions'] = actions
 
     #except:
     #    pass
@@ -124,8 +93,8 @@ def index(request):
 def project(request):
 
     result = {}
-    #if True:
-    try:
+    if True:
+    #try:
         result['user'] = None
         result['token'] = None
 
@@ -139,65 +108,12 @@ def project(request):
 
         project_id = request.GET['project_id']
             
-        _project = Projects.get_from_id(
-            session = DBSession,
-            project_id = project_id,
-        )
+        result['project'] = get_project(user, project_id)
 
-        if _project == None:
-            raise Exception('invalid project')
+        result['tickets'] = get_tickets(project_id)
 
-        p_id, p_name, p_desc, p_created, p_disabled, o_first, o_last, \
-                o_email, r_count, t_count  = _project
-        project = {
-            'id': p_id,
-            'name': p_name,
-            'description': p_desc,
-            'created': p_created.strftime("%b %d, %Y"),
-            'disabled': p_disabled,
-            'owner': '{0} {1}'.format(o_first, o_last),
-            'owner_email': o_email,
-            'requirement_count': r_count,
-            'ticket_count': t_count,
-            'note_count': 0,
-        }
-
-        valid = UserProjectAssignments.check_project_assignment(
-            session = DBSession,
-            user_id = user.id,
-            project_id = project_id,
-        )
-        if valid == False:
-            raise Exception('unauthorized project')
-
-        result['project'] = project
-
-        _tickets = Tickets.get_tickets_by_project_id(
-            session = DBSession,
-            project_id = project_id,
-        )
-
-        tickets = []
-        for t_id, t_title, t_contents, t_closed, t_closed_dt, t_created, \
-                o_first, o_last, o_email, p_id, p_name, p_desc, p_created, \
-                tt_name, tt_desc, tt_color in _tickets:
-            if t_closed == False:
-                tickets.append({
-                    'id': t_id,
-                    'created': t_created.strftime("%b %d, %Y"),
-                    'owner': '{0} {1}'.format(o_first, o_last),
-                    'owner_email': o_email,
-                    'type': tt_name,
-                    'type_description': tt_desc,
-                    'type_color': tt_color,
-                    'title': t_title,
-                    'contents': markdown.markdown(t_contents),
-                })
-
-        result['tickets'] = tickets            
-
-    except:
-        pass
+    #except:
+    #    pass
 
     return result
 
@@ -205,8 +121,8 @@ def project(request):
 def ticket(request):
 
     result = {}
-    #if True:
-    try:
+    if True:
+    #try:
 
         result['user'] = None
         result['token'] = None
@@ -222,117 +138,25 @@ def ticket(request):
         ticket_id = request.GET['ticket_id']
         #project_id = request.GET['project_id']
 
-        _ticket = Tickets.get_ticket_by_id(
-            session = DBSession,
-            ticket_id = ticket_id
-        )
+        print "\n\nticket: Ticket ID:"
+        print ticket_id
+        print "\n\n"
 
-        if _ticket == None:
-            raise Exception('no such ticket')
-        
-        t_id, t_title, t_contents, t_closed, t_closed_dt, t_created, o_first, \
-            o_last, o_email, p_id, p_name, p_desc, p_created, tt_name, \
-            tt_desc, tt_color = _ticket
-        ticket = None
-        if t_closed == False:
-            ticket = {
-                'id': t_id,
-                'created': t_created.strftime("%b %d, %Y"),
-                'owner': '{0} {1}'.format(o_first, o_last),
-                'owner_email': o_email,
-                'type': tt_name,
-                'type_description': tt_desc,
-                'type_color': tt_color,
-                'title': t_title,
-                'contents': markdown.markdown(t_contents),
-            }
-
+        ticket = get_ticket(ticket_id)
         result['ticket'] = ticket
 
-        _comments = TicketComments.get_ticket_comments_by_ticket_id(
-            session = DBSession,
-            ticket_id = t_id,
-        )
+        print "\n\nticket: Ticket:"
+        print ticket
+        print "\n\n"
 
-        if _comments == None:
-            raise Exception('invalid comments')
+        result['comments'] = get_comments(ticket['id'])
 
-        comments = []
-        for tc_id, tc_contents, tc_flagged, tc_flagged_dt, tc_updated_dt, \
-                tc_created, o_id, o_first, o_last, o_email in _comments:
-            flagged_datetime = None
-            if tc_flagged_dt != None:
-                flagged_datetime = tc_flagged_dt.strftime("%b %d, %Y")
-            updated_datetime = None
-            if tc_updated_dt != None:
-                updated_datetime = tc_updated_dt.strftime("%b %d, %Y")
-            comments.append({
-                'id': tc_id,
-                'contents': markdown.markdown(tc_contents),
-                'flagged': tc_flagged,
-                'flagged_datetime': flagged_datetime,
-                'updated_datetime': updated_datetime,
-                'created': tc_created.strftime("%b %d, %Y"),
-                'owner_id': o_id,
-                'owner': '{0} {1}'.format(o_first, o_last),
-                'owner_email': o_email,
-            })
+        result['tickets'] = get_tickets(ticket['project_id'])
 
-        _tickets = Tickets.get_tickets_by_project_id(
-            session = DBSession,
-            project_id = p_id,
-        )
+        result['project'] = get_project(user, ticket['project_id'])
 
-        tickets = []
-        for t_id, t_closed, t_closed_dt, t_created, o_first, o_last, \
-                o_email, p_id, p_name, p_desc, p_created, tt_name, tt_desc, \
-                tt_color in _tickets:
-            if t_closed == False:
-                tickets.append({
-                    'id': t_id,
-                    'created': t_created.strftime("%b %d, %Y"),
-                    'owner': '{0} {1}'.format(o_first, o_last),
-                    'owner_email': o_email,
-                    'type': tt_name,
-                    'type_description': tt_desc,
-                    'type_color': tt_color,
-                    'title': t_title,
-                    'contents': markdown.markdown(t_contents),
-                })
-
-        result['tickets'] = tickets
-
-        _project = Projects.get_from_id(
-            session = DBSession,
-            project_id = p_id,
-        )
-
-        if _project == None:
-            project = None
-            raise Exception('invalid project')
-        project = None
-        if _project.disabled == False:
-            project = {
-                'id': _project.id,
-                'name': _project.name,
-                'description': _project.description,
-                'created': _project.creation_datetime.strftime("%b %d, %Y"),
-            }
-
-        valid = UserProjectAssignments.check_project_assignment(
-            session = DBSession,
-            user_id = user.id,
-            project_id = p_id,
-        )
-
-        if valid == False:
-            raise Exception('unauthorized project')
-
-        result['comments'] = comments
-        result['project'] = project
-
-    except:
-        pass
+    #except:
+    #    pass
 
     return result #{'ticket': None, 'user': user, 'token': token, 'project': None}
 
@@ -340,8 +164,8 @@ def ticket(request):
 def new_ticket(request):
 
     result = {}
-    #if True:
-    try:
+    if True:
+    #try:
 
         result['user'] = None
         result['token'] = None
@@ -356,60 +180,12 @@ def new_ticket(request):
 
         project_id = request.GET['project_id']
 
-        _project = Projects.get_from_id(
-            session = DBSession,
-            project_id = project_id,
-        )
-
-        if _project == None:
-            project = None
-            raise Exception('invalid project')
-        project = None
-        if _project.disabled == False:
-            project = {
-                'id': _project.id,
-                'name': _project.name,
-                'description': _project.description,
-                'created': _project.creation_datetime.strftime("%b %d, %Y"),
-            }
-
-        valid = UserProjectAssignments.check_project_assignment(
-            session = DBSession,
-            user_id = user.id,
-            project_id = project_id,
-        )
-
-        if valid == False:
-            raise Exception('unauthorized project')
-    
-        result['project'] = project
+        result['project'] = get_project(user, project_id)
    
-        _tickets = Tickets.get_tickets_by_project_id(
-            session = DBSession,
-            project_id = _project.id,
-        )
-
-        tickets = []
-        for t_id, t_title, t_contents, t_closed, t_closed_dt, t_created, \
-                o_first, o_last, o_email, p_id, p_name, p_desc, p_created, \
-                tt_name, tt_desc, tt_color in _tickets:
-            if t_closed == False:
-                tickets.append({
-                    'id': t_id,
-                    'created': t_created.strftime("%b %d, %Y"),
-                    'owner': '{0} {1}'.format(o_first, o_last),
-                    'owner_email': o_email,
-                    'type': tt_name,
-                    'type_description': tt_desc,
-                    'type_color': tt_color,
-                    'title': t_title,
-                    'contents': markdown.markdown(t_contents),
-                })
-
-        result['tickets'] = tickets
+        result['tickets'] = get_tickets(project_id)
  
-    except:
-        pass
+    #except:
+    #    pass
 
     return result
 
@@ -470,8 +246,8 @@ def authenticate(request):
 
     result = {}
     result['success'] = False
-    if True:
-    #try:
+    #if True:
+    try:
         try:
             email = request.GET['email']
             password = request.GET['password']
@@ -507,8 +283,8 @@ def authenticate(request):
 
         result['success'] = True
 
-    #except:
-    #    pass
+    except:
+        pass
 
     return make_response(result)
 
@@ -540,20 +316,24 @@ def create_ticket(request):
         contents = request.POST['contents']
         ticket_type_id = 1 # request.POST['ticket_type_id']
 
+        print "\n\ncreate_ticket: project_id: {0}\n\n".format(project_id)
+
         ticket = Tickets.add_ticket(
             session = DBSession,
             author_id = user.id,
             project_id = project_id,
             ticket_type_id = ticket_type_id,
-            #ticket_priority_id = 1, #ticket_priority_id,
-        )
-        ticket_contents = TicketContents.add_ticket_content(
-            session = DBSession,
-            author_id = user.id,
-            ticket_id = ticket.id,
             title = title,
             contents = contents,
+            #ticket_priority_id = 1, #ticket_priority_id,
         )
+        #ticket_contents = TicketContents.add_ticket_content(
+        #    session = DBSession,
+        #    author_id = user.id,
+        #    ticket_id = ticket.id,
+        #    title = title,
+        #    contents = contents,
+        #)
 
         result['ticket_id'] = ticket.id
 
@@ -585,8 +365,8 @@ def create_project(request):
     result = {}
     result['success'] = False
 
-    if True:
-    #try:
+    #if True:
+    try:
 
         #result['user'] = None
         #result['token'] = None
@@ -636,8 +416,8 @@ def create_project(request):
 
         result['success'] = True
 
-    #except:
-    #    pass
+    except:
+        pass
 
     return make_response(result)
 
@@ -651,8 +431,8 @@ def create_comment(request):
     result = {}
     result['success'] = False
 
-    if True:
-    #try:
+    #if True:
+    try:
 
         token = request.cookies['token']
         user = check_auth(token)
@@ -691,8 +471,8 @@ def create_comment(request):
 
         result['success'] = True
 
-    #except:
-    #    pass
+    except:
+        pass
 
     return make_response(result)
 
