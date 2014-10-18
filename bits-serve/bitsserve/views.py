@@ -34,6 +34,7 @@ from .models import (
     RequirementTypes,
     Requirements,
     RequirementComments,
+    Tasks,
     Actions,
 )
 
@@ -138,7 +139,10 @@ def project(request):
             
         result['project'] = get_project(user, project_id)
 
+        result['tasks'] = get_tasks(project_id)
+
         result['tickets'] = get_tickets(project_id)
+
 
     #except:
     #    pass
@@ -401,8 +405,8 @@ def create_project(request):
     result = {}
     result['success'] = False
 
-    #if True:
-    try:
+    if True:
+    #try:
 
         #result['user'] = None
         #result['token'] = None
@@ -448,18 +452,20 @@ def create_project(request):
             project_id = project.id,
             ticket_id = None,
             requirement_id = None,
+            task_id = None,
+            list_id = None,
         )
 
         result['success'] = True
 
-    except:
-        pass
+    #except:
+    #    pass
 
     return make_response(result)
 
 
-@view_config(route_name='create_comment.json')
-def create_comment(request):
+@view_config(route_name='create_ticket_comment.json')
+def create_ticket_comment(request):
 
     """ Get all of the organizations that the user has access to
     """
@@ -505,6 +511,66 @@ def create_comment(request):
             project_id = ticket['project_id'],
             ticket_id = ticket_id,
             requirement_id = None,
+        )
+
+        result['success'] = True
+
+    #except:
+    #    pass
+
+    return make_response(result)
+
+@view_config(route_name='create_task.json')
+def create_task(request):
+
+    """ Get all of the organizations that the user has access to
+    """
+
+    result = {}
+    result['success'] = False
+
+    if True:
+    #try:
+
+        token = request.cookies['token']
+        user = check_auth(token)
+        if user == None:
+            raise Exception('invalid token')
+
+        
+        project_id = request.POST['project_id']
+        title = request.POST['title']
+        contents = request.POST['contents']
+        assigned = request.POST['assigned']
+        #due = request.POST['due']
+
+        task = Tasks.add_task(
+            session = DBSession,
+            author_id = user.id,
+            project_id = project_id,
+            title = title,
+            contents = contents,
+            assigned = assigned,
+            due = None, #due,
+        )
+
+        if task == None:
+            result['error_code'] = 1
+            raise Exception('invalid assigned')
+
+        result['task_id'] = task.id
+
+        action = Actions.add_action(
+            session = DBSession,
+            organization_id = 1,
+            user_id = user.id,
+            action_type = "created",
+            subject = "task",
+            project_id = task.id,
+            ticket_id = None,
+            requirement_id = None,
+            task_id = task.id,
+            list_id = None,
         )
 
         result['success'] = True

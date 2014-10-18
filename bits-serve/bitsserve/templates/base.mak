@@ -37,6 +37,10 @@
             min-height: 150px;
         }
 
+        div.padded-bottom {
+            padding-bottom: 6px;
+        }
+
         div.shadow {
              box-shadow: 0px 0px 0px 1px #DDD, 0px 4px 8px rgba(221, 221, 221, 0.9);
         }

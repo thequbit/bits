@@ -48,7 +48,7 @@
                 <div class="box-title">
                     Tasks
                     <div class="right">
-                        <a href="/newrequirment?project_id=${project['id']}">New</a>
+                        <a href="/newtask?project_id=${project['id']}">New</a>
                     </div>
                 </div>
                 % if not tasks:
@@ -66,7 +66,7 @@
                     <div class="row">
                         <div class="medium-12 columns">
                             <div class="right" style="padding-right: 5px;">
-                                <a href="/tickets?project_id=${project['id']}">view all</a>
+                                <a href="/tasks?project_id=${project['id']}">view all</a>
                             </div>
                         </div>
                     </div>
@@ -110,7 +110,7 @@
                 <div class="box-title">
                     Lists
                     <div class="right">
-                        <a href="/newticket?project_id=${project['id']}">New</a>
+                        <a href="/newlist?project_id=${project['id']}">New</a>
                     </div>
                 </div>
                 % if not lists:
@@ -128,7 +128,7 @@
                     <div class="row">
                         <div class="medium-12 columns">
                             <div class="right" style="padding-right: 5px;">
-                                <a href="/tickets?project_id=${project['id']}">view all</a>
+                                <a href="/lists?project_id=${project['id']}">view all</a>
                             </div>
                         </div>
                     </div>
@@ -161,7 +161,7 @@
                     <div class="row">
                         <div class="medium-12 columns">
                             <div class="right" style="padding-right: 5px;">
-                                <a href="/tickets?project_id=${project['id']}">view all</a>
+                                <a href="/requirements?project_id=${project['id']}">view all</a>
                             </div>
                         </div>
                     </div>
@@ -175,7 +175,7 @@
                 <div class="box-title">
                     Milestones
                     <div class="right">
-                        <a href="/newnote?project_id=${project['id']}">New</a>
+                        <a href="/newmilestone?project_id=${project['id']}">New</a>
                     </div>
                 </div>
                 % if not milestones:
@@ -186,7 +186,7 @@
                     % for milestone in milestones[:5]:
                         <div class="box-inner-container">
                             <div class="indent">
-                                <a href="/note?ticket_id=${milestone['id']}">${milestone['title']}</a>
+                                <a href="/milestone?ticket_id=${milestone['id']}">${milestone['title']}</a>
                                 <div class="short-line-height extra-small-light-text"> opened by ${milestone['owner']} on ${milestone['created']}</div>
                             </div>
                         </div>
@@ -195,7 +195,7 @@
                     <div class="row">
                         <div class="medium-12 columns">
                             <div class="right" style="padding-right: 5px;">
-                                <a href="/tickets?project_id=${project['id']}">view all</a>
+                                <a href="/milestones?project_id=${project['id']}">view all</a>
                             </div>
                         </div>
                     </div>
@@ -229,7 +229,7 @@
                     <div class="row">
                         <div class="medium-12 columns">
                             <div class="right" style="padding-right: 5px;">
-                                <a href="/tickets?project_id=${project['id']}">view all</a>
+                                <a href="/notes?project_id=${project['id']}">view all</a>
                             </div>
                         </div>
                     </div>

@@ -80,7 +80,9 @@ def get_actions(user, limit):
     )
 
     actions = []
-    for a_id, a_type, a_subject, a_created, u_id, u_first, u_last, u_email, p_id, p_name, upa_id, t_id, t_title in _actions:
+    for a_id, a_type, a_subject, a_created, u_id, u_first, u_last, u_email, \
+            p_id, p_name, upa_id, t_id, t_title, task_id, task_title \
+            in _actions:
         actions.append({
             'id': a_id,
             'action': a_type,

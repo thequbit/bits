@@ -35,8 +35,8 @@ def main(global_config, **settings):
 
     config.add_route('create_project.json','create_project.json')
     config.add_route('create_ticket.json','create_ticket.json')
-    config.add_route('create_comment.json','create_comment.json')
-    
+    config.add_route('create_ticket_comment.json','create_ticket_comment.json')
+    config.add_route('create_task.json','create_task.json')    
 
     config.scan()
     return config.make_wsgi_app()
