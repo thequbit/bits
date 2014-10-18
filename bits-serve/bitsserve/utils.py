@@ -155,10 +155,6 @@ def get_tickets(project_id):
                 'contents': markdown.markdown(t_contents),
             })
 
-    print "\n\n"
-    print tickets
-    print "\n\n"
-
     return tickets
 
 def get_ticket(ticket_id):

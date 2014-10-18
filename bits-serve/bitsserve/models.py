@@ -227,6 +227,18 @@ class LoginTokens(Base):
                 )
         return user
 
+    @classmethod
+    def logout(cls, session, token):
+        with transaction.manager:
+            login_token = session.query(
+                LoginTokens,
+            ).filter(
+                LoginTokens.token == token,
+            ).first()
+            session.delete(login_token)
+            transaction.commit()
+        return
+
 class Organizations(Base):
 
     __tablename__ = 'organizations'
@@ -810,6 +822,256 @@ class TicketComments(Base):
             ).all() 
         return comments
 
+class Tasks(Base):
+
+    __tablename__ = 'tasks'
+    id = Column(Integer, primary_key=True)
+    author_id = Column(Integer, ForeignKey('users.id'))
+    project_id = Column(Integer, ForeignKey('project.id'))
+    contents = Column(Text)
+    due_datetime = Column(DateTime, nullable=True)
+    completed = Column(Boolean)
+    completed_datetime = Column(DateTime, nullable=True)
+    creation_datetime = Column(DateTime)
+
+    @classmethod
+    def add_task(cls, session, author_id, project_id, contents, due):
+        with transaction.manager:
+            task = cls(
+                author_id = author_id,
+                projects_id = project_id,
+                contents = contents,
+                due_datetime = due,
+                completed = False,
+                completed_datetime = None,
+                creation_datetime = datetime.datetime.now(),
+            )
+            session.add(task)
+            transaction.commit()
+        return task
+
+    @classmethod
+    def complete_task(cls, session, task_id):
+        with transaction.manager:
+            task = session.query(
+                Tasks,
+            ).filter(
+                Tasks.id == task_id,
+            ).first()
+            task.completed = False
+            task.completed_datetime = datetime.datetime.now()
+            session.add(task)
+            transaction.commit()
+        return task
+
+    @classmethod
+    def _build_task_query(cls, session):
+        if True:
+            tasks = session.query(
+                Tasks.id,
+                Tasks.contents,
+                Tasks.due_datetime,
+                Tasks.completed,
+                Tasks.completed_datetime,
+                Tasks.creation_datetime,
+                Users.id,
+                Users.first,
+                Users.last,
+                Users.email,
+                Projects.id,
+                Projects.name,
+            ).join(
+                Users, Users.id == Tasks.owner_id,
+            ).join(
+                Projects, Projects.id == Tasks.project_id,
+            )
+        return task_query
+
+    @classmethod
+    def get_by_id(cls, session, task_id):
+        with transaction.manager:
+            task_query = Tasks._build_task_qury(session)
+            task = task_query.filter(
+                Tasks.id == task_id,
+            ).first()
+        return task
+
+    @classmethod
+    def get_all_by_project_id(cls, session, project_id):
+        with transaction.manager:
+            task_query = Tasks._build_task_query(session)
+            tasks = task_query.filter(
+                Tasks.project_id == project_id,
+            ).all()
+        return tasks
+
+class TaskComments(Base):
+
+    __tablename__ = 'taskcomments'
+    id = Column(Integer, primary_key=True)
+    owner_id = Column(Integer, ForeignKey('users.id'))
+    contents = Column(Text)
+    update_datetime = Column(DateTime, nullable=True)
+    flagged = Column(Boolean)
+    flagged_author_id = Column(Integer, ForeignKey('users.id'), nullable=True)
+    creation_datetime = Column(DateTime)
+
+    @classmethod
+    def add_task_comment(cls, session, author_id, task_id, contents):
+        """ Adds a comment to a task
+        """
+        with transaction.manager:
+            task_comment = cls(
+                author_id = author_id,
+                task_id = task_id,
+                contents = contents,
+                update_datetime = None,
+                flagged = False,
+                flagged_author_id = None,
+                creation_datetime = datetime.datetime.now(),
+            )
+            session.add(task_comment)
+            transaction.commit()
+        return task_comment
+
+    @classmethod
+    def update_task_comment(cls, session, task_comment_id, content):
+        """ Updates the content of a task comment
+        """
+        with transaction.manager:
+            task_comment = session.query(
+                TaskComments,
+            ).filter(
+                TaskComments.id == task_comment_id,
+            ).first()
+            task_comment.contents = contents
+            task_comments.update_datetime = datetime.datetime.now()
+            session.add(task_comment)
+            transaction.commit()
+        return task_comment
+
+    @classmethod
+    def flag_task_comment(cls, session, task_comment_id):
+        """ Flaggs a task comment
+        """
+        with transaction.manager:
+            task_comment = session.query(
+                TaskComments,
+            ).filter(
+                TaskComments.id == task_comment_id,
+            ).first()
+            task_comment.flagged = True
+            session.add(task_comment)
+            transaction.commit()
+        return task_comment
+
+class Lists(Base):
+
+    __tablename__ = 'lists'
+    id = Column(Integer, primary_key=True)
+    owner_id = Column(Integer, ForeignKey('users.id'))
+    project_id = Column(Integer, ForeignKey('projects.id'))
+    name = Column(Text)
+    disabled = Column(Boolean)
+    disabled_datetime = Column(DateTime, nullable=True)
+    creation_datetime = Column(DateTime)
+
+    @classmethod
+    def add_list(cls, session, owner_id, project_id, name):
+        with transaction.manager:
+            l = cls(
+                owner_id = owner_id,
+                project_id = project_id,
+                name = name,
+                disabled = False,
+                disabled_datetime = None,
+                creation_datetime = datetime.datetime.now(),
+            )
+            session.add(l)
+            transaction.commit()
+        return l
+    
+    @classmethod
+    def _build_list_query(cls, session):
+        if True:
+            list_query = session.query(
+                Lists.id,
+                Lists.name,
+                Lists.disabled,
+                Lists.disabled_datetime,
+                Lists.creation_datetime,
+                Users.id,
+                Users.first,
+                Users.last,
+                Users.email,
+                Projects.id,
+                Projects.name,
+            ).join(
+                Users, Users.id == Lists.owner_id,
+            ).join(
+                Projects, Projects.id == Projects.project_id,
+            )
+        return list_query
+
+    @classmethod
+    def get_all_by_project_id(cls, session, project_id):
+        list_query = Lists._build_list_query(session)
+        lists = list_query.filter(
+            Lists.project_id == project_id,
+        ).first()
+        return lists
+
+    @classmethod
+    def get_by_id(cls, session, list_id):
+        list_query = Lists._build_list_query(session)
+        l = list_query.filter(
+            Lists.id == list_id,
+        ).first()
+        return l 
+
+class ListItems(Base):
+
+    __tablename__ = 'listitems'
+    id = Column(Integer, primary_key=True)
+    owner_id = Column(Integer, ForeignKey('users.id'))
+    list_id = Column(Integer, ForeignKey('lists.id'))
+    contents = Column(Text)
+    removed = Column(Boolean)
+    removed_datetime = Column(DateTime)
+    modified = Column(Boolean)
+    modifed_datetime = Column(DateTime, nullable=True)
+    creation_datetime = Column(Text)
+
+    @classmethod
+    def add_item(cls, session, owner_id, list_id, contents):
+        with transaction.manager:
+            list_item = cls(
+                owner_id = owner_id,
+                list_id = list_id,
+                contents = contents,
+                removed = False,
+                removed_datetime = None,
+                modifed = False,
+                modified_datetime = False,
+                creation_datetime = datetime.datetime.now(),
+            )
+            session.add(list_item)
+            transaction.commit()
+        return
+
+    @classmethod
+    def remove_item(cls, session, item_id):
+        with transaction.manager:
+            item = session.query(
+                ListItems,
+            ).filter(
+                ListItem.id == item_id,
+            ).first()
+            item.removed = True
+            session.add(item)
+            transaction.commit()
+        return item
+
 class RequirementTypes(Base):
 
     __tablename__ = 'requirementtypes'
@@ -818,6 +1080,9 @@ class RequirementTypes(Base):
     project_id = Column(Integer, ForeignKey('projects.id'))
     name = Column(Text)
     description = Column(Text)
+    removed = Column(Boolean)
+    removed_datetime = Column(DateTime, nullable=True)
+    creation_datetime = Column(DateTime)
 
     @classmethod
     def add_requirement_type(cls, session, author_id, project_id, name, \
@@ -839,11 +1104,50 @@ class RequirementTypes(Base):
     def remove_requirement_type(cls, session, requirement_type_id):
         """ Removes a requirement type from a project.
         """
+        with transaction.manager:
+            requirement_type = session.query(
+                RequirementTypes,
+            ).filter(
+                RequirementTypes.id == requirement_type_id,
+            ).first()
+            requirement_type.removed = True
+            session.add(requirement_type)
+            transaction.commit()
+        return requirement_type
+
+    @classmethod
+    def _build_requirement_types_qury(cls, session):
+        if True:
+            requirement_type_query = session.query(
+                RequirementTypes.id,
+                RequirementTypes.name,
+                RequirementTypes.description,
+                RequirementTypes.removed,
+                RequirementTypes.removed_datetime,
+                RequirementTypes.created_datetime,
+                Users.id,
+                Users.first,
+                Users.last,
+                Users.email,
+                Projects.id,
+            ).join(
+                Users, Users.id == RequirementTypes.project_id,
+            ).join(
+                Projects, Projects.id == RequirementTypes.project_id,
+            )
+        return requirement_type_query
 
     @classmethod
     def get_requirement_types_by_project_id(cls, session, project_id):
         """ Get the requirement types for a project
         """
+        with transaction.manager:
+            requirement_type_query = \
+                RequirementTypes._buil_requirements_type_query(session)
+            requirement_types = requirement_type_query.filter(
+                RequirementTypes.project_id == project_id,
+            ).all()
+        return requirement_types
 
 class Requirements(Base):
 
@@ -1107,6 +1411,8 @@ class Actions(Base):
                 #Tickets.project_id == Actions.project_id,
             #).group_by(
             #    Actions.id,
+            ).group_by(
+                Actions.id,
             ).order_by(
                 desc(Actions.creation_datetime),
             ).all()

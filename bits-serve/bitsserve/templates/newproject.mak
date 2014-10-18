@@ -19,13 +19,22 @@
     <div class="row">
         <div class="medium-8 columns">
             <div class="new-project-container box shadow">
-                <h5>New Project<h5>
+                <div class="row">
+                    <div class="medium-12 columns">
+                        <h5>New Project
+                        <div class="right small-light-text markdown-boxi markdown-text">Markdown Supported</div>
+                        </h5>
+                     </div>
+                </div>
                 <input type="text" id="project-name" placeholder="Project Name"></text>
-                <div class="right"><small>Markdown Supported</small></div>
                 <textarea id="project-description" placeholder="Project Description"></textarea>
+                <input type="text" id="participants" placeholder="Project participants(email)"></text>
+            </div>
+            <div id="error-message-wrapper" class="box shadow error-box" style="display: none;">
+                <div id="error-message" class="container-inner box-small-text"></div>
             </div>
             <br/>
-            <a href="#" id="submit-project" class="small radius button">Submit</a>
+            <a href="#" id="submit-project" class="small radius button">Create Project</a>
         </div>
         <div class="medium-4 columns">
             <div class="box shadow">
@@ -44,7 +53,8 @@
                         </div>
                     % endfor
                 % endif
-            </div> 
+            </div>
+            <hr/> 
         </div>
     </div>
 
@@ -59,29 +69,40 @@
             var name = $('#project-name').val();
             var description = $('#project-description').val();
 
-            $.ajax({
-                dataType: 'json',
-                type: 'POST',
-                data: {
-                    name : name,
-                    description : description
-                },
-                url: url,
-                success: function(data) {
-                    if( data.success == true ) {
-                        console.log('SUCCESS!');
-                        window.location.href="/project?project_id=" + data.project_id;
+            if ( name == '' ) {
+                console.log('error: name can not be blank');
+                display_error('The project must at least have a name');
+            }
+            else {
+ 
+                $.ajax({
+                    dataType: 'json',
+                    type: 'POST',
+                    data: {
+                        name : name,
+                        description : description
+                    },
+                    url: url,
+                    success: function(data) {
+                        if( data.success == true ) {
+                            console.log('SUCCESS!');
+                            window.location.href="/project?project_id=" + data.project_id;
+                        }
+                    },
+                    error: function(data) {
+                        console.log('an error happened while creating project ...');
+                        // TODO: report error
                     }
-                },
-                error: function(data) {
-                    console.log('an error happened while creating project ...');
-                    // TODO: report error
-                }
-            });
+                });
+            }
 
         });
 
-        // TODO: hook up submit and close button
+        function display_error(error_text) {
+            console.log('displaying error');
+            $('#error-message').html('Error: ' + error_text);
+            $('#error-message-wrapper').show();
+        }
 
     </script>
 

@@ -20,10 +20,12 @@ def main(global_config, **settings):
 
     config.add_route('index', '/')
     config.add_route('login', '/login')
+    config.add_route('logout', '/logout')
     config.add_route('project', '/project')
     config.add_route('tickets', '/tickets')
     config.add_route('ticket', '/ticket')
     config.add_route('newticket', '/newticket')
+    config.add_route('newtask', '/newtask')
     config.add_route('newproject', '/newproject')
  
 

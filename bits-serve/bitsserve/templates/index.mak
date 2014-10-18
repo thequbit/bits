@@ -61,18 +61,31 @@
     % if user and token:
 
     <div class="row">
+        <div class="medium-12 columns bottom-border">
+            <div class="right top-links">
+                <a href="/usersettings">Settings</a>
+                <a href="/logout">Logout</a>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="row">
          <div class="medium-4 columns">
             <div class="row">
             <div class="medium-12 columns">
             <h5>Collections</h5>
-            <div class="box shadow">
+            <div class="box shadow list-container">
                 <div class="box-title">
                     Projects
                     <div class="right">
                         <a href="/newproject">New Project</a>
                     </div>
                 </div>
-                % if projects:
+                % if not projects:
+                    <div class="indent">
+                        <div class="small-light-text">No projects yet.</div>
+                    </div>
+                % else:
                     % for project in projects:
                     <!--<div class="indent">-->
                     <div class="box-inner-container">
@@ -82,6 +95,15 @@
                         </div>
                     </div>
                     % endfor
+                    % if len(projects) > 5:
+                    <div class="row">
+                        <div class="medium-12 columns">
+                            <div class="right" style="padding-right: 5px;">
+                                <a href="/tickets?project_id=${project['id']}">view all</a>
+                            </div>
+                        </div>
+                    </div>
+                    % endif
                 % endif
             </div>
             <hr/>
@@ -90,7 +112,6 @@
         </div>
 
         <div class="medium-8 columns">
-        
             <h5>Activity<h5>
             <div class="row">
                 <div class="small-12 columns">
@@ -98,18 +119,16 @@
                         % for action in actions:
                         <div class="action-box shadow">
                             <div class="small-light-text">${action['created']}</div>
-                                <a href="/user?user_id=1">Tim Duffy</a>
-                                ${action['action'][0].upper()}${action['action'][1:]} 
-                                % if action['subject'] == 'project':
-                                    a new project <a href="/project?project_id=${action['project_id']}">${action['project_name']}</a>.
-                                % elif action['subject'] == 'ticket':
-                                    a new ticket <a href="/project?project_id=${action['project_id']}">${action['project_name']}</a> 
-                                    <a href="/ticket?ticket_id=${action['ticket_id']}">${action['ticket_title']}</a>.
-                                % elif action['subject'] == 'comment':
-                                     a comment to a ticket <a href="/ticket?ticket_id=${action['ticket_id']}">${action['ticket_title']}</a>.
-                                % endif
-                                
-                            
+                            <a href="/user?user_id=1">Tim Duffy</a>
+                            ${action['action'][0].upper()}${action['action'][1:]} 
+                            % if action['subject'] == 'project':
+                                a new project <a href="/project?project_id=${action['project_id']}">${action['project_name']}</a>.
+                            % elif action['subject'] == 'ticket':
+                                a new ticket <a href="/ticket?ticket_id=${action['ticket_id']}">${action['ticket_title']}</a> in
+                                <a href="/project?project_id=${action['project_id']}">${action['project_name']}</a>.
+                            % elif action['subject'] == 'comment':
+                                a comment to a ticket <a href="/ticket?ticket_id=${action['ticket_id']}">${action['ticket_title']}</a>.
+                            % endif
                         </div>
                         % endfor
                     % endif

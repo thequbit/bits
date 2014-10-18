@@ -24,6 +24,11 @@
         }
         */
 
+        div.top-links a {
+            #margin-left: 10px;
+            margin-left: 10px !important;
+        }
+
         aside.side-menu {
             border-left: 1px solid #DDD;
         }
@@ -36,13 +41,22 @@
              box-shadow: 0px 0px 0px 1px #DDD, 0px 4px 8px rgba(221, 221, 221, 0.9);
         }
 
+        div.error-box {
+            color: red;
+            font-weight: bold;
+        }
+
+        div.markdown-text {
+            padding-top: 8px; padding-right: 2px;
+        }
+
         div.top-border {
             padding-top: 3px;
             border-top: 1px solid #DDD;
         }
 
         div.bottom-border {
-            padding-bottom: 3px;
+            padding-bottom: 6px;
             border-bottom: 1px solid #DDD;
         }
 
@@ -172,12 +186,12 @@
         div.title-bar {
             width: 100%;
             border-bottom: 1px solid #DDD;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             background-color: #EEE;
         }
 
         div.title-bar h3 {
-            margin-bottom: 0.2rem !important;
+            margin-bottom: 0.15rem !important;
         }
 
 
@@ -199,9 +213,9 @@
     <div class="title-bar"> 
         <div class="row">
             <div class="large-12 columns">
-                <div class="right" style="padding-top: 10px;">
+                <!--<div class="right" style="padding-top: 10px;">
                     <a href="/logout">Logout</a>
-                </div>
+                </div>-->
                 <h3>bits</h3>
             </div>
         </div>

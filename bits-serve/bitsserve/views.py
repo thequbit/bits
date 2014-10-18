@@ -61,6 +61,34 @@ def login(request):
 
     return {}
 
+@view_config(route_name='logout', renderer='templates/logout.mak')
+def logout(request):
+
+    result = {}
+    if True:
+    #try:
+
+        result['user'] = None
+        result['token'] = None
+
+        token = request.cookies['token']
+        user = check_auth(token)
+        if user == None:
+            raise Exception('invalid token')
+
+        #result['user'] = user
+        #result['token'] = token
+
+        LoginTokens.logout(
+            session = DBSession,
+            token = token,
+        )
+
+    #except:
+    #    pass
+
+    return result
+
 @view_config(route_name='index', renderer='templates/index.mak')
 def index(request):
 
@@ -189,6 +217,36 @@ def new_ticket(request):
 
     return result
 
+@view_config(route_name='newtask', renderer='templates/newtask.mak')
+def new_task(request):
+
+    result = {}
+    if True:
+    #try:
+
+        result['user'] = None
+        result['token'] = None
+
+        token = request.cookies['token']
+        user = check_auth(token)
+        if user == None:
+            raise Exception('invalid token')
+
+        result['user'] = user
+        result['token'] = token
+
+        project_id = request.GET['project_id']
+
+        result['project'] = get_project(user, project_id)
+
+        result['tickets'] = get_tickets(project_id)
+
+    #except:
+    #    pass
+
+    return result
+
+
 @view_config(route_name='newproject', renderer='templates/newproject.mak')
 def new_project(request):
 
@@ -208,29 +266,7 @@ def new_project(request):
         result['user'] = user
         result['token'] = token
 
-        raw_projects = Projects.get_projects_from_user_id(
-            session = DBSession,
-            user_id = user.id,
-        )
-
-        projects = []
-        for upa_id, upa_disabled, p_id, p_name, p_desc, p_created, \
-                p_disabled, o_first, o_last, o_email, r_count, t_count \
-                in raw_projects:
-            if upa_disabled == False and p_disabled == False:
-                projects.append({
-                    'id': p_id,
-                    'name': p_name,
-                    'description': p_desc,
-                    'created': p_created.strftime("%b %d, %Y"),
-                    'owner': '{0} {1}'.format(o_first, o_last),
-                    'owner_email': o_email,
-                    'requirement_count': r_count,
-                    'ticket_count': t_count,
-                    'note_count': 0,
-                })
-
-        result['projects'] = projects;
+        result['projects'] = get_projects(user);
 
     except:
         pass
@@ -431,8 +467,8 @@ def create_comment(request):
     result = {}
     result['success'] = False
 
-    #if True:
-    try:
+    if True:
+    #try:
 
         token = request.cookies['token']
         user = check_auth(token)
@@ -444,15 +480,17 @@ def create_comment(request):
         ticket_id = request.POST['ticket_id']
         contents = request.POST['contents']
 
-        ticket = Tickets.get_by_id(
-            session = DBSession,
-            ticket_id = ticket_id,
-        )
+        #ticket = Tickets.get_by_id(
+        #    session = DBSession,
+        #    ticket_id = ticket_id,
+        #)
+
+        ticket = get_ticket(ticket_id)
 
         ticket_comment = TicketComments.add_ticket_comment(
             session = DBSession,
             author_id = user.id,
-            ticket_id = ticket.id,
+            ticket_id = ticket['id'],
             contents = contents,
         )
 
@@ -464,15 +502,15 @@ def create_comment(request):
             user_id = user.id,
             action_type = "created",
             subject = "comment",
-            project_id = ticket.project_id,
+            project_id = ticket['project_id'],
             ticket_id = ticket_id,
             requirement_id = None,
         )
 
         result['success'] = True
 
-    except:
-        pass
+    #except:
+    #    pass
 
     return make_response(result)
 

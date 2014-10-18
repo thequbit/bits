@@ -2,6 +2,7 @@
 
     <style>
  
+
     </style>
 
     % if user and token and project:
@@ -15,30 +16,29 @@
     <div class="row">
         <div class="medium-8 columns">
             <div class="container-inner box shadow">
-                <h5>New Ticket<h5>
-                <input type="text" id="ticket-title" placeholder="ticket title"></text>
-                <textarea id="ticket-contents" placeholder="markdown supported"></textarea>
+                <h5>New Task<h5>
+                <textarea id="task-contents" placeholder="markdown supported"></textarea>
             </div>
             <br/>
-            <a href="#" id="submit-ticket" class="small radius button">Submit</a>
+            <a href="#" id="submit-task" class="small radius button">Submit</a>
         </div>
         <div class="medium-4 columns">
             <div class="box shadow">
                 <div class="box-title">
                     Existing Tickets
                     <!--<div class="right">
-                        <a href="/newticket?project_id=${project['id']}">New</a>
+                        <a href="/newtask?project_id=${project['id']}">New</a>
                     </div>-->
                 </div>
-                % if not tickets:
+                % if not tasks:
                     <div class="indent">
-                        <div class="small-light-text">No tickets for this project.</div>
+                        <div class="small-light-text">No tasks for this project.</div>
                     </div>
                 % else:
-                    % for ticket in tickets:
+                    % for task in tasks:
                         <div class="box-inner-container">
-                            <a href="/ticket?ticket_id=${ticket['id']}">${ticket['title']}</a>
-                            <div class="short-line-height extra-small-light-text"> opened by ${ticket['owner']} on ${ticket['created']}</div>
+                            <a href="/task?task_id=${task['id']}">${task['title']}</a>
+                            <div class="short-line-height extra-small-light-text"> opened by ${task['owner']} on ${task['created']}</div>
                         </div>
                     % endfor
                 % endif
@@ -48,15 +48,15 @@
 
     <script>
 
-        $('#submit-ticket').on('click', function(e) {
+        $('#submit-task').on('click', function(e) {
 
             console.log('sending comment')
 
             var token = document.cookie.split('=')[1];
-            var url = '/create_ticket.json';
+            var url = '/create_task.json';
             var project_id = ${project['id']}
-            var title = $('#ticket-title').val();
-            var contents = $('#ticket-contents').val();
+            var title = $('#task-title').val();
+            var contents = $('#task-contents').val();
 
             $.ajax({
                 dataType: 'json',
@@ -70,11 +70,11 @@
                 success: function(data) {
                     if( data.success == true ) {
                         console.log('SUCCESS!');
-                        window.location.href="/ticket?ticket_id=" + data.ticket_id;
+                        window.location.href="/task?task_id=" + data.task_id;
                     }
                 },
                 error: function(data) {
-                    console.log('an error happened while creating ticket ...');
+                    console.log('an error happened while creating task ...');
                     // TODO: report error
                 }
             });

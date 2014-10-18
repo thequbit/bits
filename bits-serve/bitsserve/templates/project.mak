@@ -41,27 +41,37 @@
             </div>
         </div>
     </div>
+    
     <div class="row">
         <div class="medium-4 columns">
             <div class="box shadow list-container">
-                <div class="box-title"> 
-                    Requirements
+                <div class="box-title">
+                    Tasks
                     <div class="right">
                         <a href="/newrequirment?project_id=${project['id']}">New</a>
                     </div>
                 </div>
-                % if not requirements:
+                % if not tasks:
                     <div class="indent">
-                        <div class="small-light-text">No requirements for this project.</div>
+                        <div class="small-light-text">No tasks for this project.</div>
                     </div>
                 % else:
-                    % for requirement in requirements:
+                    % for task in tasks[:5]:
                         <div class="box-inner-container">
-                            <a href="/requirement?requirement_id=${requirement['id']}">${requirement['name']}</a>
-                            <div class="short-line-height extra-small-light-text"> opened by ${requirement['owner']} on ${requirement['created']}</div>
+                            <a href="/task?task_id=${task['id']}">${task['name']}</a>
+                            <div class="short-line-height extra-small-light-text"> opened by ${task['owner']} on ${task['created']}</div>
                         </div>
                     % endfor
-                % endif 
+                    % if len(requirements) > 5:
+                    <div class="row">
+                        <div class="medium-12 columns">
+                            <div class="right" style="padding-right: 5px;">
+                                <a href="/tickets?project_id=${project['id']}">view all</a>
+                            </div>
+                        </div>
+                    </div>
+                    % endif
+                % endif                
             </div>
         </div>
         <div class="medium-4 columns">
@@ -77,69 +87,21 @@
                         <div class="small-light-text">No tickets for this project.</div>
                     </div>
                 % else:
-                    % for ticket in tickets:
+                    % for ticket in tickets[:5]:
                         <div class="box-inner-container">
                             <a href="/ticket?ticket_id=${ticket['id']}">${ticket['title']}</a>
                             <div class="short-line-height extra-small-light-text"> opened by ${ticket['owner']} on ${ticket['created']}</div>
                         </div>
                     % endfor
+                    % if len(tickets) > 5:
                     <div class="row">
-                    <div class="medium-12 columns">
-                    <div class="right" style="padding-right: 5px;">
-                        <a href="/tickets?project_id=${project['id']}">view all</a>
-                    </div>
-                    </div>
-                    </div>
-                % endif
-            </div>
-        </div>
-        <div class="medium-4 columns">
-            <div class="box shadow list-container">
-                <div class="box-title">
-                    Notes
-                    <div class="right">
-                        <a href="/newnote?project_id=${project['id']}">New</a>
-                    </div>
-                </div>
-                % if not notes:
-                    <div class="indent">
-                        <div class="small-light-text">No notess for this project.</div>
-                    </div>
-                % else:
-                    % for note in notes:
-                        <div class="box-inner-container">
-                            <div class="indent">
-                                <a href="/note?ticket_id=${note['id']}">${note['title']}</a>
-                                <div class="short-line-height extra-small-light-text"> opened by ${note['owner']} on ${note['created']}</div>
+                        <div class="medium-12 columns">
+                            <div class="right" style="padding-right: 5px;">
+                                <a href="/tickets?project_id=${project['id']}">view all</a>
                             </div>
                         </div>
-                    % endfor
-                % endif
-            </div>
-        </div>
-    </div>
-
-
-    <div class="row">
-        <div class="medium-4 columns">
-            <div class="box shadow list-container">
-                <div class="box-title">
-                    Tasks
-                    <div class="right">
-                        <a href="/newrequirment?project_id=${project['id']}">New</a>
                     </div>
-                </div>
-                % if not tasks:
-                    <div class="indent">
-                        <div class="small-light-text">No tasks for this project.</div>
-                    </div>
-                % else:
-                    % for requirement in requirements:
-                        <div class="box-inner-container">
-                            <a href="/requirement?requirement_id=${requirement['id']}">${requirement['name']}</a>
-                            <div class="short-line-height extra-small-light-text"> opened by ${requirement['owner']} on ${requirement['created']}</div>
-                        </div>
-                    % endfor
+                    % endif
                 % endif
             </div>
         </div>
@@ -156,22 +118,58 @@
                         <div class="small-light-text">No lists for this project.</div>
                     </div>
                 % else:
-                    % for ticket in tickets:
+                    % for list in lists[:5]:
                         <div class="box-inner-container">
-                            <a href="/ticket?ticket_id=${ticket['id']}">${ticket['title']}</a>
-                            <div class="short-line-height extra-small-light-text"> opened by ${ticket['owner']} on ${ticket['created']}</div>
+                            <a href="/list?list_id=${list['id']}">${list['title']}</a>
+                            <div class="short-line-height extra-small-light-text"> opened by ${list['owner']} on ${list['created']}</div>
                         </div>
                     % endfor
+                    % if len(lists) > 5:
                     <div class="row">
-                    <div class="medium-12 columns">
-                    <div class="right" style="padding-right: 5px;">
-                        <a href="/tickets?project_id=${project['id']}">view all</a>
+                        <div class="medium-12 columns">
+                            <div class="right" style="padding-right: 5px;">
+                                <a href="/tickets?project_id=${project['id']}">view all</a>
+                            </div>
+                        </div>
                     </div>
-                    </div>
-                    </div>
+                    % endif
                 % endif
             </div>
         </div>
+    </div>
+    <div class="row">
+        <div class="medium-4 columns">
+            <div class="box shadow list-container">
+                <div class="box-title"> 
+                    Requirements
+                    <div class="right">
+                        <a href="/newrequirment?project_id=${project['id']}">New</a>
+                    </div>
+                </div>
+                % if not requirements:
+                    <div class="indent">
+                        <div class="small-light-text">No requirements for this project.</div>
+                    </div>
+                % else:
+                    % for requirement in requirements[:5]:
+                        <div class="box-inner-container">
+                            <a href="/requirement?requirement_id=${requirement['id']}">${requirement['name']}</a>
+                            <div class="short-line-height extra-small-light-text"> opened by ${requirement['owner']} on ${requirement['created']}</div>
+                        </div>
+                    % endfor
+                    % if len(requirements) > 5:
+                    <div class="row">
+                        <div class="medium-12 columns">
+                            <div class="right" style="padding-right: 5px;">
+                                <a href="/tickets?project_id=${project['id']}">view all</a>
+                            </div>
+                        </div>
+                    </div>
+                    % endif
+                % endif                
+            </div>
+        </div>
+        
         <div class="medium-4 columns">
             <div class="box shadow list-container">
                 <div class="box-title">
@@ -185,7 +183,41 @@
                         <div class="small-light-text">No milestones for this project.</div>
                     </div>
                 % else:
-                    % for note in notes:
+                    % for milestone in milestones[:5]:
+                        <div class="box-inner-container">
+                            <div class="indent">
+                                <a href="/note?ticket_id=${milestone['id']}">${milestone['title']}</a>
+                                <div class="short-line-height extra-small-light-text"> opened by ${milestone['owner']} on ${milestone['created']}</div>
+                            </div>
+                        </div>
+                    % endfor
+                    % if len(milestone) > 5:
+                    <div class="row">
+                        <div class="medium-12 columns">
+                            <div class="right" style="padding-right: 5px;">
+                                <a href="/tickets?project_id=${project['id']}">view all</a>
+                            </div>
+                        </div>
+                    </div>
+                    % endif
+                % endif
+            </div>
+        </div>
+        
+        <div class="medium-4 columns">
+            <div class="box shadow list-container">
+                <div class="box-title">
+                    Notes
+                    <div class="right">
+                        <a href="/newnote?project_id=${project['id']}">New</a>
+                    </div>
+                </div>
+                % if not notes:
+                    <div class="indent">
+                        <div class="small-light-text">No notes for this project.</div>
+                    </div>
+                % else:
+                    % for note in notes[:5]:
                         <div class="box-inner-container">
                             <div class="indent">
                                 <a href="/note?ticket_id=${note['id']}">${note['title']}</a>
@@ -193,9 +225,19 @@
                             </div>
                         </div>
                     % endfor
+                    % if len(notes) > 5:
+                    <div class="row">
+                        <div class="medium-12 columns">
+                            <div class="right" style="padding-right: 5px;">
+                                <a href="/tickets?project_id=${project['id']}">view all</a>
+                            </div>
+                        </div>
+                    </div>
+                    % endif
                 % endif
             </div>
         </div>
-
+    </div>
+    <hr/>
 
     % endif
