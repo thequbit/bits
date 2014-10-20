@@ -24,6 +24,36 @@
         }
         */
 
+        div.task-title {
+            color: rgba(0,255,0,0.8);
+            display: inline-block;
+        }
+
+        div.ticket-title {
+            color: rgba(255,0,0,0.8);
+            display: inline-block;
+        }
+
+        div.list-title {
+            color: rgba(0,0,255,0.8);
+            display: inline-block;
+        }
+
+        div.requirement-title {
+            color: rgba(64,64,128,0.8);
+            display: inline-block;
+        }
+
+        div.milestone-title {
+            color: rgba(64,128,64,0.8);
+            display: inline-block;
+        }
+
+        div.note-title {
+            color: rgba(128,64,64,0.8);
+            display: inline-block;
+        }
+
         div.top-links a {
             #margin-left: 10px;
             margin-left: 10px !important;
@@ -35,6 +65,10 @@
 
         textarea {
             min-height: 150px;
+        }
+
+        div.padded-bottom {
+            padding-bottom: 6px;
         }
 
         div.shadow {

@@ -17,6 +17,9 @@ from .models import (
     TicketPriorities,
     Tickets,
     TicketComments,
+    Tasks,
+    TaskComments,
+    Lists,
     RequirementTypes,
     Requirements,
     RequirementComments,
@@ -80,7 +83,9 @@ def get_actions(user, limit):
     )
 
     actions = []
-    for a_id, a_type, a_subject, a_created, u_id, u_first, u_last, u_email, p_id, p_name, upa_id, t_id, t_title in _actions:
+    for a_id, a_type, a_subject, a_created, u_id, u_first, u_last, u_email, \
+            p_id, p_name, upa_id, t_id, t_title, task_id, task_title \
+            in _actions:
         actions.append({
             'id': a_id,
             'action': a_type,
@@ -91,6 +96,8 @@ def get_actions(user, limit):
             'project_name': p_name,
             'ticket_id': t_id,
             'ticket_title': t_title,
+            'task_id': task_id,
+            'task_title': task_title,
         })
 
     return actions
@@ -187,7 +194,7 @@ def get_ticket(ticket_id):
  
     return ticket
 
-def get_comments(ticket_id):
+def get_ticket_comments(ticket_id):
 
     _comments = TicketComments.get_ticket_comments_by_ticket_id(
         session = DBSession,
@@ -218,3 +225,92 @@ def get_comments(ticket_id):
             'owner_email': o_email,
          })
     return comments
+
+def get_tasks(project_id):
+
+    _tasks = Tasks.get_tasks_by_project_id(
+        session = DBSession,
+        project_id = project_id,
+    )
+
+    tasks = []
+    for t_id, t_title, t_contents, t_due, t_completed, t_completed_dt, \
+            t_created, o_id, o_first, o_last, o_email, p_id, p_name \
+            in _tasks:
+        tasks.append({
+            'id': t_id,
+            'title': t_title,
+            'contents': t_contents,
+            'due': t_due,
+            'completed': t_completed,
+            'completed_datetime': t_completed_dt,
+            'created': t_created.strftime("%b %d, %Y"),
+            'owner_id': o_id,
+            'owner': '{0} {1}'.format(o_first, o_last),
+            'owner_email': o_email,
+            'project_id': p_id,
+            'project_name': p_name,
+        })
+
+    return tasks
+
+def get_task(task_id):
+
+    _task = Tasks.get_by_id(
+        session = DBSession,
+        task_id = task_id,
+    )
+
+    t_id, t_title, t_contents, t_due, t_completed, t_completed_dt, \
+        t_created, o_id, o_first, o_last, o_email, p_id, p_name = _task
+    task = {
+        'id': t_id,
+        'title': t_title,
+        'contents': t_contents,
+        'due': t_due,
+        'completed': t_completed,
+        'completed_datetime': t_completed_dt,
+        'created': t_created.strftime("%b %d, %Y"),
+        'owner_id': o_id,
+        'owner': '{0} {1}'.format(o_first, o_last),
+        'owner_email': o_email,
+        'project_id': p_id,
+        'project_name': p_name,
+    }
+
+    return task
+
+def get_task_comments(task_id):
+
+    return []
+
+def get_lists(project_id):
+
+    _lists = Lists.get_lists_by_project_id(
+        session = DBSession,
+        project_id = project_id,
+    )
+
+    lists = []
+    for l_id, l_name, l_disabled, l_disabled_dt, o_id, o_first, o_last, \
+            o_email, p_id, p_name in _lists:
+        lists.append({
+            'id': l_id,
+            'name': l_name,
+            'disabled': l_disabled,
+            'disabled_datetime': l_disabled_dt,
+            'owner_id': o_id,
+            'owner': '{0} {1}'.format(o_first, o_last),
+            'project_id': p_id,
+            'project_name': p_name,
+        })
+
+    return lists
+
+def get_list(list_id):
+
+    return {}
+
+def get_list_comments(list_id):
+
+    return []

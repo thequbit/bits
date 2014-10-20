@@ -1,15 +1,15 @@
 <%inherit file="base.mak"/>
 
-    % if token and user and ticket and project:
+    % if token and user and task and project:
 
     <style>
     
-        div.ticket-container {
+        div.task-container {
             border-bottom: 1px solid #DDD;
             padding-bottom: 5px;
         }
 
-        div.ticket {
+        div.task {
             margin-top: 10px;
             border: 1px solid #DDD;
             padding: 15px;15px
@@ -19,7 +19,7 @@
            min-height: 150px;
         }
 
-        div.ticket-container h3 {
+        div.task-container h3 {
             margin-bottom: 0rem !important;
         }
 
@@ -43,37 +43,32 @@
             <a href="/">Home</a>
              > 
             <a href="/project?project_id=${project['id']}">Project</a>
-             > Ticket
+             > Task
             <div class="right top-links">
                 <a href="/usersettings?user_id=${user.id}">${user.first} ${user.last}</a>
             </div>
         </div>
     </div>
 
+
     <div class="row">
         <div class="medium-8 columns">
-        % if ticket:
-            <div class="ticket-container">
-                <h3><div class="ticket-title">Ticket</div> : ${ticket['title']}</h3>
+        % if task:
+            <div class="task-container">
+                <h3><div class="task-title">Task</div> : ${task['title']}</h3>
                 <div class="small-light-text">
-                    Opened by ${ticket['owner']} on ${ticket['created']}
+                    Opened by ${task['owner']} on ${task['created']}
                 </div>
-                <!--
-                <div class="block-type" style="background-color: ${ticket['type_color']};">
-                    <a href="/projecttype?token=${token}&type=${ticket['type']}">${ticket['type']}</a>
-                </div>
-                -->
                 <div class="indent indent-right">
                     <div class="box shadow">
                         <div class="container-inner">
-                            ${ticket['contents'] | n}
+                            ${task['contents'] | n}
                         </div>
                     </div>
                 </div>
                 <br/>           
  
                 <h5>Comments</h5>            
-
                 % for comment in comments:
                     <div class="comment-containeri box shadow">
                         <div class="small-light-text">
@@ -100,20 +95,20 @@
         <div class="medium-4 columns">
             <div class="box shadow">
                 <div class="box-title">
-                    Existing Tickets
+                    Existing Tasks
                     <!--<div class="right">
-                        <a href="/newticket?project_id=${project['id']}">New</a>
+                        <a href="/newtask?project_id=${project['id']}">New</a>
                     </div>-->
                 </div>
-                % if not tickets:
+                % if not tasks:
                     <div class="indent">
-                        <div class="small-light-text">No tickets for this project.</div>
+                        <div class="small-light-text">No tasks for this project.</div>
                     </div>
                 % else:
-                    % for existing_ticket in tickets:
+                    % for existing_task in tasks:
                         <div class="box-inner-container">
-                            <a href="/ticket?ticket_id=${existing_ticket['id']}">${existing_ticket['title']}</a>
-                            <div class="short-line-height extra-small-light-text"> opened by ${existing_ticket['owner']} on ${existing_ticket['created']}</div>
+                            <a href="/task?task_id=${existing_task['id']}">${existing_task['title']}</a>
+                            <div class="short-line-height extra-small-light-text"> opened by ${existing_task['owner']} on ${existing_task['created']}</div>
                         </div>
                     % endfor
                 % endif
@@ -128,8 +123,8 @@
             console.log('sending comment')
             
             var token = document.cookie.split('=')[1]; 
-            var url = '/create_ticket_comment.json?token=' + token;
-            var ticket_id = ${ticket['id']}
+            var url = '/create_comment.json?token=' + token;
+            var task_id = ${task['id']}
             //var author_id = localStorage.getItem("user_id")
             //var project_id = ${project['id']};
             var contents = $('#comment-contents').val();
@@ -138,7 +133,7 @@
                 dataType: 'json',
                 type: 'POST',
                 data: {
-                    ticket_id : ticket_id,
+                    task_id : task_id,
                     //author_id : author_id,
                     //project_id : project_id,
                     contents : contents
@@ -147,12 +142,11 @@
                 success: function(data) {
                     if( data.success == true ) {
                         console.log('SUCCESS!');
-                        window.location.href="/ticket?ticket_id=${ticket['id']}";
+                        window.location.href="/task?task_id=${task['id']}";
                     }
                 },
                 error: function(data) {
-                    console.log('an error happened while creating ticket ...');
-                    console.log(data)
+                    console.log('an error happened while creating task ...');
                     // TODO: report error
                 }
             });

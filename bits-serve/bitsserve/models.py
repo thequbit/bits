@@ -177,6 +177,17 @@ class Users(Base):
 
         return user
 
+    @classmethod
+    def get_by_email(cls, session, email):
+        with transaction.manager:
+            user = session.query(
+                Users,
+            ).filter(
+                Users.email == email,
+            ).first()
+        return user
+
+
 class LoginTokens(Base):
 
     __tablename__ = 'logintokens'
@@ -415,8 +426,6 @@ class Projects(Base):
         """ Get a project from it's id
         """
 
-        print "\n\nProjects.get_from_id: project_id: {0}\n\n".format(project_id)
-
         with transaction.manager:
             project = session.query(
                 Projects.id,
@@ -439,8 +448,6 @@ class Projects(Base):
             ).filter(
                 Projects.id == project_id,
             ).first()
-
-            print "\n\nProjects.get_from_id: project.id: {0}\n\n".format(project[0])
 
         return project
 
@@ -827,27 +834,38 @@ class Tasks(Base):
     __tablename__ = 'tasks'
     id = Column(Integer, primary_key=True)
     author_id = Column(Integer, ForeignKey('users.id'))
-    project_id = Column(Integer, ForeignKey('project.id'))
+    project_id = Column(Integer, ForeignKey('projects.id'))
+    title = Column(Text)
     contents = Column(Text)
+    assigned_id = Column(Integer, ForeignKey('users.id'))
     due_datetime = Column(DateTime, nullable=True)
     completed = Column(Boolean)
     completed_datetime = Column(DateTime, nullable=True)
     creation_datetime = Column(DateTime)
 
     @classmethod
-    def add_task(cls, session, author_id, project_id, contents, due):
+    def add_task(cls, session, author_id, project_id, title, contents, \
+            assigned, due):
         with transaction.manager:
-            task = cls(
-                author_id = author_id,
-                projects_id = project_id,
-                contents = contents,
-                due_datetime = due,
-                completed = False,
-                completed_datetime = None,
-                creation_datetime = datetime.datetime.now(),
+            assigned_user = Users.get_by_email(
+                session = session,
+                email = assigned,
             )
-            session.add(task)
-            transaction.commit()
+            task = None
+            if assigned_user != None:
+                task = cls(
+                    author_id = author_id,
+                    project_id = project_id,
+                    title = title,
+                    contents = contents,
+                    assigned_id = assigned_user.id,
+                    due_datetime = due,
+                    completed = False,
+                    completed_datetime = None,
+                    creation_datetime = datetime.datetime.now(),
+                )
+                session.add(task)
+                transaction.commit()
         return task
 
     @classmethod
@@ -867,8 +885,9 @@ class Tasks(Base):
     @classmethod
     def _build_task_query(cls, session):
         if True:
-            tasks = session.query(
+            task_query = session.query(
                 Tasks.id,
+                Tasks.title,
                 Tasks.contents,
                 Tasks.due_datetime,
                 Tasks.completed,
@@ -881,7 +900,7 @@ class Tasks(Base):
                 Projects.id,
                 Projects.name,
             ).join(
-                Users, Users.id == Tasks.owner_id,
+                Users, Users.id == Tasks.author_id,
             ).join(
                 Projects, Projects.id == Tasks.project_id,
             )
@@ -890,14 +909,14 @@ class Tasks(Base):
     @classmethod
     def get_by_id(cls, session, task_id):
         with transaction.manager:
-            task_query = Tasks._build_task_qury(session)
+            task_query = Tasks._build_task_query(session)
             task = task_query.filter(
                 Tasks.id == task_id,
             ).first()
         return task
 
     @classmethod
-    def get_all_by_project_id(cls, session, project_id):
+    def get_tasks_by_project_id(cls, session, project_id):
         with transaction.manager:
             task_query = Tasks._build_task_query(session)
             tasks = task_query.filter(
@@ -1009,16 +1028,16 @@ class Lists(Base):
             ).join(
                 Users, Users.id == Lists.owner_id,
             ).join(
-                Projects, Projects.id == Projects.project_id,
+                Projects, Projects.id == Lists.project_id,
             )
         return list_query
 
     @classmethod
-    def get_all_by_project_id(cls, session, project_id):
+    def get_lists_by_project_id(cls, session, project_id):
         list_query = Lists._build_list_query(session)
         lists = list_query.filter(
             Lists.project_id == project_id,
-        ).first()
+        ).all()
         return lists
 
     @classmethod
@@ -1344,11 +1363,14 @@ class Actions(Base):
     ticket_id = Column(Integer, ForeignKey('tickets.id'), nullable=True)
     requirement_id = Column(Integer, ForeignKey('requirements.id'), 
         nullable=True)
+    task_id = Column(Integer, ForeignKey('tasks.id'), nullable=True)
+    list_id = Column(Integer, ForeignKey('lists.id'), nullable=True)
     creation_datetime = Column(DateTime)
 
     @classmethod
     def add_action(cls, session, organization_id, user_id, action_type, \
-            subject, project_id, ticket_id, requirement_id):
+            subject, project_id, ticket_id, requirement_id, task_id, \
+            list_id):
         """ Add an action
         """
         with transaction.manager:
@@ -1361,6 +1383,8 @@ class Actions(Base):
                 project_id = project_id,
                 ticket_id = ticket_id,
                 requirement_id = requirement_id,
+                task_id = task_id,
+                list_id = list_id,
                 creation_datetime = datetime.datetime.now(),
             )
             session.add(action)
@@ -1389,6 +1413,8 @@ class Actions(Base):
                 #TicketComments.id,
                 #Requirements.id,
                 #Requirements.title,
+                Tasks.id,
+                Tasks.title,
             ).join(
                 Users, Users.id == Actions.user_id,
             ).join(
@@ -1399,12 +1425,14 @@ class Actions(Base):
                     Actions.project_id, # and \ 
                 #UserProjectAssignments.user_id == \
                 #    user_id,
-            #).outerjoin(
-            #    UserProjectAssignments, UserProjectAssignments.user_id == user_id,
             ).outerjoin(
                 Tickets, Tickets.project_id == Actions.project_id,
             #).outerjoin(
             #    TicketComments, TicketComments.ticket_id == Actions.ticket_id,
+            ).outerjoin(
+                Tasks, Tasks.project_id == Actions.project_id,
+            #).outerjoin(
+            #)
             ).filter(
                 UserProjectAssignments.user_id == user_id,
             #    UserProjectAssignments.project_id == Projects.id,

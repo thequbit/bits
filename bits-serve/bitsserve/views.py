@@ -15,7 +15,13 @@ from utils import (
     get_project,
     get_tickets,
     get_ticket,
-    get_comments,
+    get_ticket_comments,
+    get_tasks,
+    get_task,
+    get_task_comments,
+    get_lists,
+    get_list,
+    get_list_comments,    
 )
 
 from .models import (
@@ -34,6 +40,7 @@ from .models import (
     RequirementTypes,
     Requirements,
     RequirementComments,
+    Tasks,
     Actions,
 )
 
@@ -138,7 +145,10 @@ def project(request):
             
         result['project'] = get_project(user, project_id)
 
+        result['tasks'] = get_tasks(project_id)
+
         result['tickets'] = get_tickets(project_id)
+
 
     #except:
     #    pass
@@ -166,18 +176,10 @@ def ticket(request):
         ticket_id = request.GET['ticket_id']
         #project_id = request.GET['project_id']
 
-        print "\n\nticket: Ticket ID:"
-        print ticket_id
-        print "\n\n"
-
         ticket = get_ticket(ticket_id)
         result['ticket'] = ticket
 
-        print "\n\nticket: Ticket:"
-        print ticket
-        print "\n\n"
-
-        result['comments'] = get_comments(ticket['id'])
+        result['comments'] = get_ticket_comments(ticket['id'])
 
         result['tickets'] = get_tickets(ticket['project_id'])
 
@@ -187,6 +189,43 @@ def ticket(request):
     #    pass
 
     return result #{'ticket': None, 'user': user, 'token': token, 'project': None}
+
+@view_config(route_name='task', renderer='templates/task.mak')
+def task(request):
+
+    result = {}
+    if True:
+    #try:
+
+        result['user'] = None
+        result['token'] = None
+
+        token = request.cookies['token']
+        user = check_auth(token)
+        if user == None:
+            raise Exception('invalid token')
+
+        result['user'] = user
+        result['token'] = token
+
+        task_id = request.GET['task_id']
+        #project_id = request.GET['project_id']
+
+        task = get_task(task_id)
+        result['task'] = task
+
+        result['comments'] = get_task_comments(task['id'])
+
+        result['tasks'] = get_tasks(task['project_id'])
+
+        result['project'] = get_project(user, task['project_id'])
+
+
+    #except:
+    #    pass
+
+    return result #{'ticket': None, 'user': user, 'token': token, 'project': None}
+
 
 @view_config(route_name='newticket', renderer='templates/newticket.mak')
 def new_ticket(request):
@@ -240,6 +279,35 @@ def new_task(request):
         result['project'] = get_project(user, project_id)
 
         result['tickets'] = get_tickets(project_id)
+
+    #except:
+    #    pass
+
+    return result
+
+@view_config(route_name='newlist', renderer='templates/newlist.mak')
+def new_list(request):
+
+    result = {}
+    if True:
+    #try:
+
+        result['user'] = None
+        result['token'] = None
+
+        token = request.cookies['token']
+        user = check_auth(token)
+        if user == None:
+            raise Exception('invalid token')
+
+        result['user'] = user
+        result['token'] = token
+
+        project_id = request.GET['project_id']
+
+        result['project'] = get_project(user, project_id)
+
+        result['lists'] = get_lists(project_id)
 
     #except:
     #    pass
@@ -382,6 +450,8 @@ def create_ticket(request):
             project_id = project_id,
             ticket_id = ticket.id,
             requirement_id = None,
+            task_id = None,
+            list_id = None,
         )
 
 
@@ -401,8 +471,8 @@ def create_project(request):
     result = {}
     result['success'] = False
 
-    #if True:
-    try:
+    if True:
+    #try:
 
         #result['user'] = None
         #result['token'] = None
@@ -448,18 +518,20 @@ def create_project(request):
             project_id = project.id,
             ticket_id = None,
             requirement_id = None,
+            task_id = None,
+            list_id = None,
         )
 
         result['success'] = True
 
-    except:
-        pass
+    #except:
+    #    pass
 
     return make_response(result)
 
 
-@view_config(route_name='create_comment.json')
-def create_comment(request):
+@view_config(route_name='create_ticket_comment.json')
+def create_ticket_comment(request):
 
     """ Get all of the organizations that the user has access to
     """
@@ -501,10 +573,72 @@ def create_comment(request):
             organization_id = 1,
             user_id = user.id,
             action_type = "created",
-            subject = "comment",
+            subject = "ticket_comment",
             project_id = ticket['project_id'],
             ticket_id = ticket_id,
             requirement_id = None,
+            task_id = None,
+            list_id = None,
+        )
+
+        result['success'] = True
+
+    #except:
+    #    pass
+
+    return make_response(result)
+
+@view_config(route_name='create_task.json')
+def create_task(request):
+
+    """ Get all of the organizations that the user has access to
+    """
+
+    result = {}
+    result['success'] = False
+
+    if True:
+    #try:
+
+        token = request.cookies['token']
+        user = check_auth(token)
+        if user == None:
+            raise Exception('invalid token')
+
+        
+        project_id = request.POST['project_id']
+        title = request.POST['title']
+        contents = request.POST['contents']
+        assigned = request.POST['assigned']
+        #due = request.POST['due']
+
+        task = Tasks.add_task(
+            session = DBSession,
+            author_id = user.id,
+            project_id = project_id,
+            title = title,
+            contents = contents,
+            assigned = assigned,
+            due = None, #due,
+        )
+
+        if task == None:
+            result['error_code'] = 1
+            raise Exception('invalid assigned')
+
+        result['task_id'] = task.id
+
+        action = Actions.add_action(
+            session = DBSession,
+            organization_id = 1,
+            user_id = user.id,
+            action_type = "created",
+            subject = "task",
+            project_id = task.id,
+            ticket_id = None,
+            requirement_id = None,
+            task_id = task.id,
+            list_id = None,
         )
 
         result['success'] = True

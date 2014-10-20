@@ -19,15 +19,25 @@ def main(global_config, **settings):
     config.add_static_view('static', 'static', cache_max_age=3600)
 
     config.add_route('index', '/')
+    
     config.add_route('login', '/login')
     config.add_route('logout', '/logout')
-    config.add_route('project', '/project')
+
     config.add_route('tickets', '/tickets')
-    config.add_route('ticket', '/ticket')
+
     config.add_route('newticket', '/newticket')
+    config.add_route('ticket', '/ticket')
+
     config.add_route('newtask', '/newtask')
+    config.add_route('task', '/task')
+
+    config.add_route('newlist', '/newlist')
+    #config.add_route('list', '/list')
+
     config.add_route('newproject', '/newproject')
+    config.add_route('project', '/project')
  
+
 
     config.add_route('authenticate.json', 'authenticate.json')
     config.add_route('get_projects.json', 'get_projects.json')
@@ -35,8 +45,8 @@ def main(global_config, **settings):
 
     config.add_route('create_project.json','create_project.json')
     config.add_route('create_ticket.json','create_ticket.json')
-    config.add_route('create_comment.json','create_comment.json')
-    
+    config.add_route('create_ticket_comment.json','create_ticket_comment.json')
+    config.add_route('create_task.json','create_task.json')    
 
     config.scan()
     return config.make_wsgi_app()

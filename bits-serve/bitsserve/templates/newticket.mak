@@ -6,11 +6,26 @@
 
     % if user and token and project:
 
+    <!--
     <div class="row">
         <div class="large-12 columns">
             <a href="/">Back to Project</a>
         </div>
     </div> 
+    -->
+
+    <div class="row">
+        <div class="medium-12 columns bottom-border">
+            <a href="/">Home</a>
+             >
+            <a href="/project?project_id=${project['id']}">Back to Project</a>
+             > New Ticket
+            <div class="right top-links">
+                <a href="/prjectsettings?project_id=${project['id']}">Settings</a>
+                <a href="/usersettings?user_id=${user.id}">${user.first} ${user.last}</a>
+            </div>
+        </div>
+    </div>
 
     <div class="row">
         <div class="medium-8 columns">
