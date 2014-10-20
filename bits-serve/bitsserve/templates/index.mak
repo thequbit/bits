@@ -91,7 +91,9 @@
                     <div class="box-inner-container">
                         <a href="/project?project_id=${project['id']}">${project['name']}</a>
                         <div class="right">
+                            <!--
                             <div class="box-small-text">r:<b>${project['requirement_count']}</b>t:<b>${project['ticket_count']}</b>n:<b>${project['note_count']}</b></div>
+                            -->
                         </div>
                     </div>
                     % endfor

@@ -18,6 +18,7 @@
 
     % if user and token and project:
 
+    <!--
     <div class="row">
         <div class="large-12 columns">
             <div class="bottom-border" style="display: inline-block;">
@@ -25,11 +26,26 @@
             </div>
             % if user.id == project['owner_id']:
              <div class="right bottom-border">
-                 <a href='/settings'>Project Settings</a>
+                 <a href='/projectsettings'>Project Settings</a>
+                 <a href="/logout">Logout</a>
              </div>
             % endif
         </div>
     </div>
+    -->
+
+    <div class="row">
+        <div class="medium-12 columns bottom-border">
+            <div style="display: inline-block;">
+                <a href="/">Home</a>
+            </div>
+            <div class="right top-links">
+                <a href="/usersettings">Settings</a>
+                <a href="/logout">Logout</a>
+            </div>
+        </div>
+    </div>
+    <br/>
 
     <div class="row">
         <div class="medium-12 columns">
