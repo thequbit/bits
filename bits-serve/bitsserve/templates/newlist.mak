@@ -2,18 +2,20 @@
 
     <style>
 
-        h6 {
-            margin-left: 20px;
+        #list-items a {
+            margin-bottom: 10px !important;
         }
 
         #list-items input {
-            margin-left: 20px !important;
-            width: 75% !important;
+            width: 50% !important;
+            min-width: 380px !important;
+            margin: 0px !important;
         }
 
         #new-item {
-            margin-left: 20px !important;
+            padding-top: 20px;
         }
+
 
  
     </style>
@@ -37,15 +39,20 @@
         <div class="medium-8 columns">
             <div class="container-inner box shadow">
                 <h5>New List<h5>
-                <input type="text" id="list-name" placeholder="liast name"></text>
-                <!--<textarea id="list-contents" placeholder="markdown supported"></textarea>-->
-                <h6 style="margin-left: 20px;">Items</h6>
-                <div id="list-items">
+                <div class="small-light-text padded-bottom">
+                    To create a list, add items by clicking the 'Add Item' link below.
                 </div>
+                <input type="text" id="list-name" placeholder="list name"></text>
+                <!--<textarea id="list-contents" placeholder="markdown supported"></textarea>-->
+                <h6>Items</h6>
+                <div id="list-items" class="container-inner">
+                </div>
+                <div>
                 <a href="#" id="new-item"><div class="small-text">Add Item</div></a>
+                </div>
             </div>
             <br/>
-            <a href="#" id="submit-liast" class="small radius button">Submit</a>
+            <a href="#" id="submit-list" class="small radius button">Submit</a>
         </div>
         <div class="medium-4 columns">
             <div class="box shadow">
@@ -87,15 +94,26 @@
             return text;
         }
 
-        $('#new-item').on('click', function(e) {
+        function add_item() {
             var id = makeid();
-            html = $('#list-items').html();
-            new_html = '<input type="text" + id="' + id + '">';
-            new_html += '<a href="#" id="' + id +'">remove</a>';
-            $('#list-items').html(new_html + html);
+            //html = $('#list-items').html();
+            new_html = '<div style="padding-bottom: 10px;">';
+            new_html += '<input type="text" id="' + id + '">';
+            new_html += '';
+            new_html += '<a href="#" id="' + id +'"><div class="small-text">remove</div></a>';
+            new_html += '</div>';
+            $('#list-items').append(new_html);
+            //$('#list-items').append($('input').attr('id',id).attr('type','text'));
+            
             $('#'+id).on('click', function(e) {
-                // TODO, remove item
-            }
+                
+            });
+            return id;
+        }
+
+        $('#new-item').on('click', function(e) {
+            console.log('adding new item ...');
+            add_item();
         })
 
         $('#submit-list').on('click', function(e) {
@@ -131,7 +149,7 @@
 
         });
 
-        // TODO: hook up submit and close button
+        $(document).ready( function() { add_item(); });
 
     </script>
 

@@ -24,9 +24,7 @@
 
     <div class="row">
         <div class="medium-12 columns bottom-border">
-            <div style="display: inline-block;">
-                <a href="/">Home</a>
-            </div>
+            <a href="/">Home</a>
             <div class="right top-links">
                 <a href="/projectsettings?project_id=${project['id']}">Settings</a>
                 <a href="/usersettings?user_id=${user.id}">${user.first} ${user.last}</a>
@@ -50,7 +48,7 @@
         <div class="medium-4 columns">
             <div class="box shadow list-container">
                 <div class="box-title">
-                    <div class="task-title">Tasks</div>
+                    <div class="task-title"><a href="/tasks?project_id=${project['id']}">Tasks</a></div>
                     <div class="right">
                         <a href="/newtask?project_id=${project['id']}">New</a>
                     </div>
@@ -81,7 +79,7 @@
         <div class="medium-4 columns">
             <div class="box shadow list-container">
                 <div class="box-title">
-                    <div class="ticket-title">Tickets</div>
+                    <div class="ticket-title"><a href="/tickets?project_id=${project['id']}">Tickets</a></div>
                     <div class="right">
                         <a href="/newticket?project_id=${project['id']}">New</a>
                     </div>
@@ -112,7 +110,7 @@
         <div class="medium-4 columns">
             <div class="box shadow list-container">
                 <div class="box-title">
-                    <div class="list-title">Lists</div>
+                    <div class="list-title"><a href="/lists?project_id=${project['id']}">Lists</a></div>
                     <div class="right">
                         <a href="/newlist?project_id=${project['id']}">New</a>
                     </div>
@@ -145,7 +143,7 @@
         <div class="medium-4 columns">
             <div class="box shadow list-container">
                 <div class="box-title"> 
-                    <div class="requirement-title">Requirements</div>
+                    <div class="requirement-title"><a href="/requirements?project_id=${project['id']}">Requirements</a></div>
                     <div class="right">
                         <a href="/newrequirment?project_id=${project['id']}">New</a>
                     </div>
@@ -179,7 +177,7 @@
         <div class="medium-4 columns">
             <div class="box shadow list-container disabled">
                 <div class="box-title">
-                    <div class="milestone-title">Milestones</div>
+                    <div class="milestone-title"><a href="/milestones?project_id=${project['id']}">Milestones</a></div>
                     <div class="right">
                         <!--<a href="/newmilestone?project_id=${project['id']}">New</a>-->
                         <div style="color: #008CBA">New</div>
@@ -214,7 +212,7 @@
         <div class="medium-4 columns">
             <div class="box shadow list-container disabled">
                 <div class="box-title">
-                    <div class="note-title">Notes</div>
+                    <div class="note-title"><a href="/notes?project_id=${project['id']}">Notes</a></div>
                     <div class="right">
                         <!--<a href="/newnote?project_id=${project['id']}">New</a>-->
                         <div style="color: #008CBA">New</div>

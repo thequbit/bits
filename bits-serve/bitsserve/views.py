@@ -100,8 +100,8 @@ def logout(request):
 def index(request):
 
     result = {}
-    if True:
-    #try:
+    #if True:
+    try:
 
         result['user'] = None
         result['token'] = None
@@ -119,8 +119,8 @@ def index(request):
         result['actions'] = get_actions(user, limit=25)
 
 
-    #except:
-    #    pass
+    except:
+        pass
 
     return result #{'token': token, 'user': user, 'projects': projects}
 

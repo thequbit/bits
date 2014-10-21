@@ -13,6 +13,22 @@
     
     <style>
 
+        body {
+            background-color: rgba(0,64,128,0.05);
+        }
+
+        /*
+        div {
+            background-color: white !important;
+        }
+        */
+
+        /*
+        div.row, div.columns {
+            background-color: white;
+        }
+        */
+
         a.extra-small-button {
             /*padding: 0.875rem 1.00rem 0.9375rem !important;*/
             
@@ -29,30 +45,59 @@
             display: inline-block;
         }
 
+        div.task-title a {
+            color: rgba(0,255,0,0.8) !important;
+        }
+
+
         div.ticket-title {
             color: rgba(255,0,0,0.8);
             display: inline-block;
         }
+
+        div.ticket-title a {
+            color: rgba(255,0,0,0.8) !important;
+        }
+
 
         div.list-title {
             color: rgba(0,0,255,0.8);
             display: inline-block;
         }
 
+        div.list-title a {
+            color: rgba(0,0,255,0.8) !important;
+        }
+
+
         div.requirement-title {
             color: rgba(64,64,128,0.8);
             display: inline-block;
         }
+
+        div.requirement-title a {
+            color: rgba(64,64,128,0.8) !important;
+        }
+
 
         div.milestone-title {
             color: rgba(64,128,64,0.8);
             display: inline-block;
         }
 
+        div.milestone-title a {
+            color: rgba(64,128,0,08) !important;
+        }  
+
+
         div.note-title {
             color: rgba(128,64,64,0.8);
             display: inline-block;
         }
+
+         div.note-title a {
+             color: rgba(128,64,64,0.8) !important;
+         }
 
         div.top-links a {
             #margin-left: 10px;
@@ -123,6 +168,7 @@
         }
 
         div.box {
+            background-color: white !important;
             margin-top: 20px;
             padding: 5px;
             /*border: 1px solid #DDD;*/
@@ -155,6 +201,14 @@
 
         div.short-line-height {
             line-height: 100% !important;
+        }
+
+        div.small-text {
+            font-size: 80% !important;
+        }
+
+        div.small-text a {
+            font-size: 80% !important;
         }
 
         div.box-small-text {
@@ -221,7 +275,7 @@
             width: 100%;
             border-bottom: 1px solid #DDD;
             margin-bottom: 10px;
-            background-color: #EEE;
+            background-color: rgba(0,140,186,0.5);
         }
 
         div.title-bar h3 {

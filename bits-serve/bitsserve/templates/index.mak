@@ -6,6 +6,7 @@
         }
 
         div.action-box {
+            background-color: white;
             padding: 10px;
             /*border-top: 1px solid #DDD;*/
         }
@@ -17,6 +18,7 @@
         }
 
         div.action-box p {
+
             color: #BBB;
             margin-top: 10px;
             font-size: 70%;
@@ -138,6 +140,7 @@
                     % endif
                 </div>
             </div>
+            <hr/>
         </div>
 
     </div>
