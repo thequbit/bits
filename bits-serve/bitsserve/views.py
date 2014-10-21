@@ -461,13 +461,14 @@ def create_ticket(request):
         contents = request.POST['contents']
         ticket_type_id = 1 # request.POST['ticket_type_id']
 
-        last_ticket_number, = Tickets.get_last_ticket_number(
+        _last_ticket_number = Tickets.get_last_ticket_number(
             session = DBSession,
             project_id = project_id,
         )
 
         ticket_number = 1;
-        if last_ticket_number != None:
+        if _last_ticket_number != None:
+            last_ticket_number, = _last_ticket_number
             ticket_number = int(last_ticket_number) + 1;
 
         ticket = Tickets.add_ticket(
