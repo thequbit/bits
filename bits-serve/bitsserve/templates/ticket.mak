@@ -43,6 +43,8 @@
             <a href="/">Home</a>
              > 
             <a href="/project?project_id=${project['id']}">Project</a>
+             > 
+            <a href="/tickets?project_id=${project['id']}">Tickets</a>
              > Ticket
             <div class="right top-links">
                 <a href="/usersettings?user_id=${user.id}">${user.first} ${user.last}</a>
@@ -54,7 +56,7 @@
         <div class="medium-8 columns">
         % if ticket:
             <div class="ticket-container">
-                <h3><div class="ticket-title">Ticket</div> : ${ticket['title']}</h3>
+                <h4>Ticket #${ticket['number']} : ${ticket['title']}</h4>
                 <div class="small-light-text">
                     Opened by ${ticket['owner']} on ${ticket['created']}
                 </div>
@@ -123,12 +125,10 @@
 
     <script>
 
-        $('#submit-comment').on('click', function(e) {
-            
-            console.log('sending comment')
-            
-            var token = document.cookie.split('=')[1]; 
-            var url = '/create_ticket_comment.json?token=' + token;
+        function submit_comment(callback) {
+        
+            //var token = document.cookie.split('=')[1]; 
+            var url = '/create_ticket_comment.json';
             var ticket_id = ${ticket['id']}
             //var author_id = localStorage.getItem("user_id")
             //var project_id = ${project['id']};
@@ -148,6 +148,7 @@
                     if( data.success == true ) {
                         console.log('SUCCESS!');
                         window.location.href="/ticket?ticket_id=${ticket['id']}";
+                        callback();
                     }
                 },
                 error: function(data) {
@@ -156,7 +157,41 @@
                     // TODO: report error
                 }
             });
-           
+        }
+
+        function close_ticket() {
+            
+            //var token = document.cookie.split('=')[1]; 
+            var url = '/close_ticket.json';
+            var ticket_id = ${ticket['id']}
+            
+            $.ajax({
+                dataType: 'json',
+                type: 'POST',
+                data: {
+                    ticket_id : ticket_id,
+                },
+                url: url,
+                success: function(data) {
+                    if( data.success == true ) {
+                        window.location.href="/ticket?ticket_id=${ticket['id']}";
+                    }
+                },
+                error: function(data) {
+                    console.log('an error happened while closing ticket ...');
+                    console.log(data)
+                    // TODO: report error
+                }
+            });
+            
+        }
+
+        $('#submit-comment').on('click', function(e) {
+            submit_comment();
+        });
+        
+        $('#submit-comment-and-close').on('click', function(e) {
+            close_ticket();
         });
 
         // TODO: hook up submit and close button

@@ -23,10 +23,9 @@ def main(global_config, **settings):
     config.add_route('login', '/login')
     config.add_route('logout', '/logout')
 
-    config.add_route('tickets', '/tickets')
-
     config.add_route('newticket', '/newticket')
     config.add_route('ticket', '/ticket')
+    config.add_route('tickets', '/tickets')
 
     config.add_route('newtask', '/newtask')
     config.add_route('task', '/task')
@@ -44,8 +43,11 @@ def main(global_config, **settings):
     config.add_route('get_organizations.json', 'get_organizations.json')
 
     config.add_route('create_project.json','create_project.json')
+    
     config.add_route('create_ticket.json','create_ticket.json')
+    config.add_route('close_ticket.json','close_ticket.json')
     config.add_route('create_ticket_comment.json','create_ticket_comment.json')
+    
     config.add_route('create_task.json','create_task.json')    
 
     config.scan()

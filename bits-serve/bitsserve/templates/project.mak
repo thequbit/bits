@@ -22,9 +22,12 @@
 
     % if user and token and project:
 
+
     <div class="row">
         <div class="medium-12 columns bottom-border">
             <a href="/">Home</a>
+             > 
+            Project
             <div class="right top-links">
                 <a href="/projectsettings?project_id=${project['id']}">Settings</a>
                 <a href="/usersettings?user_id=${user.id}">${user.first} ${user.last}</a>
@@ -141,11 +144,12 @@
     </div>
     <div class="row">
         <div class="medium-4 columns">
-            <div class="box shadow list-container">
+            <div class="box shadow list-container disabled">
                 <div class="box-title"> 
                     <div class="requirement-title"><a href="/requirements?project_id=${project['id']}">Requirements</a></div>
                     <div class="right">
-                        <a href="/newrequirment?project_id=${project['id']}">New</a>
+                        <!-- <a href="/newrequirment?project_id=${project['id']}">New</a> -->
+                        <div style="color: #008CBA">New</div>
                     </div>
                 </div>
                 % if not requirements:
@@ -171,8 +175,6 @@
                 % endif                
             </div>
         </div>
-        
-        
         
         <div class="medium-4 columns">
             <div class="box shadow list-container disabled">

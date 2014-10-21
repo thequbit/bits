@@ -640,7 +640,7 @@ class Tickets(Base):
     author_id = Column(Integer, ForeignKey('users.id'))
     project_id = Column(Integer, ForeignKey('projects.id'))
     ticket_type_id = Column(Integer, ForeignKey('tickettypes.id'))
-    number = Column(Integer, autoincrement=True)
+    number = Column(Integer)
     title = Column(Text)
     contents = Column(Text)
     #ticket_priority_id = Column(Integer, ForeignKey('ticketpriorities.id'))
@@ -650,7 +650,7 @@ class Tickets(Base):
 
     @classmethod
     def add_ticket(cls, session, author_id, project_id, ticket_type_id, \
-            title, contents):
+            number, title, contents):
         """ Adds a new ticket to the system
         """
         with transaction.manager:
@@ -658,6 +658,7 @@ class Tickets(Base):
                 author_id = author_id,
                 project_id = project_id,
                 ticket_type_id = ticket_type_id,
+                number = number,
                 title = title,
                 contents = contents,
                 closed = False,
@@ -690,6 +691,7 @@ class Tickets(Base):
         if True:
             ticket_query = session.query(
                 Tickets.id,
+                Tickets.number,
                 Tickets.title,
                 Tickets.contents,
                 Tickets.closed,
@@ -722,13 +724,14 @@ class Tickets(Base):
         return ticket_query
 
     @classmethod
-    def get_tickets_by_project_id(cls, session, project_id):
+    def get_tickets_by_project_id(cls, session, project_id, closed):
         """ Get all of the tickets, and their conents by project id
         """
         with transaction.manager:
             ticket_query = Tickets._build_ticket_query(session)
             tickets = ticket_query.filter(
                 Tickets.project_id == project_id,
+                Tickets.closed == closed,
             ).all()
         return tickets
 
@@ -742,6 +745,21 @@ class Tickets(Base):
                 Tickets.id == ticket_id,
             ).first()
         return ticket
+        
+    @classmethod
+    def get_last_ticket_number(cls, session, project_id):
+        with transaction.manager:
+            last_number = session.query(
+                #Tickets.id,
+                Tickets.number,
+            ).filter(
+                Tickets.project_id == project_id,
+            #).group_by(
+            #    Tickets.id,
+            ).order_by(
+                desc(Tickets.number),
+            ).first();
+        return last_number
 
 class TicketComments(Base):
 

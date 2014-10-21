@@ -155,6 +155,47 @@ def project(request):
 
     return result
 
+@view_config(route_name='tickets', renderer='templates/tickets.mak')
+def tickets(request):
+
+    result = {}
+    if True:
+    #try:
+
+        result['user'] = None
+        result['token'] = None
+
+        token = request.cookies['token']
+        user = check_auth(token)
+        if user == None:
+            raise Exception('invalid token')
+
+        result['user'] = user
+        result['token'] = token
+
+        closed = False
+        try:
+            closed = int(request.GET['closed']);
+        except:
+            pass
+
+        #ticket_id = request.GET['ticket_id']
+        project_id = request.GET['project_id']
+
+        #ticket = get_ticket(ticket_id)
+        #result['ticket'] = ticket
+
+        #result['comments'] = get_ticket_comments(ticket['id'])
+
+        result['tickets'] = get_tickets(project_id, closed)
+
+        result['project'] = get_project(user, project_id)
+
+    #except:
+    #    pass
+
+    return result #{'ticket': None, 'user': user, 'token': token, 'project': None}
+
 @view_config(route_name='ticket', renderer='templates/ticket.mak')
 def ticket(request):
 
@@ -420,24 +461,25 @@ def create_ticket(request):
         contents = request.POST['contents']
         ticket_type_id = 1 # request.POST['ticket_type_id']
 
-        print "\n\ncreate_ticket: project_id: {0}\n\n".format(project_id)
+        last_ticket_number, = Tickets.get_last_ticket_number(
+            session = DBSession,
+            project_id = project_id,
+        )
+
+        ticket_number = 1;
+        if last_ticket_number != None:
+            ticket_number = int(last_ticket_number) + 1;
 
         ticket = Tickets.add_ticket(
             session = DBSession,
             author_id = user.id,
             project_id = project_id,
             ticket_type_id = ticket_type_id,
+            number = ticket_number,
             title = title,
             contents = contents,
             #ticket_priority_id = 1, #ticket_priority_id,
         )
-        #ticket_contents = TicketContents.add_ticket_content(
-        #    session = DBSession,
-        #    author_id = user.id,
-        #    ticket_id = ticket.id,
-        #    title = title,
-        #    contents = contents,
-        #)
 
         result['ticket_id'] = ticket.id
 
@@ -461,6 +503,47 @@ def create_ticket(request):
     #    pass
 
     return make_response(result)
+
+@view_config(route_name='close_ticket.json')
+def close_ticket(request):
+
+    """ Create a new ticket
+    """
+
+    result = {}
+    result['success'] = False
+
+    if True:
+    #try:
+
+        #result['user'] = None
+        #result['token'] = None
+
+        token = request.cookies['token']
+        user = check_auth(token)
+        if user == None:
+            raise Exception('invalid token')
+
+        #result['user'] = user
+        #result['token'] = token
+
+        ticket_id = request.POST['ticket_id']
+        
+        
+        ticket = Tickets.close_ticket(
+            session = DBSession,
+            ticket_id = ticket_id,
+        )
+
+        result['ticket_id'] = ticket.id
+
+        result['success'] = True
+
+    #except:
+    #    pass
+
+    return make_response(result)
+
 
 @view_config(route_name='create_project.json')
 def create_project(request):

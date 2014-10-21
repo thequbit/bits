@@ -138,17 +138,18 @@ def get_project(user, project_id):
 
     return project
 
-def get_tickets(project_id):
+def get_tickets(project_id, closed=False):
 
     _tickets = Tickets.get_tickets_by_project_id(
         session = DBSession,
         project_id = project_id,
+        closed = closed,
     )
 
     tickets = []
-    for t_id, t_title, t_contents, t_closed, t_closed_dt, t_created, \
-            o_first, o_last, o_email, p_id, p_name, p_desc, p_created, \
-            tt_name, tt_desc, tt_color in _tickets:
+    for t_id, t_number, t_title, t_contents, t_closed, t_closed_dt, \
+            t_created, o_first, o_last, o_email, p_id, p_name, p_desc, \
+            p_created, tt_name, tt_desc, tt_color in _tickets:
         if t_closed == False:
             tickets.append({
                 'id': t_id,
@@ -158,6 +159,7 @@ def get_tickets(project_id):
                 'type': tt_name,
                 'type_description': tt_desc,
                 'type_color': tt_color,
+                'number': t_number,
                 'title': t_title,
                 'contents': markdown.markdown(t_contents),
             })
@@ -174,11 +176,12 @@ def get_ticket(ticket_id):
     if _ticket == None:
         raise Exception('no such ticket')
 
-    t_id, t_title, t_contents, t_closed, t_closed_dt, t_created, o_first, \
-        o_last, o_email, p_id, p_name, p_desc, p_created, tt_name, \
+    t_id, t_number, t_title, t_contents, t_closed, t_closed_dt, t_created, \
+        o_first, o_last, o_email, p_id, p_name, p_desc, p_created, tt_name, \
         tt_desc, tt_color = _ticket
     ticket = None
-    if t_closed == False:
+    #if t_closed == False:
+    if True:
         ticket = {
             'id': t_id,
             'project_id': p_id,
@@ -188,6 +191,7 @@ def get_ticket(ticket_id):
             'type': tt_name,
             'type_description': tt_desc,
             'type_color': tt_color,
+            'number': t_number,
             'title': t_title,
             'contents': markdown.markdown(t_contents),
         }

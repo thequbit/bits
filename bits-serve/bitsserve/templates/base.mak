@@ -14,7 +14,8 @@
     <style>
 
         body {
-            background-color: rgba(0,64,128,0.05);
+            /*background-color: rgba(0,64,128,0.05);*/
+            /*background-color: #EEEEEE;*/
         }
 
         /*
@@ -39,6 +40,10 @@
             max-width: 70.0rem;
         }
         */
+
+        div.shrink {
+            display: inline-block;
+        }
 
         div.task-title {
             color: rgba(0,255,0,0.8);
@@ -95,7 +100,7 @@
             display: inline-block;
         }
 
-         div.note-title a {
+        div.note-title a {
              color: rgba(128,64,64,0.8) !important;
          }
 
@@ -147,6 +152,14 @@
         div.right-border {
             padding-right: 3px;
             border-right: 1px solid #DDD;
+        }
+
+        div.normal-text {
+            font-size: 150%;
+        }
+
+        div.small-text {
+            font-size: 80%;
         }
 
         div.light-text {
@@ -275,7 +288,7 @@
             width: 100%;
             border-bottom: 1px solid #DDD;
             margin-bottom: 10px;
-            background-color: rgba(0,140,186,0.5);
+            background-color: rgba(0,140,186,0.2);
         }
 
         div.title-bar h3 {

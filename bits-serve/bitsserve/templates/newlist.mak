@@ -26,7 +26,7 @@
         <div class="medium-12 columns bottom-border">
             <a href="/">Home</a>
              >
-            <a href="/project?project_id=${project['id']}">Back to Project</a>
+            <a href="/project?project_id=${project['id']}">${project['name']}</a>
              > New List
             <div class="right top-links">
                 <a href="/prjectsettings?project_id=${project['id']}">Settings</a>
