@@ -13,6 +13,10 @@
         div.project-description {
             padding: 10px;
         }
+        
+        div.disabled {
+            opacity: .25;
+        }
 
     </style>
 
@@ -170,12 +174,15 @@
             </div>
         </div>
         
+        
+        
         <div class="medium-4 columns">
-            <div class="box shadow list-container">
+            <div class="box shadow list-container disabled">
                 <div class="box-title">
                     <div class="milestone-title">Milestones</div>
                     <div class="right">
-                        <a href="/newmilestone?project_id=${project['id']}">New</a>
+                        <!--<a href="/newmilestone?project_id=${project['id']}">New</a>-->
+                        <div style="color: #008CBA">New</div>
                     </div>
                 </div>
                 % if not milestones:
@@ -205,11 +212,12 @@
         </div>
         
         <div class="medium-4 columns">
-            <div class="box shadow list-container">
+            <div class="box shadow list-container disabled">
                 <div class="box-title">
                     <div class="note-title">Notes</div>
                     <div class="right">
-                        <a href="/newnote?project_id=${project['id']}">New</a>
+                        <!--<a href="/newnote?project_id=${project['id']}">New</a>-->
+                        <div style="color: #008CBA">New</div>
                     </div>
                 </div>
                 % if not notes:
@@ -237,6 +245,9 @@
                 % endif
             </div>
         </div>
+        
+       
+        
     </div>
     <hr/>
 
