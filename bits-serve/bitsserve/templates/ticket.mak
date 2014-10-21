@@ -42,7 +42,7 @@
         <div class="large-12 columns bottom-border">
             <a href="/">Home</a>
              > 
-            <a href="/project?project_id=${project['id']}">Project</a>
+            <a href="/project?project_id=${project['id']}">${project['name']}</a>
              > 
             <a href="/tickets?project_id=${project['id']}">Tickets</a>
              > Ticket
