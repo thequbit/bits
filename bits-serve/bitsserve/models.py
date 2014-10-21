@@ -837,7 +837,7 @@ class Tasks(Base):
     project_id = Column(Integer, ForeignKey('projects.id'))
     title = Column(Text)
     contents = Column(Text)
-    assigned_id = Column(Integer, ForeignKey('users.id'))
+    assigned_id = Column(Integer, ForeignKey('users.id'), nullable=True)
     due_datetime = Column(DateTime, nullable=True)
     completed = Column(Boolean)
     completed_datetime = Column(DateTime, nullable=True)
@@ -847,25 +847,26 @@ class Tasks(Base):
     def add_task(cls, session, author_id, project_id, title, contents, \
             assigned, due):
         with transaction.manager:
-            assigned_user = Users.get_by_email(
-                session = session,
-                email = assigned,
-            )
-            task = None
-            if assigned_user != None:
-                task = cls(
-                    author_id = author_id,
-                    project_id = project_id,
-                    title = title,
-                    contents = contents,
-                    assigned_id = assigned_user.id,
-                    due_datetime = due,
-                    completed = False,
-                    completed_datetime = None,
-                    creation_datetime = datetime.datetime.now(),
+            assigned_user_id = None
+            if assigned != '' and assigned != None:
+                assigned_user = Users.get_by_email(
+                    session = session,
+                    email = assigned,
                 )
-                session.add(task)
-                transaction.commit()
+                assigned_user_id = assigned_user.id
+            task = cls(
+                author_id = author_id,
+                project_id = project_id,
+                title = title,
+                contents = contents,
+                assigned_id = assigned_user_id,
+                due_datetime = due,
+                completed = False,
+                completed_datetime = None,
+                creation_datetime = datetime.datetime.now(),
+            )
+            session.add(task)
+            transaction.commit()
         return task
 
     @classmethod
