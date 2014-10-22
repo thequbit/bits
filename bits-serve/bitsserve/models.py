@@ -101,6 +101,7 @@ class Users(Base):
     pass_hash = Column(Text)
     pass_salt = Column(Text)
     disabled = Column(Boolean)
+    theme = Column(Text)
     creation_datetime = Column(DateTime)
  
     @classmethod
@@ -123,6 +124,7 @@ class Users(Base):
                 pass_hash = pass_hash,
                 pass_salt = pass_salt,
                 disabled = False,
+                theme = 'light', # default
                 creation_datetime = datetime.datetime.now(),
             )
             session.add(user)

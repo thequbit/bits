@@ -100,6 +100,28 @@ def logout(request):
 
     return result
 
+@view_config(route_name='usersettings', renderer='templates/usersettings.mak')
+def usersettings(request):
+
+    result = {}
+    if True:
+    #try:
+        result['user'] = None
+        result['token'] = None
+
+        token = request.cookies['token']
+        user = check_auth(token)
+        if user == None:
+            raise Exception('invalid token')
+
+        result['user'] = user
+        result['token'] = token
+
+    #except:
+    #    pass
+
+    return result
+
 @view_config(route_name='projectsettings', renderer='templates/projectsettings.mak')
 def projectsettings(request):
 

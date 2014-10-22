@@ -12,34 +12,43 @@
     <link rel="stylesheet" href="static/foundation/css/foundation.css" />
     
     <style>
+        
+        % if not user.theme or user.theme == 'light':
 
-        body {
-            /*background-color: rgba(0,64,128,0.05);*/
-            /*background-color: #EEEEEE;*/
-        }
+            <!-- default theme (light) -->
 
-        /*
-        div {
-            background-color: white !important;
-        }
-        */
-
-        /*
-        div.row, div.columns {
-            background-color: white;
-        }
-        */
-
+            div.title-bar {
+                background-color: rgba(0,140,186,0.2) !important;
+            }
+            
+        % elif user.theme == 'dark':
+        
+            <!-- dark theme  -->
+        
+            body {
+                color: #CCCCCC !important;
+                background-color: #050505 !important;
+            }
+            
+            h1, h2, h3, h4, h5, h6, h7, h8, h9 {
+                color: #CCCCCC !important;
+            }
+            
+            input, textarea {
+                color: #CCCCCC !important;
+                background-color: #202020 !important;
+            }
+            
+            div.title-bar {
+                background-color: rgba(0,140,186,0.6) !important;
+            }
+            
+        % endif
+        
         a.extra-small-button {
             /*padding: 0.875rem 1.00rem 0.9375rem !important;*/
             
         }
-
-        /*
-        div.row {
-            max-width: 70.0rem;
-        }
-        */
 
         div.shrink {
             display: inline-block;
@@ -122,7 +131,7 @@
         }
 
         div.shadow {
-             box-shadow: 0px 0px 0px 1px #DDD, 0px 4px 8px rgba(221, 221, 221, 0.9);
+            box-shadow: 0px 0px 0px 1px #DDD, 0px 4px 8px rgba(221, 221, 221, 0.9);
         }
 
         div.error-box {
@@ -181,7 +190,7 @@
         }
 
         div.box {
-            background-color: white !important;
+            /*background-color: white !important;*/
             margin-top: 20px;
             padding: 5px;
             /*border: 1px solid #DDD;*/
@@ -236,23 +245,10 @@
             padding-right: 5px;
         }
 
-
-
         div.block-container {
             border: 1px solid #DDD;
             border-radius: 2px;
         }
-
-        /*
-        div.block-title {
-            border-top-left-radius: 8px;
-            border-top-right-radius: 8px;
-            padding-left: 10px;
-            background-color: #DDD;
-            color: #333;
-            border-bottom: 1px solid #DDD;
-        }
-        */
 
         div.block-contents {
             padding: 10px;
@@ -292,13 +288,38 @@
             width: 100%;
             border-bottom: 1px solid #DDD;
             margin-bottom: 10px;
-            background-color: rgba(0,140,186,0.2);
+            
         }
 
         div.title-bar h3 {
             margin-bottom: 0.15rem !important;
         }
 
+        div.action-box {
+            /* background-color: white; */
+            padding: 10px;
+        }
+
+        div.action-box {
+            margin-top: 10px;
+        }
+
+        div.action-box p {
+            color: #BBB;
+            margin-top: 10px;
+            font-size: 70%;
+            padding-left: 20px;
+        }
+
+        input[type="checkbox"] {
+            margin: 0px 0px 0.5rem;
+            margin-right: 8px !important;
+            
+        }
+    
+        div.box h5 {
+            margin-bottom: 0px;
+        }
 
     </style>
 

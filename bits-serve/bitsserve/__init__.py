@@ -22,6 +22,8 @@ def main(global_config, **settings):
     
     config.add_route('login', '/login')
     config.add_route('logout', '/logout')
+    
+    config.add_route('usersettings', '/usersettings')
 
     config.add_route('newticket', '/newticket')
     config.add_route('ticket', '/ticket')

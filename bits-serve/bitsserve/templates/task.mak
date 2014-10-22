@@ -45,7 +45,7 @@
             <a href="/project?project_id=${project['id']}">Project</a>
              > Task
             <div class="right top-links">
-                <a href="/usersettings?user_id=${user.id}">${user.first} ${user.last}</a>
+                <a href="/usersettings">${user.first} ${user.last}</a>
             </div>
         </div>
     </div>

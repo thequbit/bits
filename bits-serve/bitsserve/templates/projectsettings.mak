@@ -2,18 +2,6 @@
 
     <style>
     
-        
-        input[type="checkbox"] {
-            margin: 0px 0px 0.5rem;
-            margin-right: 8px !important;
-            
-        }
-    
-        div.box h5 {
-            margin-bottom: 0px;
-        }
-        
-        
     </style>
     
     <div class="row">
@@ -23,8 +11,7 @@
             <a href="/project?project_id=${project['id']}">${project['name']}</a>
              > Settings
             <div class="right top-links">
-                <a href="/projectsettings?project_id=${project['id']}">Settings</a>
-                <a href="/usersettings?user_id=${user.id}">${user.first} ${user.last}</a>
+                <a href="/usersettings">${user.first} ${user.last}</a>
             </div>
         </div>
     </div>
@@ -32,6 +19,8 @@
     <div class="row">
         <div class="medium-12 columns">
             <h5>Project Settings</h5>
+            </br>
+            <a class="small button round">Save Settings</a>
         </div>
     </div>
     

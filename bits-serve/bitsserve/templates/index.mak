@@ -1,62 +1,6 @@
 <%inherit file="base.mak"/>
 
     <style>
-    
-        div.actions-feed {
-        }
-
-        div.action-box {
-            background-color: white;
-            padding: 10px;
-            /*border-top: 1px solid #DDD;*/
-        }
-
-        div.action-box {
-        /*    box-shadow: 0px 0px 0px 1px #DDD, 0px 4px 8px rgba(221, 221, 221, 0.9);*/
-            margin-top: 10px;
-            /*margin-bottom: 20px;*/
-        }
-
-        div.action-box p {
-
-            color: #BBB;
-            margin-top: 10px;
-            font-size: 70%;
-            padding-left: 20px;
-        }
-
-        div.small-light-text {
-            font-size: 80%;
-            color: #BBB;
-        }
-
-        /*
-        div.box {
-            padding: 5px;
-            border: 2px solid #DDD;
-            border-radius: 4px;
-        }
-        
-        div.box-title {
-            margin-bottom: 6px;
-            border-bottom: 2px solid #DDD;
-            border-top-left-radius: 4px;
-            border-rop-right-radius: 4px;
-            padding-bottom: 2px;
-        }
-
-        div.box-small-text {
-            font-size: 80%;
-        }
-        
-        div.box-small-text b {
-            padding-right: 5px;
-        }
-
-        div.indent {
-            padding-left: 20px;
-        }
-        */
 
     </style>
 
@@ -65,7 +9,7 @@
     <div class="row">
         <div class="medium-12 columns bottom-border">
             <div class="right top-links">
-                <a href="/usersettings?user_id=${user.id}">${user.first} ${user.last}</a>
+                <a href="/usersettings">${user.first} ${user.last}</a>
             </div>
         </div>
     </div>

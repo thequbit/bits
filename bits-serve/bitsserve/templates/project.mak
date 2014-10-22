@@ -30,7 +30,7 @@
             Project
             <div class="right top-links">
                 <a href="/projectsettings?project_id=${project['id']}">Settings</a>
-                <a href="/usersettings?user_id=${user.id}">${user.first} ${user.last}</a>
+                <a href="/usersettings">${user.first} ${user.last}</a>
             </div>
         </div>
     </div>
