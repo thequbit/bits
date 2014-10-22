@@ -10,6 +10,10 @@ from sqlalchemy.exc import DBAPIError
 import markdown
 
 from utils import (
+
+    make_response,
+    check_auth,
+
     get_actions,
     get_user_projects,
     get_project,
@@ -44,24 +48,24 @@ from .models import (
     Actions,
 )
 
-def make_response(resp_dict):
-
-    print "[DEBUG]"
-    print resp_dict
-    print '\n'
-    
-    resp = Response(json.dumps(resp_dict), content_type='application/json', charset='utf8')
-    resp.headerlist.append(('Access-Control-Allow-Origin', '*'))
-    
-    return resp
-
-def check_auth(token):
-    
-    user = LoginTokens.check_authentication(
-        session = DBSession,
-        token = token,
-    )
-    return user
+#def make_response(resp_dict):
+#
+#    print "[DEBUG]"
+#    print resp_dict
+#    print '\n'
+#    
+#    resp = Response(json.dumps(resp_dict), content_type='application/json', charset='utf8')
+#    resp.headerlist.append(('Access-Control-Allow-Origin', '*'))
+#    
+#    return resp
+#
+#def check_auth(token):
+#    
+#    user = LoginTokens.check_authentication(
+#        session = DBSession,
+#        token = token,
+#    )
+#    return user
 
 @view_config(route_name='login', renderer='templates/login.mak')
 def login(request):
@@ -90,6 +94,37 @@ def logout(request):
             session = DBSession,
             token = token,
         )
+
+    #except:
+    #    pass
+
+    return result
+
+@view_config(route_name='projectsettings', renderer='templates/projectsettings.mak')
+def projectsettings(request):
+
+    result = {}
+    if True:
+    #try:
+        result['user'] = None
+        result['token'] = None
+
+        token = request.cookies['token']
+        user = check_auth(token)
+        if user == None:
+            raise Exception('invalid token')
+
+        result['user'] = user
+        result['token'] = token
+
+        project_id = request.GET['project_id']
+            
+        result['project'] = get_project(user, project_id)
+
+        result['tasks'] = get_tasks(project_id)
+
+        result['tickets'] = get_tickets(project_id)
+
 
     #except:
     #    pass

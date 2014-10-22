@@ -188,6 +188,10 @@
             #border-radius: 4px;
         }
 
+        div.box h6 {
+            margin-bottom: 0px;
+        }
+
         div.box-title {
             margin-bottom: 8px;
             border-bottom: 1px solid #DDD;

@@ -70,10 +70,9 @@
         </div>
     </div>
     <br/>
+    
     <div class="row">
-         <div class="medium-4 columns">
-            <div class="row">
-            <div class="medium-12 columns">
+        <div class="medium-4 columns">
             <h5>Collections</h5>
             <div class="box shadow list-container">
                 <div class="box-title">
@@ -88,29 +87,58 @@
                     </div>
                 % else:
                     % for project in projects:
-                    <!--<div class="indent">-->
-                    <div class="box-inner-container">
-                        <a href="/project?project_id=${project['id']}">${project['name']}</a>
-                        <div class="right">
-                            <!--
-                            <div class="box-small-text">r:<b>${project['requirement_count']}</b>t:<b>${project['ticket_count']}</b>n:<b>${project['note_count']}</b></div>
-                            -->
-                        </div>
-                    </div>
-                    % endfor
-                    % if len(projects) > 5:
-                    <div class="row">
-                        <div class="medium-12 columns">
-                            <div class="right" style="padding-right: 5px;">
-                                <a href="/tickets?project_id=${project['id']}">view all</a>
+                        <!--<div class="indent">-->
+                        <div class="box-inner-container">
+                            <a href="/project?project_id=${project['id']}">${project['name']}</a>
+                            <div class="right">
+                                
                             </div>
                         </div>
-                    </div>
+                    % endfor
+                    % if len(projects) > 5:
+                        <div class="row">
+                            <div class="medium-12 columns">
+                                <div class="right" style="padding-right: 5px;">
+                                    <a href="/projects">view all</a>
+                                </div>
+                            </div>
+                        </div>
                     % endif
                 % endif
             </div>
             <hr/>
-            </div>
+            
+            <div class="box shadow list-container">
+                <div class="box-title">
+                    Customers
+                    <div class="right">
+                        <a href="/newcustomer">New Customer</a>
+                    </div>
+                </div>
+                % if not customers:
+                    <div class="indent">
+                        <div class="small-light-text">No customers yet.</div>
+                    </div>
+                % else:
+                    % for customer in customers:
+                        <!--<div class="indent">-->
+                        <div class="box-inner-container">
+                            <a href="/customer?customer_id=${customer['id']}">${customer['name']}</a>
+                            <div class="right">
+                                
+                            </div>
+                        </div>
+                    % endfor
+                    % if len(customers) > 5:
+                        <div class="row">
+                            <div class="medium-12 columns">
+                                <div class="right" style="padding-right: 5px;">
+                                    <a href="/customers">view all</a>
+                                </div>
+                            </div>
+                        </div>
+                    % endif
+                % endif
             </div>
         </div>
 

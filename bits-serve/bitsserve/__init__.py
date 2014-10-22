@@ -35,6 +35,7 @@ def main(global_config, **settings):
 
     config.add_route('newproject', '/newproject')
     config.add_route('project', '/project')
+    config.add_route('projectsettings', '/projectsettings')
  
 
 
