@@ -20,7 +20,7 @@
 
     </style>
 
-    % if user and token and project:
+    % if user and project:
 
 
     <div class="row">

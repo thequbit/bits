@@ -337,7 +337,7 @@
 </head>
 <body>
 
-    % if token == None or user == None:
+    % if user == None:
 
         <script>
             window.location.href = "/login";

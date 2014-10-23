@@ -1,5 +1,7 @@
 <%inherit file="base.mak"/>
 
+    % if user and project:
+
     <style>
     
     </style>
@@ -84,4 +86,6 @@
             <hr/>
         </div>
     </div>
+    
+    % endif
     

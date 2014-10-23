@@ -12,17 +12,26 @@ import markdown
 from utils import (
 
     make_response,
+    
     check_auth,
+    do_login,
 
+    create_action,
     get_actions,
+    
+    create_new_project,
     get_user_projects,
     get_project,
+    
+    create_new_ticket,
     get_tickets,
     get_ticket,
     get_ticket_comments,
+    
     get_tasks,
     get_task,
     get_task_comments,
+    
     get_lists,
     get_list,
     get_list_comments,    
@@ -48,25 +57,6 @@ from .models import (
     Actions,
 )
 
-#def make_response(resp_dict):
-#
-#    print "[DEBUG]"
-#    print resp_dict
-#    print '\n'
-#    
-#    resp = Response(json.dumps(resp_dict), content_type='application/json', charset='utf8')
-#    resp.headerlist.append(('Access-Control-Allow-Origin', '*'))
-#    
-#    return resp
-#
-#def check_auth(token):
-#    
-#    user = LoginTokens.check_authentication(
-#        session = DBSession,
-#        token = token,
-#    )
-#    return user
-
 @view_config(route_name='login', renderer='templates/login.mak')
 def login(request):
 
@@ -75,21 +65,12 @@ def login(request):
 @view_config(route_name='logout', renderer='templates/logout.mak')
 def logout(request):
 
-    result = {}
+    result = {'user': None}
     if True:
     #try:
 
-        result['user'] = None
-        result['token'] = None
-
-        token = request.cookies['token']
-        user = check_auth(token)
-        if user == None:
-            raise Exception('invalid token')
-
-        #result['user'] = user
-        #result['token'] = token
-
+        user, token = check_auth(request)
+        
         LoginTokens.logout(
             session = DBSession,
             token = token,
@@ -103,19 +84,12 @@ def logout(request):
 @view_config(route_name='usersettings', renderer='templates/usersettings.mak')
 def usersettings(request):
 
-    result = {}
+    result = {'user': None}
     if True:
     #try:
-        result['user'] = None
-        result['token'] = None
 
-        token = request.cookies['token']
-        user = check_auth(token)
-        if user == None:
-            raise Exception('invalid token')
-
+        user, token = check_auth(request)
         result['user'] = user
-        result['token'] = token
 
     #except:
     #    pass
@@ -125,19 +99,12 @@ def usersettings(request):
 @view_config(route_name='projectsettings', renderer='templates/projectsettings.mak')
 def projectsettings(request):
 
-    result = {}
+    result = {'user': None}
     if True:
     #try:
-        result['user'] = None
-        result['token'] = None
 
-        token = request.cookies['token']
-        user = check_auth(token)
-        if user == None:
-            raise Exception('invalid token')
-
+        user, token = check_auth(request)
         result['user'] = user
-        result['token'] = token
 
         project_id = request.GET['project_id']
             
@@ -156,47 +123,32 @@ def projectsettings(request):
 @view_config(route_name='index', renderer='templates/index.mak')
 def index(request):
 
-    result = {}
-    #if True:
-    try:
+    result = {'user': None}
+    if True:
+    #try:
 
-        result['user'] = None
-        result['token'] = None
-
-        token = request.cookies['token']
-        user = check_auth(token)
-        if user == None:
-            raise Exception('invalid token')
-
+        user, token = check_auth(request)
         result['user'] = user
-        result['token'] = token
 
         result['projects'] = get_user_projects(user)
 
         result['actions'] = get_actions(user, limit=25)
 
 
-    except:
-        pass
+    #except:
+    #    pass
 
     return result #{'token': token, 'user': user, 'projects': projects}
 
 @view_config(route_name='project', renderer='templates/project.mak')
 def project(request):
 
-    result = {}
+    result = {'user': None}
     if True:
     #try:
-        result['user'] = None
-        result['token'] = None
 
-        token = request.cookies['token']
-        user = check_auth(token)
-        if user == None:
-            raise Exception('invalid token')
-
+        user, token = check_auth(request)
         result['user'] = user
-        result['token'] = token
 
         project_id = request.GET['project_id']
             
@@ -215,20 +167,12 @@ def project(request):
 @view_config(route_name='tickets', renderer='templates/tickets.mak')
 def tickets(request):
 
-    result = {}
+    result = {'user': None}
     if True:
     #try:
 
-        result['user'] = None
-        result['token'] = None
-
-        token = request.cookies['token']
-        user = check_auth(token)
-        if user == None:
-            raise Exception('invalid token')
-
+        user, token = check_auth(request)
         result['user'] = user
-        result['token'] = token
 
         project_id = int(request.GET['project_id'])
 
@@ -254,28 +198,24 @@ def tickets(request):
 @view_config(route_name='ticket', renderer='templates/ticket.mak')
 def ticket(request):
 
-    result = {}
+    result = {'user': None}
     if True:
     #try:
 
-        result['user'] = None
-        result['token'] = None
-
-        token = request.cookies['token']
-        user = check_auth(token)
-        if user == None:
-            raise Exception('invalid token')
-
+        user, token = check_auth(request)
         result['user'] = user
-        result['token'] = token
 
         ticket_id = request.GET['ticket_id']
         #project_id = request.GET['project_id']
 
-        ticket = get_ticket(ticket_id)
+        ticket = get_ticket(
+            user_id = user.id, 
+            ticket_id = ticket_id,
+        )
+        
         result['ticket'] = ticket
 
-        result['comments'] = get_ticket_comments(ticket['id'])
+        result['comments'] = get_ticket_comments(user.id, ticket['id'])
 
         result['tickets'] = get_tickets(ticket['project_id'])
 
@@ -289,20 +229,13 @@ def ticket(request):
 @view_config(route_name='task', renderer='templates/task.mak')
 def task(request):
 
-    result = {}
+    result = {'user': None}
     if True:
     #try:
 
-        result['user'] = None
-        result['token'] = None
-
-        token = request.cookies['token']
-        user = check_auth(token)
-        if user == None:
-            raise Exception('invalid token')
-
+        user, token = check_auth(request)
         result['user'] = user
-        result['token'] = token
+
 
         task_id = request.GET['task_id']
         #project_id = request.GET['project_id']
@@ -326,20 +259,12 @@ def task(request):
 @view_config(route_name='newticket', renderer='templates/newticket.mak')
 def new_ticket(request):
 
-    result = {}
+    result = {'user': None}
     if True:
     #try:
-
-        result['user'] = None
-        result['token'] = None
-
-        token = request.cookies['token']
-        user = check_auth(token)
-        if user == None:
-            raise Exception('invalid token')
-
+    
+        user, token = check_auth(request)
         result['user'] = user
-        result['token'] = token
 
         project_id = request.GET['project_id']
 
@@ -355,20 +280,12 @@ def new_ticket(request):
 @view_config(route_name='newtask', renderer='templates/newtask.mak')
 def new_task(request):
 
-    result = {}
+    result = {'user': None}
     if True:
     #try:
 
-        result['user'] = None
-        result['token'] = None
-
-        token = request.cookies['token']
-        user = check_auth(token)
-        if user == None:
-            raise Exception('invalid token')
-
+        user, token = check_auth(request)
         result['user'] = user
-        result['token'] = token
 
         project_id = request.GET['project_id']
 
@@ -384,20 +301,12 @@ def new_task(request):
 @view_config(route_name='newlist', renderer='templates/newlist.mak')
 def new_list(request):
 
-    result = {}
+    result = {'user': None}
     if True:
     #try:
 
-        result['user'] = None
-        result['token'] = None
-
-        token = request.cookies['token']
-        user = check_auth(token)
-        if user == None:
-            raise Exception('invalid token')
-
+        user, token = check_auth(request)
         result['user'] = user
-        result['token'] = token
 
         project_id = request.GET['project_id']
 
@@ -414,21 +323,13 @@ def new_list(request):
 @view_config(route_name='newproject', renderer='templates/newproject.mak')
 def new_project(request):
 
-   
-    result = {}
+    result = {'user': None}
     #if True:
     try:
 
-        result['user'] = None
-        result['token'] = None
-
-        token = request.cookies['token']
-        user = check_auth(token)
-        if user == None:
-            raise Exception('invalid token')
+        user, token = check_auth(request)
 
         result['user'] = user
-        result['token'] = token
 
         result['projects'] = get_projects(user);
 
@@ -444,10 +345,10 @@ def authenticate(request):
     """ End-point to authenticate user, and return a login token
     """
 
-    result = {}
+    result = {'user': None}
     result['success'] = False
-    #if True:
-    try:
+    if True:
+    #try:
         try:
             email = request.GET['email']
             password = request.GET['password']
@@ -456,35 +357,20 @@ def authenticate(request):
             result['error_code'] = 1
             raise Exception('error')
 
-        user, token = LoginTokens.do_login(
-            session = DBSession,
-            email = email,
-            password = password,
-        )
+        user, token = do_login(email, password)
 
-        if token == None:
+        if user == None or token == None:
             result['error_text'] = 'Invalid Credentials'
             result['error_code'] = 2
             raise Exception('error')
 
-        user_type = UserTypes.user_type_from_id(
-            session = DBSession,
-            user_type_id = user.user_type_id,
-        )
-
         result['token'] = token
-        result['user'] = {
-            'first': user.first,
-            'last': user.last,
-            'email': user.email,
-            'user_type': user_type.name,
-            'user_type_description': user_type.description,
-        }
+        result['user'] = user
 
         result['success'] = True
 
-    except:
-        pass
+    #except:
+    #    pass
 
     return make_response(result)
 
@@ -494,64 +380,28 @@ def create_ticket(request):
     """ Create a new ticket
     """
 
-    result = {}
+    result = {'user': None}
     result['success'] = False
 
     if True:
     #try:
 
-        #result['user'] = None
-        #result['token'] = None
-
-        token = request.cookies['token']
-        user = check_auth(token)
-        if user == None:
-            raise Exception('invalid token')
-
-        #result['user'] = user
-        #result['token'] = token
+        user, token = check_auth(request)
 
         project_id = request.POST['project_id']
         title = request.POST['title']
         contents = request.POST['contents']
         ticket_type_id = 1 # request.POST['ticket_type_id']
 
-        _last_ticket_number = Tickets.get_last_ticket_number(
-            session = DBSession,
-            project_id = project_id,
-        )
-
-        ticket_number = 1;
-        if _last_ticket_number != None:
-            last_ticket_number, = _last_ticket_number
-            ticket_number = int(last_ticket_number) + 1;
-
-        ticket = Tickets.add_ticket(
-            session = DBSession,
-            author_id = user.id,
+        ticket = create_new_ticket(
+            user_id = user.id,
             project_id = project_id,
             ticket_type_id = ticket_type_id,
-            number = ticket_number,
             title = title,
             contents = contents,
-            #ticket_priority_id = 1, #ticket_priority_id,
         )
 
         result['ticket_id'] = ticket.id
-
-        action = Actions.add_action(
-            session = DBSession,
-            organization_id = 1,
-            user_id = user.id,
-            action_type = "created",
-            subject = "ticket",
-            project_id = project_id,
-            ticket_id = ticket.id,
-            requirement_id = None,
-            task_id = None,
-            list_id = None,
-        )
-
 
         result['success'] = True
 
@@ -566,22 +416,13 @@ def close_ticket(request):
     """ Create a new ticket
     """
 
-    result = {}
+    result = {'user': None}
     result['success'] = False
 
     if True:
     #try:
 
-        #result['user'] = None
-        #result['token'] = None
-
-        token = request.cookies['token']
-        user = check_auth(token)
-        if user == None:
-            raise Exception('invalid token')
-
-        #result['user'] = user
-        #result['token'] = token
+        user, token = check_auth(request)
 
         ticket_id = request.POST['ticket_id']
         
@@ -603,64 +444,26 @@ def close_ticket(request):
 
 @view_config(route_name='create_project.json')
 def create_project(request):
-
     """ Create a new project
     """
 
-    result = {}
-    result['success'] = False
-
+    result = {'user': None}
     if True:
     #try:
 
-        #result['user'] = None
-        #result['token'] = None
+        user, token = check_auth(request)
 
-        token = request.cookies['token']
-        user = check_auth(token)
-        if user == None:
-            raise Exception('invalid token')
-
-        #result['user'] = user
-        #result['token'] = token
-
-        #project_id = request.POST['project_id']
         name = request.POST['name']
         description = request.POST['description']
-        #ticket_type_id = 1 # request.POST['ticket_type_id']
 
-        project = Projects.add_project(
-            session = DBSession,
-            author_id = user.id,
-            organization_id = 1,
+        project = create_new_project(
+            user_id = user.id, 
             name = name,
             description = description,
-            #project_id = project_id,
-            #ticket_type_id = ticket_type_id,
-            #ticket_priority_id = 1, #ticket_priority_id,
         )
-
-        assignment = UserProjectAssignments.assign_user_to_project(
-            session = DBSession,
-            user_id = user.id,
-            project_id = project.id,
-        )
-
+        
         result['project_id'] = project.id
-
-        action = Actions.add_action(
-            session = DBSession,
-            organization_id = 1,
-            user_id = user.id,
-            action_type = "created",
-            subject = "project",
-            project_id = project.id,
-            ticket_id = None,
-            requirement_id = None,
-            task_id = None,
-            list_id = None,
-        )
-
+        
         result['success'] = True
 
     #except:
@@ -671,54 +474,31 @@ def create_project(request):
 
 @view_config(route_name='create_ticket_comment.json')
 def create_ticket_comment(request):
-
     """ Get all of the organizations that the user has access to
     """
 
-    result = {}
+    result = {'user': None}
     result['success'] = False
 
     if True:
     #try:
 
-        token = request.cookies['token']
-        user = check_auth(token)
-        if user == None:
-            raise Exception('invalid token')
+        user, token = check_auth(request)
 
         #author_id = request.POST['author_id']
         #project_id = request.POST['project_id']
         ticket_id = request.POST['ticket_id']
         contents = request.POST['contents']
-
-        #ticket = Tickets.get_by_id(
-        #    session = DBSession,
-        #    ticket_id = ticket_id,
-        #)
-
+        
         ticket = get_ticket(ticket_id)
 
-        ticket_comment = TicketComments.add_ticket_comment(
-            session = DBSession,
-            author_id = user.id,
-            ticket_id = ticket['id'],
+        ticket_comment = create_new_ticket_comment(
+            user.id,
+            ticket_id = ticket_id,
             contents = contents,
         )
 
         result['ticket_comment_id'] = ticket_comment.id
-
-        action = Actions.add_action(
-            session = DBSession,
-            organization_id = 1,
-            user_id = user.id,
-            action_type = "created",
-            subject = "ticket_comment",
-            project_id = ticket['project_id'],
-            ticket_id = ticket_id,
-            requirement_id = None,
-            task_id = None,
-            list_id = None,
-        )
 
         result['success'] = True
 
@@ -729,22 +509,17 @@ def create_ticket_comment(request):
 
 @view_config(route_name='create_task.json')
 def create_task(request):
-
     """ Get all of the organizations that the user has access to
     """
-
-    result = {}
+    
+    result = {'user': None}
     result['success'] = False
 
     if True:
     #try:
 
-        token = request.cookies['token']
-        user = check_auth(token)
-        if user == None:
-            raise Exception('invalid token')
+        user, token = check_auth(request)
 
-        
         project_id = request.POST['project_id']
         title = request.POST['title']
         contents = request.POST['contents']

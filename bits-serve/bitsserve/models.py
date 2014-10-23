@@ -749,6 +749,16 @@ class Tickets(Base):
         return ticket
         
     @classmethod
+    def get_raw_ticket_by_id(cls, session, ticket_id):
+        with transaction.manager:
+            ticket = session.query(
+                Tickets,
+            ).filter(
+                Tickets.id == ticket_id,
+            ).first()
+        return ticket
+        
+    @classmethod
     def get_last_ticket_number(cls, session, project_id):
         with transaction.manager:
             last_number = session.query(

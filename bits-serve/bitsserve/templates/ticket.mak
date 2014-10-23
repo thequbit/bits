@@ -1,6 +1,6 @@
 <%inherit file="base.mak"/>
 
-    % if token and user and ticket and project:
+    % if user and ticket and project:
 
     <style>
     
@@ -72,11 +72,7 @@
                 <div class="small-light-text">
                     Opened by ${ticket['owner']} on ${ticket['created']}
                 </div>
-                <!--
-                <div class="block-type" style="background-color: ${ticket['type_color']};">
-                    <a href="/projecttype?token=${token}&type=${ticket['type']}">${ticket['type']}</a>
-                </div>
-                -->
+               
                 <div class="indent indent-right">
                     <div class="box shadow">
                         <div class="container-inner">

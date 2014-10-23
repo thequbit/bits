@@ -38,40 +38,79 @@ def make_response(resp_dict):
 
     return resp
 
-def check_auth(token):
+def do_login(email, password):
 
+    _user, token = LoginTokens.do_login(
+        session = DBSession,
+        email = email,
+        password = password,
+    )
+    
+    user = None
+    user_type = None
+    if _user != None:
+        user_type = UserTypes.user_type_from_id(
+            session = DBSession,
+            user_type_id = _user.user_type_id,
+        )
+        
+        user = {
+            'first': _user.first,
+            'last': _user.last,
+            'email': _user.email,
+            'user_type': user_type.name,
+            'user_type_description': user_type.description,
+        }
+        
+    return user, token
+
+def check_auth(request):
+
+    try:
+        token = request.cookies['token']
+        if token == None or token == '':
+            raise Exception('invalid token format')
+    except:
+        pass
+        
+    try:
+        token = request.GET['token']
+        if token == None or token == '':
+            raise Exception('invalid token format')
+    except:
+        pass
+        
+    if token == None or token == '':
+        raise Exception('Invalid Token')
+        
     user = LoginTokens.check_authentication(
         session = DBSession,
         token = token,
     )
-    return user
+    
+    if user == None:
+        raise Exception('Invalid token')
+    
+    return user, token
 
-def get_user_projects(user):
+def create_action(user_id, action_type, subject, project_id=None, \
+        ticket_id=None, requirement_id=None, task_id=None, \
+        list_id=None):
 
-
-    _projects = Projects.get_projects_from_user_id(
+    action = Actions.add_action(
         session = DBSession,
-        user_id = user.id,
+        organization_id = 1,
+        user_id = user_id,
+        action_type = action_type,
+        subject = subject,
+        project_id = project_id,
+        ticket_id = ticket_id,
+        requirement_id = requirement_id,
+        task_id = task_id,
+        list_id = list_id,
     )
 
-    projects = []
-    for upa_id, upa_disabled, p_id, p_name, p_desc, p_created, \
-            p_disabled, o_first, o_last, o_email, r_count, t_count \
-            in _projects:
-        if upa_disabled == False and p_disabled == False:
-            projects.append({
-                'id': p_id,
-                'name': p_name,
-                'description': p_desc,
-                'created': p_created.strftime("%b %d, %Y"),
-                'owner': '{0} {1}'.format(o_first, o_last),
-                'owner_email': o_email,
-                'requirement_count': r_count,
-                'ticket_count': t_count,
-                'note_count': 0,
-            })
-
-    return projects
+    return action
 
 
 def get_actions(user, limit):
@@ -102,6 +141,62 @@ def get_actions(user, limit):
         })
 
     return actions
+
+
+def create_new_project(user_id, name, description):
+
+    project = Projects.add_project(
+        session = DBSession,
+        author_id = user_id,
+        organization_id = 1,
+        name = name,
+        description = description,
+    )
+
+    assignment = UserProjectAssignments.assign_user_to_project(
+        session = DBSession,
+        user_id = user_id,
+        project_id = project.id,
+    )
+    
+    action = create_action(
+        user_id = user.id,
+        action_type = "created",
+        subject = "project",
+        project_id = project.id,
+    )
+
+    return project
+
+
+def get_user_projects(user):
+
+
+    _projects = Projects.get_projects_from_user_id(
+        session = DBSession,
+        user_id = user.id,
+    )
+
+    projects = []
+    for upa_id, upa_disabled, p_id, p_name, p_desc, p_created, \
+            p_disabled, o_first, o_last, o_email, r_count, t_count \
+            in _projects:
+        if upa_disabled == False and p_disabled == False:
+            projects.append({
+                'id': p_id,
+                'name': p_name,
+                'description': p_desc,
+                'created': p_created.strftime("%b %d, %Y"),
+                'owner': '{0} {1}'.format(o_first, o_last),
+                'owner_email': o_email,
+                'requirement_count': r_count,
+                'ticket_count': t_count,
+                'note_count': 0,
+            })
+
+    return projects
+
+
 
 def get_project(user, project_id):
 
@@ -139,6 +234,75 @@ def get_project(user, project_id):
 
     return project
 
+def _check_ticket_auth(user_id, ticket_id):
+
+    _ticket = Tickets.get_ticket_by_id(
+        session = DBSession,
+        ticket_id = ticket_id
+    )
+
+    if _ticket == None:
+        raise Exception('no such ticket')
+
+    # unpack tuple to get project_id
+    t_id, t_number, t_title, t_contents, t_closed, t_closed_dt, \
+        t_created, o_first, o_last, o_email, p_id, p_name, p_desc, \
+        p_created, tt_name, tt_desc, tt_color = _ticket
+
+    valid = UserProjectAssignments.check_project_assignment(
+        session = DBSession,
+        user_id = user_id,
+        project_id = p_id,
+    )
+
+    if valid == False:
+        raise Exception('invalid credentials')
+        
+    return _ticket
+
+def create_new_ticket(user_id, project_id, ticket_type_id, title, contents):
+
+    valid = UserProjectAssignments.check_project_assignment(
+        session = DBSession,
+        user_id = user_id,
+        project_id = project_id,
+    )
+
+    if valid == False:
+        raise Exception('invalid credentials')
+
+    _last_ticket_number = Tickets.get_last_ticket_number(
+        session = DBSession,
+        project_id = project_id,
+    )
+
+    ticket_number = 1;
+    if _last_ticket_number != None:
+        last_ticket_number, = _last_ticket_number
+        ticket_number = int(last_ticket_number) + 1;
+
+    ticket = Tickets.add_ticket(
+        session = DBSession,
+        author_id = user_id,
+        project_id = project_id,
+        ticket_type_id = ticket_type_id,
+        number = ticket_number,
+        title = title,
+        contents = contents,
+        #ticket_priority_id = 1, #ticket_priority_id,
+    )
+    
+    # register an action on creation
+    action = create_action(
+        user_id = user.id,
+        action_type = 'created',
+        subject = 'ticket',
+        project_id = project_id,
+        ticket_id = ticket.id,
+    )
+    
+    return ticket
+
 def get_tickets(project_id, closed=False):
 
     _tickets = Tickets.get_tickets_by_project_id(
@@ -151,6 +315,11 @@ def get_tickets(project_id, closed=False):
     for t_id, t_number, t_title, t_contents, t_closed, t_closed_dt, \
             t_created, o_first, o_last, o_email, p_id, p_name, p_desc, \
             p_created, tt_name, tt_desc, tt_color in _tickets:
+            
+        closed_datetime = None
+        if t_closed_dt != None:
+            closed_datetime = t_closed_dt.strftime("%b %d, %Y")
+            
         tickets.append({
             'id': t_id,
             'created': t_created.strftime("%b %d, %Y"),
@@ -163,26 +332,26 @@ def get_tickets(project_id, closed=False):
             'title': t_title,
             'contents': markdown.markdown(t_contents),
             'closed': t_closed,
-            'closed_datetime': t_closed_dt.strftime("%b %d, %Y"),
+            'closed_datetime': closed_datetime,
         })
 
     return tickets
 
-def get_ticket(ticket_id):
+def get_ticket(user_id, ticket_id):
 
-    _ticket = Tickets.get_ticket_by_id(
-        session = DBSession,
-        ticket_id = ticket_id
-    )
-
-    if _ticket == None:
-        raise Exception('no such ticket')
+    _ticket = _check_ticket_auth(user_id, ticket_id)
 
     t_id, t_number, t_title, t_contents, t_closed, t_closed_dt, t_created, \
         o_first, o_last, o_email, p_id, p_name, p_desc, p_created, tt_name, \
         tt_desc, tt_color = _ticket
+        
     ticket = None
     if True:
+    
+        closed_datetime = None
+        if t_closed_dt != None:
+            closed_datetime = t_closed_dt.strftime("%b %d, %Y")
+    
         ticket = {
             'id': t_id,
             'project_id': p_id,
@@ -196,12 +365,35 @@ def get_ticket(ticket_id):
             'title': t_title,
             'contents': markdown.markdown(t_contents),
             'closed': t_closed,
-            'closed_datetime': t_closed_dt.strftime("%b %d, %Y"),
+            'closed_datetime': closed_datetime,
         }
  
     return ticket
 
-def get_ticket_comments(ticket_id):
+def create_new_ticket_comment(user_id, ticket_id, contents):
+
+    _ticket = _check_ticket_auth(user_id, ticket_id)
+
+    ticket_comment = TicketComments.add_ticket_comment(
+        session = DBSession,
+        author_id = user_id,
+        ticket_id = ticket_id,
+        contents = contents,
+    )
+    
+    action = create_action(
+        user_id = user.id,
+        action_type = "created",
+        subject = "ticket_comment",
+        project_id = ticket['project_id'],
+        ticket_id = ticket_id,
+    )
+    
+    return ticket_comment
+
+def get_ticket_comments(user_id, ticket_id):
+
+    _ticket = _check_ticket_auth(user_id, ticket_id)
 
     _comments = TicketComments.get_ticket_comments_by_ticket_id(
         session = DBSession,
@@ -232,6 +424,20 @@ def get_ticket_comments(ticket_id):
             'owner_email': o_email,
          })
     return comments
+
+def create_new_task():
+
+    task = Tasks.add_task(
+        session = DBSession,
+        author_id = user.id,
+        project_id = project_id,
+        title = title,
+        contents = contents,
+        assigned = assigned,
+        due = None, #due,
+    )
+
+    return task
 
 def get_tasks(project_id):
 

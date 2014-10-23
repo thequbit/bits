@@ -4,15 +4,17 @@
 
     </style>
 
-    % if user and token:
+    % if user:
 
     <div class="row">
-        <div class="medium-12 columns bottom-border">
+        <div class="large-12 columns bottom-border">
+            Home
             <div class="right top-links">
                 <a href="/usersettings">${user.first} ${user.last}</a>
             </div>
         </div>
     </div>
+
     <br/>
     
     <div class="row">

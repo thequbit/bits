@@ -1,5 +1,7 @@
 <%inherit file="base.mak"/>
 
+    % if user:
+
     <style>
     
     </style>
@@ -18,9 +20,8 @@
     
     <div class="row">
         <div class="medium-12 columns">
-            <h5>User Settings</h5>
-            </br>
-            <a class="small button round">Save Settings</a>
+            <h5>User Settings<div class="right small-text"><a class="">Save Settings</a></div></h5>
+            
         </div>
     </div>
     
@@ -56,3 +57,7 @@
             
         </div>
     </div>
+    
+        
+    
+    % endif
