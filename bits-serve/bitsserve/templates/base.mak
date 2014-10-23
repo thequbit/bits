@@ -9,7 +9,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
    
     <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'> 
+    
     <link rel="stylesheet" href="static/foundation/css/foundation.css" />
+    
+    <link href='http://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
     
     <style>
         
@@ -44,6 +47,10 @@
             }
             
         % endif
+        
+        body {
+            font-family: 'Lato', sans-serif !important;
+        }
         
         a.extra-small-button {
             /*padding: 0.875rem 1.00rem 0.9375rem !important;*/
@@ -232,11 +239,13 @@
         div.small-text {
             font-size: 80% !important;
         }
-
+        
+        /*
         div.small-text a {
             font-size: 80% !important;
         }
-
+        */
+        
         div.box-small-text {
             font-size: 80%;
         }

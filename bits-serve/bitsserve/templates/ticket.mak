@@ -35,6 +35,12 @@
             margin-bottom: 0px !important;
         }
         
+        h4.closed-label {
+            margin-left: 20px;
+            color: red;
+            font-weight: bold;
+        }
+        
  
     </style>
 
@@ -56,7 +62,13 @@
         <div class="medium-8 columns">
         % if ticket:
             <div class="ticket-container">
+                <div style="display: inline-flex;">
                 <h4>Ticket #${ticket['number']} : ${ticket['title']}</h4>
+                % if ticket['closed'] == True:
+                    <h4 class="closed-label">[CLOSED]</h4>
+                % endif
+                </div>
+                
                 <div class="small-light-text">
                     Opened by ${ticket['owner']} on ${ticket['created']}
                 </div>
@@ -193,8 +205,6 @@
         $('#submit-comment-and-close').on('click', function(e) {
             close_ticket();
         });
-
-        // TODO: hook up submit and close button
 
     </script>
 

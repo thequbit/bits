@@ -163,6 +163,7 @@ def get_tickets(project_id, closed=False):
                 'number': t_number,
                 'title': t_title,
                 'contents': markdown.markdown(t_contents),
+                'closed': t_closed,
             })
 
     return tickets
@@ -195,6 +196,7 @@ def get_ticket(ticket_id):
             'number': t_number,
             'title': t_title,
             'contents': markdown.markdown(t_contents),
+            'closed': t_closed,
         }
  
     return ticket

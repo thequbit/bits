@@ -230,19 +230,15 @@ def tickets(request):
         result['user'] = user
         result['token'] = token
 
+        project_id = request.GET['project_id']
+
         closed = False
         try:
             closed = int(request.GET['closed']);
         except:
             pass
 
-        #ticket_id = request.GET['ticket_id']
-        project_id = request.GET['project_id']
-
-        #ticket = get_ticket(ticket_id)
-        #result['ticket'] = ticket
-
-        #result['comments'] = get_ticket_comments(ticket['id'])
+        result['closed'] = closed
 
         result['tickets'] = get_tickets(project_id, closed)
 
