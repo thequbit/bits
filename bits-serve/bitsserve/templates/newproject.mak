@@ -8,7 +8,6 @@
 
     </style>
 
-    % if user:
 
     <div class="row">
         <div class="medium-12 columns bottom-border">
@@ -110,5 +109,3 @@
         }
 
     </script>
-
-    % endif

@@ -19,10 +19,7 @@
         }
 
     </style>
-
-    % if user and project:
-
-
+    
     <div class="row">
         <div class="medium-12 columns bottom-border">
             <a href="/">Home</a>
@@ -250,5 +247,3 @@
         
     </div>
     <hr/>
-
-    % endif

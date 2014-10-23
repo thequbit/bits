@@ -15,37 +15,42 @@
     <link href='http://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
     
     <style>
-        
-        % if not user.theme or user.theme == 'light':
 
-            <!-- default theme (light) -->
+        
+        % if user:
 
-            div.title-bar {
-                background-color: rgba(0,140,186,0.2) !important;
-            }
+            % if not user.theme or user.theme == 'light':
+
+                <!-- default theme (light) -->
+
+                div.title-bar {
+                    background-color: rgba(0,140,186,0.2) !important;
+                }
+                
+            % elif user.theme == 'dark':
             
-        % elif user.theme == 'dark':
-        
-            <!-- dark theme  -->
-        
-            body {
-                color: #CCCCCC !important;
-                background-color: #050505 !important;
-            }
+                <!-- dark theme  -->
             
-            h1, h2, h3, h4, h5, h6, h7, h8, h9 {
-                color: #CCCCCC !important;
-            }
-            
-            input, textarea {
-                color: #CCCCCC !important;
-                background-color: #202020 !important;
-            }
-            
-            div.title-bar {
-                background-color: rgba(0,140,186,0.6) !important;
-            }
-            
+                body {
+                    color: #CCCCCC !important;
+                    background-color: #050505 !important;
+                }
+                
+                h1, h2, h3, h4, h5, h6, h7, h8, h9 {
+                    color: #CCCCCC !important;
+                }
+                
+                input, textarea {
+                    color: #CCCCCC !important;
+                    background-color: #202020 !important;
+                }
+                
+                div.title-bar {
+                    background-color: rgba(0,140,186,0.6) !important;
+                }
+                
+            % endif
+
         % endif
         
         body {
@@ -332,8 +337,6 @@
 
     </style>
 
-
-
 </head>
 <body>
 
@@ -345,33 +348,32 @@
 
     % else:
 
-    <div class="title-bar"> 
-        <div class="row">
-            <div class="large-12 columns">
-                <!--<div class="right" style="padding-top: 10px;">
-                    <a href="/logout">Logout</a>
-                </div>-->
-                <h3>bits</h3>
+        <div class="title-bar"> 
+            <div class="row">
+                <div class="large-12 columns">
+                    <!--<div class="right" style="padding-top: 10px;">
+                        <a href="/logout">Logout</a>
+                    </div>-->
+                    <h3>bits</h3>
+                </div>
             </div>
         </div>
-    </div>
 
-    <script src="static/foundation/js/vendor/jquery.js"></script>
-    <script src="static/foundation/js/foundation.min.js"></script>
-    <script src="static/foundation/js/vendor/modernizr.js"></script>
+        <script src="static/foundation/js/vendor/jquery.js"></script>
+        <script src="static/foundation/js/foundation.min.js"></script>
+        <script src="static/foundation/js/vendor/modernizr.js"></script>
 
-    <script>
-        $(document).foundation();
-    </script>
-    
-    <div class="row">
-         <div class="large-12 columns">
-            ${self.body()}
+        <script>
+            $(document).foundation();
+        </script>
+        
+        <div class="row">
+             <div class="large-12 columns">
+                ${self.body()}
+            </div>
         </div>
-    </div>
     
     % endif
     
-
 </body>
 </html>

@@ -4,7 +4,7 @@ from sqlalchemy import engine_from_config
 from .models import (
     DBSession,
     Base,
-    )
+)
 
 
 def main(global_config, **settings):
@@ -13,6 +13,7 @@ def main(global_config, **settings):
     engine = engine_from_config(settings, 'sqlalchemy.')
     DBSession.configure(bind=engine)
     Base.metadata.bind = engine
+    
     config = Configurator(settings=settings)
     config.include('pyramid_chameleon')
 
@@ -22,6 +23,8 @@ def main(global_config, **settings):
     
     config.add_route('login', '/login')
     config.add_route('logout', '/logout')
+    
+    config.add_route('user','/user')
     
     config.add_route('usersettings', '/usersettings')
 
@@ -40,13 +43,13 @@ def main(global_config, **settings):
     config.add_route('projectsettings', '/projectsettings')
  
 
-
     config.add_route('authenticate.json', 'authenticate.json')
     config.add_route('get_projects.json', 'get_projects.json')
     config.add_route('get_organizations.json', 'get_organizations.json')
 
     config.add_route('create_project.json','create_project.json')
-    
+    config.add_route('assign_user.json','assign_user.json')
+
     config.add_route('create_ticket.json','create_ticket.json')
     config.add_route('close_ticket.json','close_ticket.json')
     config.add_route('create_ticket_comment.json','create_ticket_comment.json')

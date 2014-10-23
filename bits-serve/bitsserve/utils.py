@@ -112,14 +112,13 @@ def create_action(user_id, action_type, subject, project_id=None, \
 
     return action
 
-
 def get_actions(user, limit):
 
     _actions = Actions.get_user_action_list( #get_latest_actions_by_org_id(
         session = DBSession,
         user_id = user.id,
         #organization_id = 1,
-        limit = 25,
+        limit = limit,
     )
 
     actions = []
@@ -142,6 +141,38 @@ def get_actions(user, limit):
 
     return actions
 
+def get_user_actions(user_id, limit):
+
+    _actions = Actions.get_user_actions(
+        session = DBSession,
+        user_id = user_id,
+        limit = limit,
+    )
+    
+    target_user = Users.get_by_id(
+        session = DBSession,
+        user_id = user_id,
+    )
+    
+    actions = []
+    for a_id, a_type, a_subject, a_created, u_id, u_first, u_last, u_email, \
+            p_id, p_name, upa_id, t_id, t_title, task_id, task_title \
+            in _actions:
+        actions.append({
+            'id': a_id,
+            'action': a_type,
+            'subject': a_subject,
+            'created': a_created,
+            'owner': '{0} {1}'.format(u_first, u_last),
+            'project_id': p_id,
+            'project_name': p_name,
+            'ticket_id': t_id,
+            'ticket_title': t_title,
+            'task_id': task_id,
+            'task_title': task_title,
+        })
+
+    return actions, target_user
 
 def create_new_project(user_id, name, description):
 
@@ -160,7 +191,7 @@ def create_new_project(user_id, name, description):
     )
     
     action = create_action(
-        user_id = user.id,
+        user_id = user_id,
         action_type = "created",
         subject = "project",
         project_id = project.id,
@@ -168,9 +199,79 @@ def create_new_project(user_id, name, description):
 
     return project
 
+def assign_user_to_project(user_id, project_id, email):
 
+    target_user = Users.get_by_email(
+        session = DBSession,
+        email = email
+    )
+    
+    if target_user == None:
+        raise Excetion('Invalid User')
+
+    valid = UserProjectAssignments.check_project_assignment(
+        session = DBSession,
+        user_id = user_id,
+        project_id = project_id,
+    )
+
+    if valid == False:
+        raise Exception('Unauthorized Project')
+
+    _assignment = UserProjectAssignments.get_user_project_assignment(
+        session = DBSession,
+        user_id = target_user.id,
+        project_id = project_id,
+    )
+    
+    print "\n\n_assignment:\n\n"
+    print _assignment
+    print "\n\n"
+
+    # make sure the assignment hasn't alreayd been made
+    if _assignment == None:
+        assignment = UserProjectAssignments.assign_user_to_project(
+            session = DBSession,
+            user_id = target_user.id,
+            project_id = project_id,
+        )
+    else:
+        assignment = _assignment
+    
+    return target_user, assignment
+    
+def get_users_assigned_to_project(user_id, project_id):
+
+    valid = UserProjectAssignments.check_project_assignment(
+        session = DBSession,
+        user_id = user_id,
+        project_id = project_id,
+    )
+
+    if valid == False:
+        raise Exception('Unauthorized Project')
+
+    _users = UserProjectAssignments.get_users_assigned_to_project(
+        session = DBSession,
+        project_id = project_id,
+    )
+    
+    print "\n\n_users:\n\n"
+    print _users
+    print "\n\n"
+    
+    users = []
+    for a_id, u_id, u_first, u_last, u_email in _users:
+        users.append({
+            'assignment_id': a_id,
+            'user_id': u_id,
+            'user': '{0} {1}'.format(u_first, u_last),
+            'email': u_email,
+        })
+    
+    return users
+    
 def get_user_projects(user):
-
 
     _projects = Projects.get_projects_from_user_id(
         session = DBSession,
@@ -198,7 +299,7 @@ def get_user_projects(user):
 
 
 
-def get_project(user, project_id):
+def get_project(user_id, project_id):
 
     _project = Projects.get_from_id(
         session = DBSession,
@@ -210,7 +311,7 @@ def get_project(user, project_id):
 
     valid = UserProjectAssignments.check_project_assignment(
         session = DBSession,
-        user_id = user.id,
+        user_id = user_id,
         project_id = project_id,
     )
     if valid == False:
@@ -294,7 +395,7 @@ def create_new_ticket(user_id, project_id, ticket_type_id, title, contents):
     
     # register an action on creation
     action = create_action(
-        user_id = user.id,
+        user_id = user_id,
         action_type = 'created',
         subject = 'ticket',
         project_id = project_id,
@@ -381,11 +482,16 @@ def create_new_ticket_comment(user_id, ticket_id, contents):
         contents = contents,
     )
     
+    # unpack tuple to get project_id
+    t_id, t_number, t_title, t_contents, t_closed, t_closed_dt, \
+        t_created, o_first, o_last, o_email, p_id, p_name, p_desc, \
+        p_created, tt_name, tt_desc, tt_color = _ticket
+    
     action = create_action(
-        user_id = user.id,
+        user_id = user_id,
         action_type = "created",
         subject = "ticket_comment",
-        project_id = ticket['project_id'],
+        project_id = p_id,
         ticket_id = ticket_id,
     )
     

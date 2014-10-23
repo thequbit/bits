@@ -18,15 +18,19 @@ from utils import (
 
     create_action,
     get_actions,
+    get_user_actions,
     
     create_new_project,
     get_user_projects,
     get_project,
+    assign_user_to_project,
+    get_users_assigned_to_project,
     
     create_new_ticket,
     get_tickets,
     get_ticket,
     get_ticket_comments,
+    create_new_ticket_comment,
     
     get_tasks,
     get_task,
@@ -66,8 +70,8 @@ def login(request):
 def logout(request):
 
     result = {'user': None}
-    if True:
-    #try:
+    ###if True:
+    try:
 
         user, token = check_auth(request)
         
@@ -76,23 +80,49 @@ def logout(request):
             token = token,
         )
 
-    #except:
-    #    pass
+    except:
+        pass
 
     return result
+
+@view_config(route_name='user', renderer='templates/user.mak')
+def user(request):
+
+    result = {'user': None}
+    #if True:
+    try:
+
+        user, token = check_auth(request)
+        result['user'] = user
+
+        user_id = request.GET['user_id']
+
+        actions, target_user = get_user_actions(
+            user_id = user_id,
+            limit = 50,
+        )
+        
+        result['actions'] = actions
+        result['target_user'] = target_user
+
+    except:
+        pass
+
+    return result
+
 
 @view_config(route_name='usersettings', renderer='templates/usersettings.mak')
 def usersettings(request):
 
     result = {'user': None}
-    if True:
-    #try:
+    #if True:
+    try:
 
         user, token = check_auth(request)
         result['user'] = user
 
-    #except:
-    #    pass
+    except:
+        pass
 
     return result
 
@@ -100,23 +130,31 @@ def usersettings(request):
 def projectsettings(request):
 
     result = {'user': None}
-    if True:
-    #try:
+    #if True:
+    try:
 
         user, token = check_auth(request)
         result['user'] = user
 
         project_id = request.GET['project_id']
             
-        result['project'] = get_project(user, project_id)
+        result['project'] = get_project(user.id, project_id)
+
+        assigned_users = get_users_assigned_to_project(user.id, project_id)
+        
+        print "\n\nAssigned Users:\n\n"
+        print assigned_users
+        print "\n\n"
+        
+        result['assigned_users'] = assigned_users
 
         result['tasks'] = get_tasks(project_id)
 
         result['tickets'] = get_tickets(project_id)
 
 
-    #except:
-    #    pass
+    except:
+        pass
 
     return result
 
@@ -124,8 +162,8 @@ def projectsettings(request):
 def index(request):
 
     result = {'user': None}
-    if True:
-    #try:
+    #if True:
+    try:
 
         user, token = check_auth(request)
         result['user'] = user
@@ -135,8 +173,8 @@ def index(request):
         result['actions'] = get_actions(user, limit=25)
 
 
-    #except:
-    #    pass
+    except:
+        pass
 
     return result #{'token': token, 'user': user, 'projects': projects}
 
@@ -144,23 +182,23 @@ def index(request):
 def project(request):
 
     result = {'user': None}
-    if True:
-    #try:
+    #if True:
+    try:
 
         user, token = check_auth(request)
         result['user'] = user
 
         project_id = request.GET['project_id']
             
-        result['project'] = get_project(user, project_id)
+        result['project'] = get_project(user.id, project_id)
 
         result['tasks'] = get_tasks(project_id)
 
         result['tickets'] = get_tickets(project_id)
 
 
-    #except:
-    #    pass
+    except:
+        pass
 
     return result
 
@@ -168,8 +206,8 @@ def project(request):
 def tickets(request):
 
     result = {'user': None}
-    if True:
-    #try:
+    #if True:
+    try:
 
         user, token = check_auth(request)
         result['user'] = user
@@ -185,22 +223,24 @@ def tickets(request):
         result['closed'] = closed
 
         result['tickets'] = get_tickets(project_id, closed)
-        
-        print result['tickets']
 
-        result['project'] = get_project(user, project_id)
+        result['project'] = get_project(user.id, project_id)
 
-    #except:
-    #    pass
+        print "\n\n"
+        print result
+        print "\n\n"
 
-    return result #{'ticket': None, 'user': user, 'token': token, 'project': None}
+    except:
+        pass
+
+    return result 
 
 @view_config(route_name='ticket', renderer='templates/ticket.mak')
 def ticket(request):
 
     result = {'user': None}
-    if True:
-    #try:
+    #if True:
+    try:
 
         user, token = check_auth(request)
         result['user'] = user
@@ -219,10 +259,10 @@ def ticket(request):
 
         result['tickets'] = get_tickets(ticket['project_id'])
 
-        result['project'] = get_project(user, ticket['project_id'])
+        result['project'] = get_project(user.id, ticket['project_id'])
 
-    #except:
-    #    pass
+    except:
+        pass
 
     return result #{'ticket': None, 'user': user, 'token': token, 'project': None}
 
@@ -230,8 +270,8 @@ def ticket(request):
 def task(request):
 
     result = {'user': None}
-    if True:
-    #try:
+    #if True:
+    try:
 
         user, token = check_auth(request)
         result['user'] = user
@@ -247,11 +287,11 @@ def task(request):
 
         result['tasks'] = get_tasks(task['project_id'])
 
-        result['project'] = get_project(user, task['project_id'])
+        result['project'] = get_project(user.id, task['project_id'])
 
 
-    #except:
-    #    pass
+    except:
+        pass
 
     return result #{'ticket': None, 'user': user, 'token': token, 'project': None}
 
@@ -260,20 +300,20 @@ def task(request):
 def new_ticket(request):
 
     result = {'user': None}
-    if True:
-    #try:
+    #if True:
+    try:
     
         user, token = check_auth(request)
         result['user'] = user
 
         project_id = request.GET['project_id']
 
-        result['project'] = get_project(user, project_id)
+        result['project'] = get_project(user.id, project_id)
    
         result['tickets'] = get_tickets(project_id)
  
-    #except:
-    #    pass
+    except:
+        pass
 
     return result
 
@@ -281,20 +321,20 @@ def new_ticket(request):
 def new_task(request):
 
     result = {'user': None}
-    if True:
-    #try:
+    #if True:
+    try:
 
         user, token = check_auth(request)
         result['user'] = user
 
         project_id = request.GET['project_id']
 
-        result['project'] = get_project(user, project_id)
+        result['project'] = get_project(user.id, project_id)
 
         result['tickets'] = get_tickets(project_id)
 
-    #except:
-    #    pass
+    except:
+        pass
 
     return result
 
@@ -302,20 +342,20 @@ def new_task(request):
 def new_list(request):
 
     result = {'user': None}
-    if True:
-    #try:
+    #if True:
+    try:
 
         user, token = check_auth(request)
         result['user'] = user
 
         project_id = request.GET['project_id']
 
-        result['project'] = get_project(user, project_id)
+        result['project'] = get_project(user.id, project_id)
 
         result['lists'] = get_lists(project_id)
 
-    #except:
-    #    pass
+    except:
+        pass
 
     return result
 
@@ -324,7 +364,7 @@ def new_list(request):
 def new_project(request):
 
     result = {'user': None}
-    #if True:
+    ##if True:
     try:
 
         user, token = check_auth(request)
@@ -347,8 +387,8 @@ def authenticate(request):
 
     result = {'user': None}
     result['success'] = False
-    if True:
-    #try:
+    #if True:
+    try:
         try:
             email = request.GET['email']
             password = request.GET['password']
@@ -369,8 +409,8 @@ def authenticate(request):
 
         result['success'] = True
 
-    #except:
-    #    pass
+    except:
+        pass
 
     return make_response(result)
 
@@ -383,8 +423,8 @@ def create_ticket(request):
     result = {'user': None}
     result['success'] = False
 
-    if True:
-    #try:
+    #if True:
+    try:
 
         user, token = check_auth(request)
 
@@ -405,8 +445,8 @@ def create_ticket(request):
 
         result['success'] = True
 
-    #except:
-    #    pass
+    except:
+        pass
 
     return make_response(result)
 
@@ -419,8 +459,8 @@ def close_ticket(request):
     result = {'user': None}
     result['success'] = False
 
-    if True:
-    #try:
+    #if True:
+    try:
 
         user, token = check_auth(request)
 
@@ -436,8 +476,8 @@ def close_ticket(request):
 
         result['success'] = True
 
-    #except:
-    #    pass
+    except:
+        pass
 
     return make_response(result)
 
@@ -448,8 +488,8 @@ def create_project(request):
     """
 
     result = {'user': None}
-    if True:
-    #try:
+    #if True:
+    try:
 
         user, token = check_auth(request)
 
@@ -466,10 +506,51 @@ def create_project(request):
         
         result['success'] = True
 
-    #except:
-    #    pass
+    except:
+        pass
 
     return make_response(result)
+
+@view_config(route_name='assign_user.json')
+def assign_user(request):
+    """ Assign a user to a project
+    """
+
+    result = {}
+    #if True:
+    try:
+
+        user, token = check_auth(request)
+        
+        project_id = int(request.POST['project_id'])
+        email = request.POST['email']
+
+        print "\n\nProjectID:\n\n"
+        print project_id
+        print "\n\n"
+        
+        target_user, assignment = assign_user_to_project(
+            user_id = user.id,
+            project_id = project_id,
+            email = email,
+        )
+    
+        if assignment != None:
+            result['assignment_id'] = assignment.id
+        else:
+            result['assignment_id'] = -1;
+            
+        result['project_id'] =  project_id
+        result['user_id'] = target_user.id
+    
+        
+        result['success'] = True
+
+    except:
+        pass
+
+    return make_response(result)
+
 
 
 @view_config(route_name='create_ticket_comment.json')
@@ -480,8 +561,8 @@ def create_ticket_comment(request):
     result = {'user': None}
     result['success'] = False
 
-    if True:
-    #try:
+    #if True:
+    try:
 
         user, token = check_auth(request)
 
@@ -490,7 +571,7 @@ def create_ticket_comment(request):
         ticket_id = request.POST['ticket_id']
         contents = request.POST['contents']
         
-        ticket = get_ticket(ticket_id)
+        ticket = get_ticket(user.id, ticket_id)
 
         ticket_comment = create_new_ticket_comment(
             user.id,
@@ -502,8 +583,8 @@ def create_ticket_comment(request):
 
         result['success'] = True
 
-    #except:
-    #    pass
+    except:
+        pass
 
     return make_response(result)
 
@@ -515,8 +596,8 @@ def create_task(request):
     result = {'user': None}
     result['success'] = False
 
-    if True:
-    #try:
+    #if True:
+    try:
 
         user, token = check_auth(request)
 
@@ -557,8 +638,8 @@ def create_task(request):
 
         result['success'] = True
 
-    #except:
-    #    pass
+    except:
+        pass
 
     return make_response(result)
 

@@ -1,8 +1,11 @@
 <%inherit file="base.mak"/>
 
-    % if user and project:
-
     <style>
+    
+        div.assigned-contianer small {
+            font-size: 75%;
+            margin-left: 5px !important;
+        }
     
     </style>
     
@@ -72,12 +75,25 @@
             <div class="box shadow">
                 <div class="bottom-border"><h5>Participants</h5></div>
                 <div class="box indent small-light-text">
-                    Manage the users that have access to this project.
+                    Manage the users that have access to this project.<br/><br/>
+                </div>
+                <div class="assigned-contianer">
+                % for assigned_user in assigned_users:
+                    <div class="indent">
+                    % if assigned_user['user_id'] == user.id:
+                        <a href="/user?user_id=${assigned_user['user_id']}">${assigned_user['user']}</a>
+                        <small>( owner )</small>
+                    % else:
+                        <a href="/user?user_id=${assigned_user['user_id']}">${assigned_user['user']}</a> 
+                        <small>( <a href="#">remove</a> )</small>
+                    % endif
+                    </div>
+                % endfor
                 </div>
                 <div class="container-inner">
-                    <div><input type="text" placeholder="participant"></input></div>
+                    <div><input id="email" type="text" placeholder="participant email"></input></div>
                     <div class="right">
-                        <a href="#">Add User</a>
+                        <a href="#" id="add-user">Add User</a>
                     </div>
                     </br>
                 </div>
@@ -87,5 +103,44 @@
         </div>
     </div>
     
-    % endif
+    <script>
     
+        function add_user() {
+            
+            var email = $('#email').val();
+            
+            if ( email != '' ) {
+            
+                url = '/assign_user.json'
+                $.ajax({
+                    dataType: 'json',
+                    type: 'POST',
+                    data: {
+                        project_id : ${project['id']},
+                        email : email,
+                    },
+                    url: url,
+                    success: function(data) {
+                        if( data.success == true ) {
+                            if ( data.assignment_id = -1 ) {
+                                alert('User already assigned to project');
+                            }
+                            window.location.href="/projectsettings?project_id=${project['id']}";
+                        }
+                    },
+                    error: function(data) {
+                        alert('Invalid email address, please try again.');
+                    }
+                });
+            }
+        }
+    
+        $(document).ready( function() {
+        
+            $('#add-user').on('click', function(e) {
+                add_user();
+            })
+        
+        });
+    
+    </script>

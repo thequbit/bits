@@ -61,9 +61,15 @@ def main(argv=sys.argv):
         password = "password",
     )
 
+    regular_user_type = UserTypes.add_user_type(
+        session = DBSession,
+        name = "System User",
+        description = "System Admin User"
+    )
+
     tim_user = Users.add_user(
         session = DBSession,
-        user_type_id = system_user_type.id,
+        user_type_id = regular_user_type.id,
         first = "Tim",
         last = "Duffy",
         email = "tim@timduffy.me",
@@ -72,7 +78,7 @@ def main(argv=sys.argv):
 
     megan_user = Users.add_user(
         session = DBSession,
-        user_type_id = system_user_type.id,
+        user_type_id = regular_user_type.id,
         first = "Megan",
         last = "Duffy",
         email = "megan@meganduffy.me",
@@ -81,7 +87,7 @@ def main(argv=sys.argv):
 
     temp_user = Users.add_user(
         session = DBSession,
-        user_type_id = system_user_type.id,
+        user_type_id = regular_user_type.id,
         first = 'Temp',
         last = 'User',
         email = 'temp',

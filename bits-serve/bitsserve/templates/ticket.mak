@@ -1,7 +1,5 @@
 <%inherit file="base.mak"/>
 
-    % if user and ticket and project:
-
     <style>
     
         div.ticket-container {
@@ -203,5 +201,3 @@
         });
 
     </script>
-
-    % endif

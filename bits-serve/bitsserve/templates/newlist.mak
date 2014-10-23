@@ -20,8 +20,6 @@
  
     </style>
 
-    % if user and project:
-
     <div class="row">
         <div class="medium-12 columns bottom-border">
             <a href="/">Home</a>
@@ -152,5 +150,3 @@
         $(document).ready( function() { add_item(); });
 
     </script>
-
-    % endif

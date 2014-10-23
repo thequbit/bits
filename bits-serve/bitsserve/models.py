@@ -503,6 +503,37 @@ class UserProjectAssignments(Base):
         return user_project_assignment
 
     @classmethod
+    def get_user_project_assignment(cls, session, user_id, project_id):
+        """ get a user project assignment from a user id and project_id
+        """
+        with transaction.manager:
+            assignment = session.query(
+                UserProjectAssignments
+            ).filter(
+                UserProjectAssignments.user_id == user_id,
+                UserProjectAssignments.project_id == project_id,
+            ).first()
+        return assignment
+
+    @classmethod
+    def get_users_assigned_to_project(cls, session, project_id):
+        """ Get all of the users assigned to a project
+        """
+        with transaction.manager:
+            users = session.query(
+                UserProjectAssignments.id,
+                Users.id,
+                Users.first,
+                Users.last,
+                Users.email,
+            ).join(
+                Users, UserProjectAssignments.user_id == Users.id,
+            ).filter(
+                UserProjectAssignments.project_id == project_id,
+            ).all()
+        return users
+        
+    @classmethod
     def get_user_projects(cls, session, user_id):
         """ Get all projects the user is assigned to
         """
@@ -1423,53 +1454,74 @@ class Actions(Base):
         return action
 
     @classmethod
+    def _build_action_query(cls, session):
+        action_query = session.query(
+            Actions.id,
+            Actions.action_type,
+            Actions.subject,
+            Actions.creation_datetime,
+            Users.id,
+            Users.first,
+            Users.last,
+            Users.email,
+            Projects.id,
+            Projects.name,
+            UserProjectAssignments.id,
+            Tickets.id,
+            Tickets.title,
+            #TicketComments.id,
+            #Requirements.id,
+            #Requirements.title,
+            Tasks.id,
+            Tasks.title,
+        ).join(
+            Users, Users.id == Actions.user_id,
+        ).join(
+            Projects, Projects.id == Actions.project_id,
+        ).join(
+            UserProjectAssignments,
+            UserProjectAssignments.project_id == \
+                Actions.project_id, # and \ 
+            #UserProjectAssignments.user_id == \
+            #    user_id,
+        ).outerjoin(
+            Tickets, Tickets.project_id == Actions.project_id,
+        #).outerjoin(
+        #    TicketComments, TicketComments.ticket_id == Actions.ticket_id,
+        ).outerjoin(
+            Tasks, Tasks.project_id == Actions.project_id,
+        #).outerjoin(
+        )
+        
+        return action_query
+
+    @classmethod
     def get_user_action_list(cls, session, user_id, limit=25):
         """ Get's the action feed for a user
         """ 
         with transaction.manager:
-            actions = session.query(
-                Actions.id,
-                Actions.action_type,
-                Actions.subject,
-                Actions.creation_datetime,
-                Users.id,
-                Users.first,
-                Users.last,
-                Users.email,
-                Projects.id,
-                Projects.name,
-                UserProjectAssignments.id,
-                Tickets.id,
-                Tickets.title,
-                #TicketComments.id,
-                #Requirements.id,
-                #Requirements.title,
-                Tasks.id,
-                Tasks.title,
-            ).join(
-                Users, Users.id == Actions.user_id,
-            ).join(
-                Projects, Projects.id == Actions.project_id,
-            ).join(
-                UserProjectAssignments,
-                UserProjectAssignments.project_id == \
-                    Actions.project_id, # and \ 
-                #UserProjectAssignments.user_id == \
-                #    user_id,
-            ).outerjoin(
-                Tickets, Tickets.project_id == Actions.project_id,
-            #).outerjoin(
-            #    TicketComments, TicketComments.ticket_id == Actions.ticket_id,
-            ).outerjoin(
-                Tasks, Tasks.project_id == Actions.project_id,
-            #).outerjoin(
-            #)
-            ).filter(
+            action_query = Actions._build_action_query(session)
+            actions = action_query.filter(
                 UserProjectAssignments.user_id == user_id,
             #    UserProjectAssignments.project_id == Projects.id,
                 #Tickets.project_id == Actions.project_id,
             #).group_by(
             #    Actions.id,
+            ).group_by(
+                Actions.id,
+            ).order_by(
+                desc(Actions.creation_datetime),
+            ).all()
+        return actions
+
+    @classmethod
+    def get_user_actions(cls, session, user_id, limit=25):
+        """ Get's the action feed for a user
+        """ 
+        with transaction.manager:
+            action_query = Actions._build_action_query(session)
+            actions = action_query.filter(
+                Actions.user_id == user_id,
             ).group_by(
                 Actions.id,
             ).order_by(

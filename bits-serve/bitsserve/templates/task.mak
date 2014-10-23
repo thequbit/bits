@@ -1,7 +1,5 @@
 <%inherit file="base.mak"/>
 
-    % if token and user and task and project:
-
     <style>
     
         div.task-container {
@@ -156,5 +154,3 @@
         // TODO: hook up submit and close button
 
     </script>
-
-    % endif

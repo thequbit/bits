@@ -4,18 +4,37 @@
 
     </style>
 
+    % if user:
+    
     <div class="row">
-        <div class="large-12 columns bottom-border">
-            Home
+        <div class="medium-12 columns bottom-border">
+            <a href="/">Home</a>
+             > 
+            <a href="/users">Users</a>
+             >
+            ${user.first} ${user.last}
             <div class="right top-links">
                 <a href="/usersettings">${user.first} ${user.last}</a>
             </div>
         </div>
     </div>
-
     <br/>
+
+    <div class="row">
+        <div class="medium-12 columns">
+            <h5>${target_user.first} ${target_user.last}</h5>
+            <!--
+            <div class="box shadow">
+                <div class="container-inner">
+                    <p></p>
+                </div>
+            </div>
+            -->
+        </div>
+    </div>
     
     <div class="row">
+        <!--
         <div class="medium-4 columns">
             <h5>Collections</h5>
             <div class="box shadow list-container">
@@ -51,44 +70,9 @@
                 % endif
             </div>
             <hr/>
-            
-            <!--
-            <div class="box shadow list-container">
-                <div class="box-title">
-                    Customers
-                    <div class="right">
-                        <a href="/newcustomer">New Customer</a>
-                    </div>
-                </div>
-                % if not customers:
-                    <div class="indent">
-                        <div class="small-light-text">No customers yet.</div>
-                    </div>
-                % else:
-                    % for customer in customers:
-                        <!--<div class="indent">-->
-                        <div class="box-inner-container">
-                            <a href="/customer?customer_id=${customer['id']}">${customer['name']}</a>
-                            <div class="right">
-                                
-                            </div>
-                        </div>
-                    % endfor
-                    % if len(customers) > 5:
-                        <div class="row">
-                            <div class="medium-12 columns">
-                                <div class="right" style="padding-right: 5px;">
-                                    <a href="/customers">view all</a>
-                                </div>
-                            </div>
-                        </div>
-                    % endif
-                % endif
-            </div>
-            -->
-            
         </div>
-
+        -->
+        
         <div class="medium-8 columns">
             <h5>Activity<h5>
             <div class="row">
@@ -112,10 +96,15 @@
                             % endif
                         </div>
                         % endfor
+                    % else:
+                        <div class="small-light-text">
+                            ${target_user.first} ${target_user.last} hasn't generated any activity yet.
+                        </div>
                     % endif
+                    
                 </div>
             </div>
             <hr/>
         </div>
-
-    </div>
+    
+    % endif

@@ -3,9 +3,7 @@
     <style>
  
     </style>
-
-    % if user and project:
-
+    
     <!--
     <div class="row">
         <div class="large-12 columns">
@@ -99,5 +97,3 @@
         // TODO: hook up submit and close button
 
     </script>
-
-    % endif
