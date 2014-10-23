@@ -151,20 +151,20 @@ def get_tickets(project_id, closed=False):
     for t_id, t_number, t_title, t_contents, t_closed, t_closed_dt, \
             t_created, o_first, o_last, o_email, p_id, p_name, p_desc, \
             p_created, tt_name, tt_desc, tt_color in _tickets:
-        if t_closed == False:
-            tickets.append({
-                'id': t_id,
-                'created': t_created.strftime("%b %d, %Y"),
-                'owner': '{0} {1}'.format(o_first, o_last),
-                'owner_email': o_email,
-                'type': tt_name,
-                'type_description': tt_desc,
-                'type_color': tt_color,
-                'number': t_number,
-                'title': t_title,
-                'contents': markdown.markdown(t_contents),
-                'closed': t_closed,
-            })
+        tickets.append({
+            'id': t_id,
+            'created': t_created.strftime("%b %d, %Y"),
+            'owner': '{0} {1}'.format(o_first, o_last),
+            'owner_email': o_email,
+            'type': tt_name,
+            'type_description': tt_desc,
+            'type_color': tt_color,
+            'number': t_number,
+            'title': t_title,
+            'contents': markdown.markdown(t_contents),
+            'closed': t_closed,
+            'closed_datetime': t_closed_dt.strftime("%b %d, %Y"),
+        })
 
     return tickets
 
@@ -182,7 +182,6 @@ def get_ticket(ticket_id):
         o_first, o_last, o_email, p_id, p_name, p_desc, p_created, tt_name, \
         tt_desc, tt_color = _ticket
     ticket = None
-    #if t_closed == False:
     if True:
         ticket = {
             'id': t_id,
@@ -197,6 +196,7 @@ def get_ticket(ticket_id):
             'title': t_title,
             'contents': markdown.markdown(t_contents),
             'closed': t_closed,
+            'closed_datetime': t_closed_dt.strftime("%b %d, %Y"),
         }
  
     return ticket

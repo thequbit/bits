@@ -230,7 +230,7 @@ def tickets(request):
         result['user'] = user
         result['token'] = token
 
-        project_id = request.GET['project_id']
+        project_id = int(request.GET['project_id'])
 
         closed = False
         try:
@@ -241,6 +241,8 @@ def tickets(request):
         result['closed'] = closed
 
         result['tickets'] = get_tickets(project_id, closed)
+        
+        print result['tickets']
 
         result['project'] = get_project(user, project_id)
 
