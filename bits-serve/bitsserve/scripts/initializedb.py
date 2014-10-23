@@ -123,30 +123,30 @@ def main(argv=sys.argv):
     #        project_id = default_project.id,
     #    )
 
-    todo_ticket_type = TicketTypes.add_ticket_type(
-        session = DBSession,
-        author_id = system_user.id,
-        project_id = 1, #default_project.id,
-        name = "Todo",
-        description = "An item that needs to be completed",
-        color = "#0066FF",
-    )
+    #todo_ticket_type = TicketTypes.add_ticket_type(
+    #    session = DBSession,
+    #    author_id = system_user.id,
+    #    project_id = 1, #default_project.id,
+    #    name = "Todo",
+    #    description = "An item that needs to be completed",
+    #    color = "#0066FF",
+    #)
 
-    bug_ticket_type = TicketTypes.add_ticket_type(
-        session = DBSession,
-        author_id = system_user.id,
-        project_id = 1, #default_project.id,
-        name = "bug",
-        description = "An item that needs to be fixed",
-        color = "#FF00CC",
-    )
+    #bug_ticket_type = TicketTypes.add_ticket_type(
+    #    session = DBSession,
+    #    author_id = system_user.id,
+    #    project_id = 1, #default_project.id,
+    #    name = "bug",
+    #    description = "An item that needs to be fixed",
+    #    color = "#FF00CC",
+    #)
 
-    today_ticket_priority = TicketPriorities.add_ticket_priority(
-        session = DBSession,
-        author_id = system_user.id,
-        project_id = 1, #default_project.id,
-        name = "Today",
-        description = "Must be completed today.",
-        weight = 1,
-        color = "red",
-    )
+    #today_ticket_priority = TicketPriorities.add_ticket_priority(
+    #    session = DBSession,
+    #    author_id = system_user.id,
+    #    project_id = 1, #default_project.id,
+    #    name = "Today",
+    #    description = "Must be completed today.",
+    #    weight = 1,
+    #    color = "red",
+    #)

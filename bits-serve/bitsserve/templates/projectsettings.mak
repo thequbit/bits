@@ -122,9 +122,9 @@
                     url: url,
                     success: function(data) {
                         if( data.success == true ) {
-                            if ( data.assignment_id = -1 ) {
-                                alert('User already assigned to project');
-                            }
+                            //if ( data.assignment_id = -1 ) {
+                            //    alert('User already assigned to project');
+                            //}
                             window.location.href="/projectsettings?project_id=${project['id']}";
                         }
                     },

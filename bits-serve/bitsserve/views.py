@@ -142,10 +142,6 @@ def projectsettings(request):
 
         assigned_users = get_users_assigned_to_project(user.id, project_id)
         
-        print "\n\nAssigned Users:\n\n"
-        print assigned_users
-        print "\n\n"
-        
         result['assigned_users'] = assigned_users
 
         result['tasks'] = get_tasks(project_id)
@@ -225,10 +221,6 @@ def tickets(request):
         result['tickets'] = get_tickets(project_id, closed)
 
         result['project'] = get_project(user.id, project_id)
-
-        print "\n\n"
-        print result
-        print "\n\n"
 
     except:
         pass
@@ -525,10 +517,6 @@ def assign_user(request):
         project_id = int(request.POST['project_id'])
         email = request.POST['email']
 
-        print "\n\nProjectID:\n\n"
-        print project_id
-        print "\n\n"
-        
         target_user, assignment = assign_user_to_project(
             user_id = user.id,
             project_id = project_id,

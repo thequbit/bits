@@ -224,10 +224,6 @@ def assign_user_to_project(user_id, project_id, email):
         project_id = project_id,
     )
     
-    print "\n\n_assignment:\n\n"
-    print _assignment
-    print "\n\n"
-
     # make sure the assignment hasn't alreayd been made
     if _assignment == None:
         assignment = UserProjectAssignments.assign_user_to_project(
@@ -255,10 +251,6 @@ def get_users_assigned_to_project(user_id, project_id):
         session = DBSession,
         project_id = project_id,
     )
-    
-    print "\n\n_users:\n\n"
-    print _users
-    print "\n\n"
     
     users = []
     for a_id, u_id, u_first, u_last, u_email in _users:
