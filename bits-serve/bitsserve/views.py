@@ -142,10 +142,6 @@ def projectsettings(request):
 
         assigned_users = get_users_assigned_to_project(user.id, project_id)
         
-        print "\n\nAssigned Users:\n\n"
-        print assigned_users
-        print "\n\n"
-        
         result['assigned_users'] = assigned_users
 
         result['tasks'] = get_tasks(project_id)
@@ -162,19 +158,19 @@ def projectsettings(request):
 def index(request):
 
     result = {'user': None}
-    #if True:
-    try:
+    if True:
+    #try:
 
         user, token = check_auth(request)
         result['user'] = user
 
         result['projects'] = get_user_projects(user)
 
-        result['actions'] = get_actions(user, limit=25)
+        result['actions'] = get_actions(user.id, limit=25)
 
 
-    except:
-        pass
+    #except:
+    #    pass
 
     return result #{'token': token, 'user': user, 'projects': projects}
 
@@ -264,7 +260,7 @@ def ticket(request):
     except:
         pass
 
-    return result #{'ticket': None, 'user': user, 'token': token, 'project': None}
+    return result
 
 @view_config(route_name='task', renderer='templates/task.mak')
 def task(request):
@@ -275,7 +271,6 @@ def task(request):
 
         user, token = check_auth(request)
         result['user'] = user
-
 
         task_id = request.GET['task_id']
         #project_id = request.GET['project_id']
@@ -293,7 +288,7 @@ def task(request):
     except:
         pass
 
-    return result #{'ticket': None, 'user': user, 'token': token, 'project': None}
+    return result
 
 
 @view_config(route_name='newticket', renderer='templates/newticket.mak')

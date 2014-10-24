@@ -1485,7 +1485,7 @@ class Actions(Base):
             #UserProjectAssignments.user_id == \
             #    user_id,
         ).outerjoin(
-            Tickets, Tickets.project_id == Actions.project_id,
+            Tickets, Tickets.id == Actions.ticket_id,
         #).outerjoin(
         #    TicketComments, TicketComments.ticket_id == Actions.ticket_id,
         ).outerjoin(

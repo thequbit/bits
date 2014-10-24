@@ -112,11 +112,11 @@ def create_action(user_id, action_type, subject, project_id=None, \
 
     return action
 
-def get_actions(user, limit):
+def get_actions(user_id, limit):
 
     _actions = Actions.get_user_action_list( #get_latest_actions_by_org_id(
         session = DBSession,
-        user_id = user.id,
+        user_id = user_id,
         #organization_id = 1,
         limit = limit,
     )
@@ -131,6 +131,7 @@ def get_actions(user, limit):
             'subject': a_subject,
             'created': a_created,
             'owner': '{0} {1}'.format(u_first, u_last),
+            'owner_id': u_id,
             'project_id': p_id,
             'project_name': p_name,
             'ticket_id': t_id,
