@@ -222,10 +222,6 @@ def tickets(request):
 
         result['project'] = get_project(user.id, project_id)
 
-        print "\n\n"
-        print result
-        print "\n\n"
-
     except:
         pass
 
@@ -520,10 +516,6 @@ def assign_user(request):
         project_id = int(request.POST['project_id'])
         email = request.POST['email']
 
-        print "\n\nProjectID:\n\n"
-        print project_id
-        print "\n\n"
-        
         target_user, assignment = assign_user_to_project(
             user_id = user.id,
             project_id = project_id,
