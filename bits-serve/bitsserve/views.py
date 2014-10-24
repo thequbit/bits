@@ -158,8 +158,8 @@ def projectsettings(request):
 def index(request):
 
     result = {'user': None}
-    if True:
-    #try:
+    #if True:
+    try:
 
         user, token = check_auth(request)
         result['user'] = user
@@ -169,8 +169,8 @@ def index(request):
         result['actions'] = get_actions(user.id, limit=25)
 
 
-    #except:
-    #    pass
+    except:
+        pass
 
     return result #{'token': token, 'user': user, 'projects': projects}
 

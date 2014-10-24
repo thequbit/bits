@@ -748,7 +748,7 @@ class Tickets(Base):
                 Users,Users.id == Tickets.author_id,
             ).join(
                 Projects,Projects.id == Tickets.project_id,
-            ).join(
+            ).outerjoin(
                 TicketTypes,TicketTypes.id == Tickets.ticket_type_id,
             #).join(
             #    TicketPriorities,TicketPriorities.id == \
@@ -1486,6 +1486,7 @@ class Actions(Base):
             #    user_id,
         ).outerjoin(
             Tickets, Tickets.id == Actions.ticket_id,
+            #Tickets, Tickets.project_id == Actions.project_id,
         #).outerjoin(
         #    TicketComments, TicketComments.ticket_id == Actions.ticket_id,
         ).outerjoin(
