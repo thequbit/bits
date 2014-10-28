@@ -414,15 +414,15 @@ def create_ticket(request):
     result = {'user': None}
     result['success'] = False
 
-    #if True:
-    try:
+    if True:
+    #try:
 
         user, token = check_auth(request)
 
         project_id = request.POST['project_id']
         title = request.POST['title']
         contents = request.POST['contents']
-        ticket_type_id = 1 # request.POST['ticket_type_id']
+        ticket_type_id = None #1 # request.POST['ticket_type_id']
 
         ticket = create_new_ticket(
             user_id = user.id,
@@ -436,8 +436,8 @@ def create_ticket(request):
 
         result['success'] = True
 
-    except:
-        pass
+    #except:
+    #    pass
 
     return make_response(result)
 
@@ -479,8 +479,8 @@ def create_project(request):
     """
 
     result = {'user': None}
-    #if True:
-    try:
+    if True:
+    #try:
 
         user, token = check_auth(request)
 
@@ -497,8 +497,8 @@ def create_project(request):
         
         result['success'] = True
 
-    except:
-        pass
+    #except:
+    #    pass
 
     return make_response(result)
 

@@ -127,6 +127,19 @@ def create_action(user_id, action_type, subject, project_id=None, \
         list_id = list_id,
     )
 
+    if subject != 'project' and project_id != None:
+        upas = UserProjectAssignments.get_users_assigned_to_project(
+            session = DBSession,
+            project_id = project_id,
+        )
+        for upa_id, u_id, u_first, u_last, u_email in upas:
+            print 
+            if u_id != user_id:
+                send_notification(
+                    user_id = u_id,
+                    action_id = action.id,
+                )
+
     return action
 
 def get_actions(user_id, limit):
@@ -651,7 +664,20 @@ def send_notification(user_id, action_id):
         user_id = user_id,
     )
 
-    action = Actions.get_by_id
+    _action = Actions.get_action_by_id(
+        session = DBSession,
+        action_id = action_id,
+    )
+
+    a_id, a_type, a_subject, a_created, u_id, u_first, u_last, u_email, \
+        p_id, p_name, upa_id, t_id, t_title, task_id, task_title = _action
+
+    if a_type == 'created' and a_subject == 'project':
+        action_text = " created a project "
+    elif a_type == 'created' and a_subject == 'ticket':
+        action_text = " created a ticket "
+    elif a_type == 'created' and a_subject == 'ticket_comment':
+        action_text = ' created a comment in ticket '
 
     html = """
     <html>
@@ -681,16 +707,18 @@ def send_notification(user_id, action_id):
     </body>
     </html>
     """.format(
-        root_domain,
-        project_id,
-        project_name,
-        action_datetime,
-        user_id,
-        user_name,
+        config['root_domain'],
+        p_id,
+        p_name,
+        a_created,
+        u_id,
+        '{0} {1}'.format(u_first, u_last),
         action_text,
-        ticket_id,
-        ticket_name,
+        t_id,
+        t_title,
     )
+
+    success = False
 
     #try:
     if True:
@@ -703,7 +731,7 @@ def send_notification(user_id, action_id):
         server.starttls()
         server.ehlo()
 
-        server.login(me, password)
+        server.login(config['notification_email_address'], password)
 
         msg = MIMEMultipart('alternative')
         msg['Subject'] = "Bits Notification"
@@ -727,8 +755,10 @@ def send_notification(user_id, action_id):
         )
         server.quit()
     
-    except:
-        pass
+        success = True
+
+    #except:
+    #    pass
     
     return success
 

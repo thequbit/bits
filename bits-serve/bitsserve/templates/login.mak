@@ -76,7 +76,9 @@
                             //localStorage.user_type_description = data.user.user_type_description;
 
                             // save our token to a cookie, so it gets sent to the server each time
-                            document.cookie="token="+data.token;
+                            var expiration_date = new Date();
+                            expiration_date.setFullYear(expiration_date.getFullYear() + 1);
+                            document.cookie="token=" + data.token + "; expires=" + expiration_date.toGMTString() + "; path=/";
 
                             // do redirect
                             window.location.href = "/"
