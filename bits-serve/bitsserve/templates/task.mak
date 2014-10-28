@@ -1,5 +1,13 @@
 <%inherit file="base.mak"/>
 
+    % if not task:
+    
+    <script>
+        window.location.href = "/login";
+    </script>
+    
+    % else:
+
     <style>
     
         div.task-container {
@@ -154,3 +162,5 @@
         // TODO: hook up submit and close button
 
     </script>
+    
+    % endif

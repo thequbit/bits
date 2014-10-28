@@ -1,5 +1,13 @@
 <%inherit file="base.mak"/>
 
+    % if not project:
+    
+    <script>
+        window.location.href = "/login";
+    </script>
+    
+    % else:
+
     <style>
 
         div.inner-container {
@@ -247,3 +255,5 @@
         
     </div>
     <hr/>
+    
+    % endif

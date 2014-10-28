@@ -1,11 +1,17 @@
 <%inherit file="base.mak"/>
 
+    % if not user:
+    
+    <script>
+        window.location.href = "/login";
+    </script>
+    
+    % else:
+
     <style>
 
     </style>
 
-    % if user:
-    
     <div class="row">
         <div class="medium-12 columns bottom-border">
             <a href="/">Home</a>

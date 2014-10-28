@@ -1,5 +1,13 @@
 <%inherit file="base.mak"/>
 
+    % if not user:
+    
+    <script>
+        window.location.href = "/login";
+    </script>
+    
+    % else:
+
     <style>
     
     </style>
@@ -55,3 +63,5 @@
             
         </div>
     </div>
+    
+    % endif
