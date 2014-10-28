@@ -1,7 +1,15 @@
+
+from config import config
+
 import time
 import json
 
 import markdown
+
+import smtplib
+
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 from pyramid.response import Response
 
@@ -26,6 +34,15 @@ from .models import (
     RequirementComments,
     Actions,
 )
+
+html = ''
+try:
+    with open('email.html') as f:
+        html = f.read()
+except:
+    html = "Hello.  You are recieving this email because an item within a " \
+           "project you are assigned to changed.  You can see more here: " \
+           "http://bits.timduffy.me"
 
 def make_response(resp_dict):
 
@@ -626,3 +643,93 @@ def get_list(list_id):
 def get_list_comments(list_id):
 
     return []
+    
+def send_notification(user_id, action_id):
+
+    target_user = Users.get_by_id(
+        session = DBSession,
+        user_id = user_id,
+    )
+
+    action = Actions.get_by_id
+
+    html = """
+    <html>
+    <head>
+        <link href='http://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
+    </head>
+    <body>
+        <div style="margin-left: 20px; font-family: 'Lato', sans-serif !important; font-size: 110%;">
+            <h4>bits</h4>
+            <p>
+               Hello.  You are recieving this email because an item within a project you are
+               assigned to has changed.
+            </p>
+            <p>
+                Project: <a style="color: #008CBA; text-decoration: none; line-height: inherit;" href="{0}project?project_id={1}">{2}</a>
+            </p>
+            <p>
+                <div style="margin-left: 20px; padding: 10px; font-size: 90%; margin-top: 10px; max-width: 450px; box-shadow: 0px 0px 0px 1px #DDD, 0px 4px 8px rgba(221, 221, 221, 0.9);">
+                    <div class="small-light-text">{3}</div>
+                    <a style="color: #008CBA; text-decoration: none; line-height: inherit;" href="{0}user?user_id={4}">{5}</a>
+                    {6} 
+                    <a style="color: #008CBA; text-decoration: none; line-height: inherit;" href="{0}ticket?ticket_id={7}">{8}</a>.
+                </div>
+            </p>
+            <br/>
+        </div>
+    </body>
+    </html>
+    """.format(
+        root_domain,
+        project_id,
+        project_name,
+        action_datetime,
+        user_id,
+        user_name,
+        action_text,
+        ticket_id,
+        ticket_name,
+    )
+
+    #try:
+    if True:
+
+        password =  config['notification_email_password']; #"h1chaos4ever"
+        
+        server = smtplib.SMTP()
+        server.connect(config['notification_email_server'], config['notification_email_server_port'])
+        server.ehlo()
+        server.starttls()
+        server.ehlo()
+
+        server.login(me, password)
+
+        msg = MIMEMultipart('alternative')
+        msg['Subject'] = "Bits Notification"
+        msg['From'] = config['notification_email_address']
+        msg['To'] = target_user.email
+
+        text = "Hello.  You are recieving this email because an item within a " \
+               "project you are assigned to changed.  You can see more here: " \
+               "http://bits.timduffy.me"
+
+        part1 = MIMEText(text, 'plain')
+        part2 = MIMEText(html, 'html')
+
+        msg.attach(part1)
+        msg.attach(part2)
+
+        server.sendmail(
+            config['notification_email_address'],
+            target_user.email,
+            msg.as_string()
+        )
+        server.quit()
+    
+    except:
+        pass
+    
+    return success
+
+

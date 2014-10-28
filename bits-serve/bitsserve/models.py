@@ -1497,6 +1497,17 @@ class Actions(Base):
         return action_query
 
     @classmethod
+    def get_action_by_id(cls, session, action_id):
+        """ Gets an action by its id
+        """
+        with transaction.manager:
+            action_query = Actions._build_action_query(session)
+            action = action_query.filter(
+                Actions.id == action_id,
+            ).first()
+        return action
+
+    @classmethod
     def get_user_action_list(cls, session, user_id, limit=25):
         """ Get's the action feed for a user
         """ 

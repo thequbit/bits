@@ -313,9 +313,6 @@
             /* background-color: white; */
             padding: 10px;
             font-size: 90%;
-        }
-
-        div.action-box {
             margin-top: 10px;
         }
 
