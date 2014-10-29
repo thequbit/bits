@@ -3,6 +3,8 @@
 <html>
 <head>
 
+    <link rel="icon" type="image/png" href="static/media/favicon.png">
+
     <title>bits - Requirements and Ticketing System</title>
 
     <meta charset="utf-8" />
