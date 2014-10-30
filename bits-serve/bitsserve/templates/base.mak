@@ -358,20 +358,30 @@
                 </div>
             </div>
         </div>
-
-        <script src="static/foundation/js/vendor/jquery.js"></script>
-        <script src="static/foundation/js/foundation.min.js"></script>
-        <script src="static/foundation/js/vendor/modernizr.js"></script>
-
-        <script>
-            $(document).foundation();
-        </script>
         
+        <script src="static/foundation/js/vendor/jquery.js"></script>
+       
         <div class="row">
              <div class="large-12 columns">
                 ${self.body()}
             </div>
         </div>
+    
+        
+        <script src="static/foundation/js/foundation/foundation.js"></script>
+                
+        <script src="static/foundation/js/foundation/foundation.dropdown.js"></script>
+
+        <script src="static/foundation/js/vendor/modernizr.js"></script>
+
+        <script>
+            $(document).foundation({
+                dropdown: {
+                    // specify the class used for active dropdowns
+                    active_class: 'open'
+                }
+            });
+        </script>
     
     % endif
     

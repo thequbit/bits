@@ -677,13 +677,14 @@ class Tickets(Base):
     title = Column(Text)
     contents = Column(Text)
     #ticket_priority_id = Column(Integer, ForeignKey('ticketpriorities.id'))
+    assigned_id = Column(Integer, ForeignKey('users.id'), nullable=True)
     closed = Column(Boolean)
     closed_datetime = Column(DateTime, nullable=True)
     creation_datetime = Column(DateTime)
 
     @classmethod
     def add_ticket(cls, session, author_id, project_id, ticket_type_id, \
-            number, title, contents):
+            number, title, contents, assigned_id):
         """ Adds a new ticket to the system
         """
         with transaction.manager:
@@ -694,6 +695,7 @@ class Tickets(Base):
                 number = number,
                 title = title,
                 contents = contents,
+                assigned_id = assigned_id,
                 closed = False,
                 closed_datetime = None,
                 creation_datetime = datetime.datetime.now(),
@@ -727,6 +729,7 @@ class Tickets(Base):
                 Tickets.number,
                 Tickets.title,
                 Tickets.contents,
+                Tickets.assigned_id,
                 Tickets.closed,
                 Tickets.closed_datetime,
                 Tickets.creation_datetime,
@@ -777,6 +780,7 @@ class Tickets(Base):
             ticket = ticket_query.filter(
                 Tickets.id == ticket_id,
             ).first()
+            
         return ticket
         
     @classmethod

@@ -16,7 +16,7 @@
         <div class="medium-12 columns bottom-border">
             <a href="/">Home</a>
              > 
-            <a href="/users">Users</a>
+            <!--<a href="/users">Users</a>--> Users 
              >
             ${user.first} ${user.last}
             <div class="right top-links">
@@ -87,7 +87,7 @@
                         % for action in actions:
                         <div class="action-box shadow">
                             <div class="small-light-text">${str(action['created']).split('.')[0]}</div>
-                            <a href="/user?user_id=1">Tim Duffy</a>
+                            <a href="/user?user_id=${user.id}">${user.first} ${user.last}</a>
                             ${action['action'][0].upper()}${action['action'][1:]} 
                             % if action['subject'] == 'project':
                                 a new project <a href="/project?project_id=${action['project_id']}">${action['project_name']}</a>.

@@ -369,7 +369,7 @@ def _check_ticket_auth(user_id, ticket_id):
         raise Exception('no such ticket')
 
     # unpack tuple to get project_id
-    t_id, t_number, t_title, t_contents, t_closed, t_closed_dt, \
+    t_id, t_number, t_title, t_contents, t_a_id, t_closed, t_closed_dt, \
         t_created, o_first, o_last, o_email, p_id, p_name, p_desc, \
         p_created, tt_name, tt_desc, tt_color = _ticket
 
@@ -384,7 +384,8 @@ def _check_ticket_auth(user_id, ticket_id):
         
     return _ticket
 
-def create_new_ticket(user_id, project_id, ticket_type_id, title, contents):
+def create_new_ticket(user_id, project_id, ticket_type_id, title, contents, \
+        assigned_id):
 
     valid = UserProjectAssignments.check_project_assignment(
         session = DBSession,
@@ -414,6 +415,7 @@ def create_new_ticket(user_id, project_id, ticket_type_id, title, contents):
         title = title,
         contents = contents,
         #ticket_priority_id = 1, #ticket_priority_id,
+        assigned_id = assigned_id,
     )
     
     # register an action on creation
@@ -436,7 +438,7 @@ def get_tickets(project_id, closed=False):
     )
 
     tickets = []
-    for t_id, t_number, t_title, t_contents, t_closed, t_closed_dt, \
+    for t_id, t_number, t_title, t_contents, t_a_id, t_closed, t_closed_dt, \
             t_created, o_first, o_last, o_email, p_id, p_name, p_desc, \
             p_created, tt_name, tt_desc, tt_color in _tickets:
             
@@ -465,9 +467,9 @@ def get_ticket(user_id, ticket_id):
 
     _ticket = _check_ticket_auth(user_id, ticket_id)
 
-    t_id, t_number, t_title, t_contents, t_closed, t_closed_dt, t_created, \
-        o_first, o_last, o_email, p_id, p_name, p_desc, p_created, tt_name, \
-        tt_desc, tt_color = _ticket
+    t_id, t_number, t_title, t_contents, t_a_id, t_closed, t_closed_dt, \
+        t_created, o_first, o_last, o_email, p_id, p_name, p_desc, p_created, \
+        tt_name, tt_desc, tt_color = _ticket
         
     ticket = None
     if True:
@@ -476,12 +478,19 @@ def get_ticket(user_id, ticket_id):
         if t_closed_dt != None:
             closed_datetime = t_closed_dt.strftime("%b %d, %Y")
     
+        assigned_user = Users.get_by_id(
+            session = DBSession,
+            user_id = t_a_id,
+        )
+    
         ticket = {
             'id': t_id,
             'project_id': p_id,
             'created': t_created.strftime("%b %d, %Y"),
             'owner': '{0} {1}'.format(o_first, o_last),
             'owner_email': o_email,
+            'assigned_id': t_a_id,
+            'assigned_user': '{0} {1}'.format(assigned_user.first, assigned_user.last),
             'type': tt_name,
             'type_description': tt_desc,
             'type_color': tt_color,
@@ -506,7 +515,7 @@ def create_new_ticket_comment(user_id, ticket_id, contents):
     )
     
     # unpack tuple to get project_id
-    t_id, t_number, t_title, t_contents, t_closed, t_closed_dt, \
+    t_id, t_number, t_title, t_contents, t_a_id, t_closed, t_closed_dt, \
         t_created, o_first, o_last, o_email, p_id, p_name, p_desc, \
         p_created, tt_name, tt_desc, tt_color = _ticket
     
@@ -720,8 +729,8 @@ def send_notification(user_id, action_id):
 
     success = False
 
-    #try:
-    if True:
+    try:
+    #if True:
 
         password =  config['notification_email_password']; #"h1chaos4ever"
         
@@ -757,8 +766,8 @@ def send_notification(user_id, action_id):
     
         success = True
 
-    #except:
-    #    pass
+    except:
+        pass
     
     return success
 
