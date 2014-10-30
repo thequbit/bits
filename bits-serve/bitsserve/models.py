@@ -891,6 +891,8 @@ class TicketComments(Base):
                 Users, Users.id == TicketComments.author_id,
             ).filter(
                 TicketComments.ticket_id == ticket_id,
+            ).order_by(
+                TicketComments.creation_datetime,
             ).all() 
         return comments
 
