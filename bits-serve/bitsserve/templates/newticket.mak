@@ -33,7 +33,9 @@
                 <textarea id="ticket-contents" placeholder="markdown supported"></textarea>
             </div>
             <br/>
-            <a href="#" id="submit-ticket" class="small radius button">Submit</a>
+            <div id="submit-button-container">
+                <a href="#" id="submit-ticket" class="small radius button">Submit</a>
+            </div>
         </div>
         <div class="medium-4 columns">
             <div class="box shadow">
@@ -64,6 +66,8 @@
         $('#submit-ticket').on('click', function(e) {
 
             console.log('sending comment')
+
+            $('#submit-button-container').html('Please wait ...');
 
             var token = document.cookie.split('=')[1];
             var url = '/create_ticket.json';

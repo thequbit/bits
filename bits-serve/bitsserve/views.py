@@ -436,8 +436,8 @@ def create_ticket(request):
 
         result['success'] = True
 
-    #except:
-    #    pass
+    except:
+        pass
 
     return make_response(result)
 
