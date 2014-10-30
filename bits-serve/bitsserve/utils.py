@@ -477,12 +477,15 @@ def get_ticket(user_id, ticket_id):
         closed_datetime = None
         if t_closed_dt != None:
             closed_datetime = t_closed_dt.strftime("%b %d, %Y")
-    
-        assigned_user = Users.get_by_id(
-            session = DBSession,
-            user_id = t_a_id,
-        )
-    
+
+        assigned_user_name = ''
+        if t_a_id != None:    
+            assigned_user = Users.get_by_id(
+                session = DBSession,
+                user_id = t_a_id,
+            )
+            assgined_user_name =  '{0} {1}'.format(assigned_user.first, assigned_user.last),
+
         ticket = {
             'id': t_id,
             'project_id': p_id,
@@ -490,7 +493,7 @@ def get_ticket(user_id, ticket_id):
             'owner': '{0} {1}'.format(o_first, o_last),
             'owner_email': o_email,
             'assigned_id': t_a_id,
-            'assigned_user': '{0} {1}'.format(assigned_user.first, assigned_user.last),
+            'assigned_user': assigned_user_name,
             'type': tt_name,
             'type_description': tt_desc,
             'type_color': tt_color,

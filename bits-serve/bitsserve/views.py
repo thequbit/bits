@@ -416,8 +416,8 @@ def create_ticket(request):
     result = {'user': None}
     result['success'] = False
 
-    if True:
-    #try:
+    #if True:
+    try:
 
         user, token = check_auth(request)
 

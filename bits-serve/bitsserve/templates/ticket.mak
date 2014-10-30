@@ -80,7 +80,9 @@
                 </div>
                 </br>
                 <div>
-                    Assigned: <a href="/user?user_id=${ticket['assigned_id']}">${ticket['assigned_user']}</a>
+                    % if ticket['assigned_id'] != None:
+                        Assigned: <a href="/user?user_id=${ticket['assigned_id']}">${ticket['assigned_user']}</a>
+                    % endif
                 </div>
                 <br/>           
  
