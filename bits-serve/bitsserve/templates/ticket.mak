@@ -78,6 +78,10 @@
                         </div>
                     </div>
                 </div>
+                </br>
+                <div>
+                    Assigned: <a href="/user?user_id=${ticket['assigned_id']}">${ticket['assigned_user']}</a>
+                </div>
                 <br/>           
  
                 <h5>Comments</h5>            

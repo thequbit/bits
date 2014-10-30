@@ -231,8 +231,8 @@ def tickets(request):
 def ticket(request):
 
     result = {'user': None}
-    #if True:
-    try:
+    if True:
+    #try:
 
         user, token = check_auth(request)
         result['user'] = user
@@ -253,8 +253,8 @@ def ticket(request):
 
         result['project'] = get_project(user.id, ticket['project_id'])
 
-    except:
-        pass
+    #except:
+    #    pass
 
     return result
 
@@ -300,6 +300,8 @@ def new_ticket(request):
         project_id = request.GET['project_id']
 
         result['project'] = get_project(user.id, project_id)
+   
+        result['assigned_users'] = get_users_assigned_to_project(user.id, project_id)
    
         result['tickets'] = get_tickets(project_id)
  
@@ -414,14 +416,15 @@ def create_ticket(request):
     result = {'user': None}
     result['success'] = False
 
-    #if True:
-    try:
+    if True:
+    #try:
 
         user, token = check_auth(request)
 
         project_id = request.POST['project_id']
         title = request.POST['title']
         contents = request.POST['contents']
+        assigned_id = request.POST['assigned_user_id']
         ticket_type_id = None #1 # request.POST['ticket_type_id']
 
         ticket = create_new_ticket(
@@ -430,6 +433,7 @@ def create_ticket(request):
             ticket_type_id = ticket_type_id,
             title = title,
             contents = contents,
+            assigned_id = assigned_id,
         )
 
         result['ticket_id'] = ticket.id
@@ -548,8 +552,8 @@ def create_ticket_comment(request):
     result = {'user': None}
     result['success'] = False
 
-    #if True:
-    try:
+    if True:
+    #try:
 
         user, token = check_auth(request)
 
@@ -570,8 +574,8 @@ def create_ticket_comment(request):
 
         result['success'] = True
 
-    except:
-        pass
+    #except:
+    #    pass
 
     return make_response(result)
 

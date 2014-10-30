@@ -19,7 +19,7 @@
             <a href="/project?project_id=${project['id']}">${project['name']}</a>
              > New Ticket
             <div class="right top-links">
-                <a href="/prjectsettings?project_id=${project['id']}">Settings</a>
+                <a href="/projectsettings?project_id=${project['id']}">Settings</a>
                 <<a href="/usersettings">${user.first} ${user.last}</a>
             </div>
         </div>
@@ -28,9 +28,15 @@
     <div class="row">
         <div class="medium-8 columns">
             <div class="container-inner box shadow">
-                <h5>New Ticket<h5>
+                <h5>New Ticket</h5>
                 <input type="text" id="ticket-title" placeholder="ticket title"></text>
                 <textarea id="ticket-contents" placeholder="markdown supported"></textarea>
+                Ticket Assigned to: <a id="assigned-name" aria-expanded="false" href="#" data-dropdown="assigned-drop">Assign Ticket</a>
+                <ul id="assigned-drop" class="f-dropdown" data-dropdown-content aria-hidden="true" tabindex="-1" data-options="is_hover:true">
+                % for assigned_user in assigned_users:
+                    <li><a href="#" user_id="${assigned_user['user_id']}" user_name="${assigned_user['user']}">${assigned_user['user']}</a></li>
+                % endfor
+                </ul>
             </div>
             <br/>
             <a href="#" id="submit-ticket" class="small radius button">Submit</a>
@@ -77,7 +83,8 @@
                 data: {
                     project_id : project_id,
                     title : title,
-                    contents : contents
+                    contents : contents,
+                    assigned_user_id : assigned_user_id
                 },
                 url: url,
                 success: function(data) {
@@ -94,6 +101,19 @@
 
         });
 
-        // TODO: hook up submit and close button
+        var assigned_user_id = '';
+        
+        $(document).ready(function() {
+        
+            $('#assigned-drop').on('click', function(e) {
+                assigned_user_id = $(e.target).attr('user_id');
+                assigned_user_name = $(e.target).attr('user_name');
+                $('#assigned-name').html(assigned_user_name);
+                
+                $('#assigned-drop').removeClass('open');
+                $('#assigned-drop').css('left', '-99999px');
+            });
+        
+        });
 
     </script>
