@@ -416,8 +416,8 @@ def create_ticket(request):
     result = {'user': None}
     result['success'] = False
 
-    #if True:
-    try:
+    if True:
+    #try:
 
         user, token = check_auth(request)
 
@@ -426,6 +426,10 @@ def create_ticket(request):
         contents = request.POST['contents']
         assigned_id = request.POST['assigned_user_id']
         ticket_type_id = None #1 # request.POST['ticket_type_id']
+
+        print "\n\nAssigned ID:\n\n"
+        print assigned_id
+        print "\n\n"
 
         ticket = create_new_ticket(
             user_id = user.id,
@@ -440,8 +444,8 @@ def create_ticket(request):
 
         result['success'] = True
 
-    except:
-        pass
+    #except:
+    #    pass
 
     return make_response(result)
 
