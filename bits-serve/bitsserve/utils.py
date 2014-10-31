@@ -752,7 +752,7 @@ def send_notification(user_id, action_id):
 
         text = "Hello.  You are recieving this email because an item within a " \
                "project you are assigned to changed.  You can see more here: " \
-               "http://bits.timduffy.me"
+               "{0}".format(config['root_domain'])
 
         part1 = MIMEText(text, 'plain')
         part2 = MIMEText(html, 'html')
@@ -774,4 +774,10 @@ def send_notification(user_id, action_id):
     
     return success
 
+def export_database(user_id):
 
+    if user_id != 1:
+        raise Exception("Invalid Credentails")
+        
+    @projects = 
+    

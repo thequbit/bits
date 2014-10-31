@@ -64,7 +64,9 @@ class UserTypes(Base):
             ).filter(
                 UserTypes.name == user_type_name,
             ).first()
-        id = user_type.id
+        id = None
+        if user_type != None:
+            id = user_type.id
         return id
 
     @classmethod
@@ -307,6 +309,18 @@ class Organizations(Base):
             organization.description = description
             session.add(organization)
             transaction.commit()
+        return organization
+        
+    @classmethod
+    def get_by_name(cls, session, organization_name):
+        """ get organization by name
+        """
+        with transaction.manager:
+            organization = session.query(
+                Organizations,
+            ).filter(
+                Organizations.name == organization_name,
+            ).first()
         return organization
 
 class UserOrganizationAssignments(Base):

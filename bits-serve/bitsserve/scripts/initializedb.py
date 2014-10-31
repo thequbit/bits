@@ -46,107 +46,75 @@ def main(argv=sys.argv):
 #        model = MyModel(name='one', value=1)
 #        DBSession.add(model)
 
-    system_user_type = UserTypes.add_user_type(
+    system_user = Users.get_by_email(
         session = DBSession,
-        name = "System User",
-        description = "System Admin User"
-    )
-
-    system_user = Users.add_user(
-        session = DBSession,
-        user_type_id = system_user_type.id,
-        first = "System",
-        last = "User",
         email = "system",
-        password = "password",
     )
+    
+    if system_user == None:
+        system_user_type = UserTypes.add_user_type(
+            session = DBSession,
+            name = "System User",
+            description = "System Admin User"
+        )
 
-    regular_user_type = UserTypes.add_user_type(
+        system_user = Users.add_user(
+            session = DBSession,
+            user_type_id = system_user_type.id,
+            first = "System",
+            last = "User",
+            email = "system",
+            password = "password",
+        )
+
+    regular_user_type_id = UserTypes.user_type_id_from_user_type(
         session = DBSession,
-        name = "System User",
-        description = "System Admin User"
+        user_type_name = "Standard User",
     )
+    
+    if regular_user_type_id == None:
+        regular_user_type = UserTypes.add_user_type(
+            session = DBSession,
+            name = "Standard User",
+            description = "Standard User"
+        )
 
-    tim_user = Users.add_user(
+        tim_user = Users.add_user(
+            session = DBSession,
+            user_type_id = regular_user_type.id,
+            first = "Tim",
+            last = "Duffy",
+            email = "tim@timduffy.me",
+            password = "password",
+        )
+
+        megan_user = Users.add_user(
+            session = DBSession,
+            user_type_id = regular_user_type.id,
+            first = "Megan",
+            last = "Duffy",
+            email = "megan@meganduffy.me",
+            password = "password",
+        )
+
+        temp_user = Users.add_user(
+            session = DBSession,
+            user_type_id = regular_user_type.id,
+            first = 'Temp',
+            last = 'User',
+            email = 'temp',
+            password = 'password',
+        )
+
+    default_organization = Organizations.get_by_name(
         session = DBSession,
-        user_type_id = regular_user_type.id,
-        first = "Tim",
-        last = "Duffy",
-        email = "tim@timduffy.me",
-        password = "password",
+        organization_name = 'Default Organization',
     )
 
-    megan_user = Users.add_user(
-        session = DBSession,
-        user_type_id = regular_user_type.id,
-        first = "Megan",
-        last = "Duffy",
-        email = "megan@meganduffy.me",
-        password = "password",
-    )
-
-    temp_user = Users.add_user(
-        session = DBSession,
-        user_type_id = regular_user_type.id,
-        first = 'Temp',
-        last = 'User',
-        email = 'temp',
-        password = 'password',
-    )
-
-    default_organization = Organizations.add_organization(
-        session = DBSession,
-        author_id = system_user.id,
-        name = 'Default Organization',
-        description = 'Default Organization.',
-    )
-
-    #default_user_organization_assignment = \
-    #    UserOrganizationAssignments.assign_user_to_organization(
-    #        session = DBSession,
-    #        user_id = system_user.id,
-    #        organization_id = default_organization.id,
-    #    )
- 
-    #default_project = Projects.add_project(
-    #    session = DBSession,
-    #    author_id = system_user.id,
-    #    organization_id = default_organization.id,
-    #    name = 'Default Project',
-    #    description = 'Default Project.',
-    #)
-
-    #system_user_project_assignment = \
-    #    UserProjectAssignments.assign_user_to_project(
-    #        session = DBSession,
-    #        user_id = system_user.id,
-    #        project_id = default_project.id,
-    #    )
-
-    #todo_ticket_type = TicketTypes.add_ticket_type(
-    #    session = DBSession,
-    #    author_id = system_user.id,
-    #    project_id = 1, #default_project.id,
-    #    name = "Todo",
-    #    description = "An item that needs to be completed",
-    #    color = "#0066FF",
-    #)
-
-    #bug_ticket_type = TicketTypes.add_ticket_type(
-    #    session = DBSession,
-    #    author_id = system_user.id,
-    #    project_id = 1, #default_project.id,
-    #    name = "bug",
-    #    description = "An item that needs to be fixed",
-    #    color = "#FF00CC",
-    #)
-
-    #today_ticket_priority = TicketPriorities.add_ticket_priority(
-    #    session = DBSession,
-    #    author_id = system_user.id,
-    #    project_id = 1, #default_project.id,
-    #    name = "Today",
-    #    description = "Must be completed today.",
-    #    weight = 1,
-    #    color = "red",
-    #)
+    if default_organization == None:
+        default_organization = Organizations.add_organization(
+            session = DBSession,
+            author_id = system_user.id,
+            name = 'Default Organization',
+            description = 'Default Organization.',
+        )
