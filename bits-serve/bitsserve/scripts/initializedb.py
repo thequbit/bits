@@ -20,10 +20,10 @@ from ..models import (
     Projects,
     UserProjectAssignments,
     UserOrganizationAssignments,
+    Tickets,
     TicketTypes,
     TicketPriorities,
 )
-
 
 def usage(argv):
     cmd = os.path.basename(argv[0])
