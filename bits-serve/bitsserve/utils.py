@@ -130,7 +130,6 @@ def create_action(user_id, project_id, contents, additional_display=''):
             project_id = project_id,
         )
         for upa_id, u_id, u_first, u_last, u_email in upas:
-            print 
             if u_id != user_id:
                 send_notification(
                     user_id = u_id,
@@ -504,10 +503,6 @@ def get_ticket(user_id, ticket_id):
         if t_closed_dt != None:
             closed_datetime = t_closed_dt.strftime("%b %d, %Y")
 
-        print "\n\nassigned_id: \n\n"
-        print t_a_id
-        print "\n\n"
-
         assigned_user_name = ''
         if t_a_id != None and t_a_id != '':    
             assigned_user = Users.get_by_id(
@@ -768,8 +763,8 @@ def send_notification(user_id, action_id, additional_display):
         p_id,
         p_name,
         a_created,
-        markdown.markdown(a_contents).replace('<a ','<a style="color: #008CBA; text-decoration: none;'),
-        markdown.markdown(additional_display).replace('<a ','<a style="color: #008CBA; text-decoration: none;'),
+        markdown.markdown(a_contents).replace('<a ','<a style="color: #008CBA; text-decoration: none;" '),
+        markdown.markdown(additional_display).replace('<a ','<a style="color: #008CBA; text-decoration: none;" '),
     )
 
     success = False
