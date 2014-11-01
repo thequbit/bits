@@ -229,7 +229,7 @@ def create_new_project(user, name, description):
 
     return project
 
-def assign_user_to_project(user_id, project_id, email):
+def assign_user_to_project(user, project_id, email):
 
     target_user = Users.get_by_email(
         session = DBSession,
@@ -241,7 +241,7 @@ def assign_user_to_project(user_id, project_id, email):
 
     valid = UserProjectAssignments.check_project_assignment(
         session = DBSession,
-        user_id = user_id,
+        user_id = user.id,
         project_id = project_id,
     )
 
@@ -273,7 +273,7 @@ def assign_user_to_project(user_id, project_id, email):
     )
     action = create_action(
         user_id = user.id,
-        project_id = project.id,
+        project_id = project_id,
         contents = action_contents,
     )
     

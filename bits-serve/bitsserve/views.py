@@ -161,8 +161,8 @@ def projectsettings(request):
 def index(request):
 
     result = {'user': None}
-    if True:
-    #try:
+    #if True:
+    try:
 
         user, token = check_auth(request)
         result['user'] = user
@@ -173,8 +173,8 @@ def index(request):
         
         result['actions'] = actions
         
-    #except:
-    #    pass
+    except:
+        pass
 
     return result #{'token': token, 'user': user, 'projects': projects}
 
@@ -235,8 +235,8 @@ def tickets(request):
 def ticket(request):
 
     result = {'user': None}
-    if True:
-    #try:
+    #if True:
+    try:
 
         user, token = check_auth(request)
         result['user'] = user
@@ -257,8 +257,8 @@ def ticket(request):
 
         result['project'] = get_project(user.id, ticket['project_id'])
 
-    #except:
-    #    pass
+    except:
+        pass
 
     return result
 
@@ -420,8 +420,8 @@ def create_ticket(request):
     result = {'user': None}
     result['success'] = False
 
-    if True:
-    #try:
+    #if True:
+    try:
 
         user, token = check_auth(request)
 
@@ -431,11 +431,11 @@ def create_ticket(request):
         assigned_id = request.POST['assigned_user_id']
         ticket_type_id = None #1 # request.POST['ticket_type_id']
 
-        print "\n\nAssigned ID:\n\n"
-        print assigned_id
-        print "\n\n"
-        print type(assigned_id)
-        print "\n\n"
+        #print "\n\nAssigned ID:\n\n"
+        #print assigned_id
+        #print "\n\n"
+        #print type(assigned_id)
+        #print "\n\n"
 
         if assigned_id == '' or assigned_id == None \
                 or not assigned_id.isdigit():
@@ -455,8 +455,8 @@ def create_ticket(request):
 
         result['success'] = True
 
-    #except:
-    #    pass
+    except:
+        pass
 
     return make_response(result)
 
@@ -498,8 +498,8 @@ def create_project(request):
     """
 
     result = {'user': None}
-    if True:
-    #try:
+    #if True:
+    try:
 
         user, token = check_auth(request)
 
@@ -516,8 +516,8 @@ def create_project(request):
         
         result['success'] = True
 
-    #except:
-    #    pass
+    except:
+        pass
 
     return make_response(result)
 
@@ -527,8 +527,8 @@ def assign_user(request):
     """
 
     result = {}
-    #if True:
-    try:
+    if True:
+    #try:
 
         user, token = check_auth(request)
         
@@ -536,7 +536,7 @@ def assign_user(request):
         email = request.POST['email']
 
         target_user, assignment = assign_user_to_project(
-            user_id = user.id,
+            user = user,
             project_id = project_id,
             email = email,
         )
@@ -552,8 +552,8 @@ def assign_user(request):
         
         result['success'] = True
 
-    except:
-        pass
+    #except:
+    #    pass
 
     return make_response(result)
 
@@ -567,8 +567,8 @@ def create_ticket_comment(request):
     result = {'user': None}
     result['success'] = False
 
-    if True:
-    #try:
+    #if True:
+    try:
 
         user, token = check_auth(request)
 
@@ -589,8 +589,8 @@ def create_ticket_comment(request):
 
         result['success'] = True
 
-    #except:
-    #    pass
+    except:
+        pass
 
     return make_response(result)
 
@@ -653,8 +653,8 @@ def create_task(request):
 def database_dump(request):
 
     result = {'success': False}
-    if True:
-    #try:
+    #if True:
+    try:
     
         user, token = check_auth(request)
         
@@ -662,8 +662,8 @@ def database_dump(request):
         
         result['success'] = True
         
-    #except:
-    #    pass
+    except:
+        pass
         
     return make_response(result)
     
@@ -671,8 +671,8 @@ def database_dump(request):
 def database_upload(request):
 
     result = {'success': False}
-    if True:
-    #try:
+    #if True:
+    try:
         
         user, token = check_auth(request)
         
@@ -684,7 +684,7 @@ def database_upload(request):
         
         result['success'] = True
         
-    #except:
-    #    pass
+    except:
+        pass
 
     return make_response(result)
