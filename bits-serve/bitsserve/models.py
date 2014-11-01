@@ -88,6 +88,8 @@ class UserTypes(Base):
         with transaction.manager:
             user_types = session.query(
                 UserTypes,
+            ).order_by(
+                UserTypes.id,
             ).all()
         return user_types
 
@@ -191,6 +193,15 @@ class Users(Base):
             ).first()
         return user
 
+    @classmethod
+    def get_all_users(cls, session):
+        with transaction.manager:
+            users = session.query(
+                Users,
+            ).order_by(
+                Users.id,
+            ).all()
+        return users
 
 class LoginTokens(Base):
 
@@ -323,6 +334,16 @@ class Organizations(Base):
             ).first()
         return organization
 
+    @classmethod
+    def get_all_organizations(cls, session):
+        with transaction.manager:
+            organizations = session.query(
+                Organizations,
+            ).order_by(
+                Organizations.id,
+            ).all()
+        return organizations
+
 class UserOrganizationAssignments(Base):
 
     __tablename__ = 'userorganizationassignments'
@@ -430,7 +451,7 @@ class Projects(Base):
             project = session.query(
                 Projects,
             ).filter(
-                Projects.project_id == project_id,
+                Projects.id == project_id,
             ).first()
             project.disabled = True
             session.add(project)
@@ -475,6 +496,16 @@ class Projects(Base):
             session = session,
             user_id = user_id,
         )
+        return projects
+        
+    @classmethod
+    def get_all_projects(cls, session):
+        with transaction.manager:
+            projects = session.query(
+                Projects,
+            ).order_by(
+                Projects.id
+            ).all()
         return projects
 
 class UserProjectAssignments(Base):
@@ -597,6 +628,16 @@ class UserProjectAssignments(Base):
             if assignment != None:
                 valid = True
         return valid
+        
+    @classmethod
+    def get_all_user_project_assignments(cls, session):
+        with transaction.manager:
+            user_project_assignments = session.query(
+                UserProjectAssignments,
+            ).order_by(
+                UserProjectAssignments.id,
+            ).all()
+        return user_project_assignments
 
 class TicketTypes(Base):
 
@@ -628,7 +669,7 @@ class TicketTypes(Base):
         return ticket_type
     
     @classmethod
-    def get_all_ticket_types(cls, session, project_id):
+    def get_all_ticket_types(cls, session):
         """ Returns all of the ticket types for the project
         """
         with transaction.manager:
@@ -822,6 +863,16 @@ class Tickets(Base):
             ).first();
         return last_number
 
+    @classmethod
+    def get_all_tickets(cls, session):
+        with transaction.manager:
+            tickets = session.query(
+                Tickets,
+            ).order_by(
+                Tickets.id,
+            ).all()
+        return tickets
+
 class TicketComments(Base):
 
     __tablename__ = 'ticketcomments'
@@ -909,6 +960,16 @@ class TicketComments(Base):
                 TicketComments.creation_datetime,
             ).all() 
         return comments
+        
+    @classmethod
+    def get_all_ticket_comments(cls, session):
+        with transaction.manager:
+            ticket_comments = session.query(
+                TicketComments,
+            ).order_by(
+                TicketComments.id,
+            ).all()
+        return ticket_comments
 
 class Tasks(Base):
 
@@ -1401,6 +1462,16 @@ class ActionTypes(Base):
                 ActionTypes.name == name,
             ).first()
         return action_type
+        
+    @classmethod
+    def get_all_action_types(cls, session):
+        with transaction.manager:
+            action_types = session.query(
+                ActionTypes,
+            ).order_by(
+                ActionTypes.id,
+            ).all()
+        return action_types
 
 class ActionSubjects(Base):
 
@@ -1431,6 +1502,16 @@ class ActionSubjects(Base):
                 ActionSubjects.name == name,
             ).first()
         return action_subject
+
+    @classmethod
+    def get_all_action_subjects(cls, session):
+        with transaction.manager:
+            action_subjects = session.query(
+                ActionSubjects,
+            ).filter(
+                ActionSubjects.id,
+            ).first()
+        return action_subjects
 
 class Actions(Base):
 
@@ -1571,5 +1652,15 @@ class Actions(Base):
             ).filter(
                 Actions.organization_id == organization_id,
             ).limit(limit)
+        return actions
+        
+    @classmethod
+    def get_all_actions(cls, session):
+        with transaction.manager:
+            actions = session.query(
+                Actions,
+            ).order_by(
+                Actions.id,
+            ).all()
         return actions
 

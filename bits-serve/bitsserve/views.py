@@ -38,7 +38,9 @@ from utils import (
     
     get_lists,
     get_list,
-    get_list_comments,    
+    get_list_comments,
+    
+    export_database,
 )
 
 from .models import (
@@ -645,3 +647,19 @@ def create_task(request):
 
     return make_response(result)
 
+@view_config(route_name='database_dump.json')
+def database_dump(request):
+
+    result = {'success': False}
+    if True:
+    #try:
+        user, token = check_auth(request)
+        
+        result['database'] = export_database(user.id)
+        
+        result['success'] = True
+        
+    #except:
+    #    pass
+        
+    return make_response(result)

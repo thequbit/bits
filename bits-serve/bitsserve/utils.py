@@ -32,6 +32,8 @@ from .models import (
     RequirementTypes,
     Requirements,
     RequirementComments,
+    ActionTypes,
+    ActionSubjects,
     Actions,
 )
 
@@ -779,5 +781,198 @@ def export_database(user_id):
     if user_id != 1:
         raise Exception("Invalid Credentails")
         
-    #projects = 
+    _user_types = UserTypes.get_all_user_types(
+        session = DBSession,
+    )
+    user_types = []
+    for user_type in _user_types:
+        user_types.append({
+            'id': user_type.id,
+            'name': user_type.name,
+            'description': user_type.description,
+        })
+        
+    _organizations = Organizations.get_all_organizations(
+        session = DBSession,
+    )
+    organizations = []
+    for organization in _organizations:
+        organizations.append({
+            'id': organization.id,
+            'author_id': organization.author_id,
+            'name': organization.name,
+            'description': organization.description,
+            'disabled': organization.disabled,
+            'creation_datetime': str(organization.creation_datetime),
+        })
+        
+    _users = Users.get_all_users(
+        session = DBSession,
+    )
+    users = []
+    for user in _users:
+        users.append({
+            'id': user.id,
+            'user_type_id': user.user_type_id,
+            'first': user.first,
+            'last': user.last,
+            'email': user.email,
+            'username': user.username,
+            'pass_hash': user.pass_hash,
+            'pass_salt': user.pass_salt,
+            'disabled': user.disabled,
+            'theme': user.theme,
+            'creation_datetime': str(user.creation_datetime),
+        })
+        
+    _projects = Projects.get_all_projects(
+        session = DBSession,
+    )
+    projects = []
+    for project in _projects:
+        projects.append({
+            'id': project.id,
+            'author_id': project.author_id,
+            'organization_id': project.organization_id,
+            'number': project.number,
+            'name': project.name,
+            'description': project.description,
+            'creation_datetime': str(project.creation_datetime),
+            'disabled': project.disabled,
+        })
+    
+    _user_project_assignments = \
+        UserProjectAssignments.get_all_user_project_assignments(
+            session = DBSession,
+        )
+    user_project_assignments = []
+    for upa in _user_project_assignments:
+        user_project_assignments.append({
+            'id': upa.id,
+            'user_id': upa.user_id,
+            'project_id': upa.project_id,
+            'disabled': upa.disabled,
+            'creation_datetime': str(upa.creation_datetime),
+        })
+    
+    _ticket_types = TicketTypes.get_all_ticket_types(
+        session = DBSession,
+    )
+    ticket_types = []
+    for ticket_type in _ticket_types:
+        ticket_type.append({
+            'id': ticket_type.id,
+            'author_id': ticket_type.author_id,
+            'project_id': ticket_type.project_id,
+            'name': ticket_type.name,
+            'description': ticket_type.description,
+            'color': ticket_type.color,
+            'creation_datetime': str(ticket_type.creation_datetime),
+        })
+    
+    _tickets = Tickets.get_all_tickets(
+        session  = DBSession,
+    )
+    tickets = []
+    for ticket in _tickets:
+        tickets.append({
+            'id': ticket.id,
+            'author_id': ticket.author_id,
+            'project_id': ticket.project_id,
+            'ticket_type_id': ticket.ticket_type_id,
+            'number': ticket.number,
+            'title': ticket.title,
+            'contents': ticket.contents,
+            'assigned_id': ticket.assigned_id,
+            'closed': ticket.closed,
+            'closed_datetime': str(ticket.closed_datetime),
+            'creation_datetime': str(ticket.creation_datetime),
+        })
+    
+    _ticket_comments = TicketComments.get_all_ticket_comments(
+        session = DBSession,
+    )
+    ticket_comments = []
+    for ticket_comment in _ticket_comments:
+        ticket_comments.append({
+            'id': ticket_comment.id,
+            'author_id': ticket_comment.author_id,
+            'ticket_id': ticket_comment.ticket_id,
+            'contents': ticket_comment.contents,
+            'update_datetime': ticket_comment.update_datetime,
+            'flagged': ticket_comment.flagged,
+            'flagged_author_id': ticket_comment.flagged_author_id,
+            'creation_datetime': str(ticket_comment.creation_datetime),
+        })
+    
+    # _tasks =
+    
+    # _task_comments =
+    
+    # _lists =
+     
+    # _list_items =
+    
+    # _requirement_types =
+    
+    # _requirements = 
+    
+    # _requirement_comments =
+    
+    _action_types = ActionTypes.get_all_action_types(
+        session = DBSession,
+    )
+    action_types = []
+    if _action_types != None:
+        for action_type in _action_types:
+            action_types.append({
+                'id': action_type.id,
+                'name': action_type.name,
+            })
+    
+    _action_subjects = ActionSubjects.get_all_action_subjects(
+        session = DBSession,
+    )
+    action_subjects = []
+    if _action_subjects != None:
+        for action_subject in _action_subjects:
+            action_subjects.append({
+                'id': action_subject.id,
+                'name': action_subject.name,
+            })
+    
+    _actions = Actions.get_all_actions(
+        session = DBSession,
+    )
+    actions = []
+    for action in _actions:
+        actions.append({
+            'id' : action.id,
+            'organization_id': action.organization_id,
+            'user_id': action.user_id,
+            'action_type': action.action_type,
+            'subject': action.subject,
+            'target_id': action.target_id,
+            'project_id': action.project_id,
+            'ticket_id': action.ticket_id,
+            'requirement_id': action.requirement_id,
+            'task_id': action.task_id,
+            'list_id': action.list_id,
+            'creation_datetime': str(action.creation_datetime),
+        })
+    
+    output = {
+        'user_types': user_types,
+        'organizations': organizations,
+        'users': users,
+        'projects': projects,
+        'user_project_assignments': user_project_assignments,
+        'ticket_types': ticket_types,
+        'tickets': tickets,
+        'ticket_comments': ticket_comments,
+    }
+    
+    return output
+    
+    
     
