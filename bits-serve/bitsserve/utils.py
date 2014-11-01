@@ -753,7 +753,7 @@ def send_notification(user_id, action_id, additional_display):
                     {4}
                     <br/>
                     <div>
-                        <blockquote style="font-family: 'Lato', sans-serif !important; font-size: 110%; margin: 0px 0px 1.25rem; padding: 0.5625rem 1.25rem 0px 1.1875rem; border-left: 1px solid #DDD;">
+                        <blockquote style="color: #6F6F6F; font-family: 'Lato', sans-serif !important; font-size: 110%; margin: 0px 0px 1.25rem; padding: 0.5625rem 1.25rem 0px 1.1875rem; border-left: 1px solid #DDD;">
                             {5}
                         </blockquote>
                     </div>
@@ -768,8 +768,8 @@ def send_notification(user_id, action_id, additional_display):
         p_id,
         p_name,
         a_created,
-        markdown.markdown(a_contents),
-        markdown.markdown(additional_display),
+        markdown.markdown(a_contents).replace('<a ','<a style="color: #008CBA; text-decoration: none;'),
+        markdown.markdown(additional_display).replace('<a ','<a style="color: #008CBA; text-decoration: none;'),
     )
 
     success = False
