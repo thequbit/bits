@@ -752,10 +752,11 @@ def send_notification(user_id, action_id, additional_display):
                 <div style="margin-left: 20px; padding: 10px; font-size: 90%; margin-top: 10px; max-width: 450px; box-shadow: 0px 0px 0px 1px #DDD, 0px 4px 8px rgba(221, 221, 221, 0.9);">
                     <div class="small-light-text">{3}</div>
                     {3}
+                    <br/>
                     <div>
-                        <quote>
+                        <blockquote>
                             {4}
-                        </quote>
+                        </blockquote>
                     </div>
                 </div>
             </p>
