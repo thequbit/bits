@@ -753,7 +753,7 @@ def send_notification(user_id, action_id, additional_display):
                     {4}
                     <br/>
                     <div>
-                        <blockquote>
+                        <blockquote style="font-family: 'Lato', sans-serif !important; font-size: 110%; margin: 0px 0px 1.25rem; padding: 0.5625rem 1.25rem 0px 1.1875rem; border-left: 1px solid #DDD;">
                             {5}
                         </blockquote>
                     </div>
