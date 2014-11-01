@@ -489,6 +489,19 @@ class Projects(Base):
         return project
 
     @classmethod
+    def get_name_from_id(cls, session, project_id):
+        """ Get a project'sname from it's id
+        """
+        with transaction.manager:
+            project_name = session.query(
+                Projects.name,
+            ).filter(
+                Projects.id == project_id,
+            ).first()
+
+        return project_name
+
+    @classmethod
     def get_projects_from_user_id(cls, session, user_id):
         """ Get all of the projects the user has access to
         """
@@ -1519,35 +1532,21 @@ class Actions(Base):
     id = Column(Integer, primary_key=True)
     organization_id = Column(Integer, ForeignKey('organizations.id'))
     user_id = Column(Integer, ForeignKey('users.id'))
-    action_type = Column(Text)
-    subject = Column(Text)
-    target_id = Column(Integer)
     project_id = Column(Integer, ForeignKey('projects.id'), nullable=True)
-    ticket_id = Column(Integer, ForeignKey('tickets.id'), nullable=True)
-    requirement_id = Column(Integer, ForeignKey('requirements.id'), 
-        nullable=True)
-    task_id = Column(Integer, ForeignKey('tasks.id'), nullable=True)
-    list_id = Column(Integer, ForeignKey('lists.id'), nullable=True)
+    contents = Column(Text)
     creation_datetime = Column(DateTime)
 
     @classmethod
-    def add_action(cls, session, organization_id, user_id, action_type, \
-            subject, project_id, ticket_id, requirement_id, task_id, \
-            list_id):
+    def add_action(cls, session, organization_id, user_id, project_id, \
+            contents):
         """ Add an action
         """
         with transaction.manager:
             action = cls(
                 organization_id = organization_id,
                 user_id = user_id,
-                action_type = action_type,
-                subject = subject,
-                #target_id = target_id,
                 project_id = project_id,
-                ticket_id = ticket_id,
-                requirement_id = requirement_id,
-                task_id = task_id,
-                list_id = list_id,
+                contents = contents,
                 creation_datetime = datetime.datetime.now(),
             )
             session.add(action)
@@ -1558,8 +1557,7 @@ class Actions(Base):
     def _build_action_query(cls, session):
         action_query = session.query(
             Actions.id,
-            Actions.action_type,
-            Actions.subject,
+            Actions.contents,
             Actions.creation_datetime,
             Users.id,
             Users.first,
@@ -1568,13 +1566,6 @@ class Actions(Base):
             Projects.id,
             Projects.name,
             UserProjectAssignments.id,
-            Tickets.id,
-            Tickets.title,
-            #TicketComments.id,
-            #Requirements.id,
-            #Requirements.title,
-            Tasks.id,
-            Tasks.title,
         ).join(
             Users, Users.id == Actions.user_id,
         ).join(
@@ -1582,17 +1573,7 @@ class Actions(Base):
         ).join(
             UserProjectAssignments,
             UserProjectAssignments.project_id == \
-                Actions.project_id, # and \ 
-            #UserProjectAssignments.user_id == \
-            #    user_id,
-        ).outerjoin(
-            Tickets, Tickets.id == Actions.ticket_id,
-            #Tickets, Tickets.project_id == Actions.project_id,
-        #).outerjoin(
-        #    TicketComments, TicketComments.ticket_id == Actions.ticket_id,
-        ).outerjoin(
-            Tasks, Tasks.project_id == Actions.project_id,
-        #).outerjoin(
+                Actions.project_id,
         )
         
         return action_query
@@ -1616,10 +1597,6 @@ class Actions(Base):
             action_query = Actions._build_action_query(session)
             actions = action_query.filter(
                 UserProjectAssignments.user_id == user_id,
-            #    UserProjectAssignments.project_id == Projects.id,
-                #Tickets.project_id == Actions.project_id,
-            #).group_by(
-            #    Actions.id,
             ).group_by(
                 Actions.id,
             ).order_by(

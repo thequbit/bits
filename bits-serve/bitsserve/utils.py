@@ -13,6 +13,8 @@ from email.mime.text import MIMEText
 
 from pyramid.response import Response
 
+import transaction
+
 from .models import (
     DBSession,
     UserTypes,
@@ -112,24 +114,17 @@ def check_auth(request):
     
     return user, token
 
-def create_action(user_id, action_type, subject, project_id=None, \
-        ticket_id=None, requirement_id=None, task_id=None, \
-        list_id=None):
+def create_action(user_id, project_id, contents, additional_display=''):
 
     action = Actions.add_action(
         session = DBSession,
-        organization_id = 1,
+        organization_id = 1, # TODO: fix this with multi-tenant stuff
         user_id = user_id,
-        action_type = action_type,
-        subject = subject,
         project_id = project_id,
-        ticket_id = ticket_id,
-        requirement_id = requirement_id,
-        task_id = task_id,
-        list_id = list_id,
+        contents = contents,
     )
 
-    if subject != 'project' and project_id != None:
+    if project_id != None:
         upas = UserProjectAssignments.get_users_assigned_to_project(
             session = DBSession,
             project_id = project_id,
@@ -140,36 +135,34 @@ def create_action(user_id, action_type, subject, project_id=None, \
                 send_notification(
                     user_id = u_id,
                     action_id = action.id,
+                    additional_display = additional_display,
                 )
 
     return action
 
-def get_actions(user_id, limit):
+def get_actions(user, limit):
 
-    _actions = Actions.get_user_action_list( #get_latest_actions_by_org_id(
+    _actions = Actions.get_user_action_list(
         session = DBSession,
-        user_id = user_id,
+        user_id = user.id,
         #organization_id = 1,
         limit = limit,
     )
 
+    print "\n\n_actions:\n\n"
+    print _actions
+    print "\n\n"
+
     actions = []
-    for a_id, a_type, a_subject, a_created, u_id, u_first, u_last, u_email, \
-            p_id, p_name, upa_id, t_id, t_title, task_id, task_title \
-            in _actions:
+    for a_id, a_contents, a_created, u_id, u_first, u_last, u_email, \
+            p_id, p_name, upa_id in _actions:
         actions.append({
             'id': a_id,
-            'action': a_type,
-            'subject': a_subject,
+            'contents': markdown.markdown(a_contents),
             'created': a_created,
             'owner': '{0} {1}'.format(u_first, u_last),
-            'owner_id': u_id,
             'project_id': p_id,
             'project_name': p_name,
-            'ticket_id': t_id,
-            'ticket_title': t_title,
-            'task_id': task_id,
-            'task_title': task_title,
         })
 
     return actions
@@ -188,30 +181,25 @@ def get_user_actions(user_id, limit):
     )
     
     actions = []
-    for a_id, a_type, a_subject, a_created, u_id, u_first, u_last, u_email, \
-            p_id, p_name, upa_id, t_id, t_title, task_id, task_title \
-            in _actions:
+    for a_id, a_contents, a_created, u_id, u_first, u_last, u_email, \
+            p_id, p_name, upa_id in _actions:
         actions.append({
             'id': a_id,
             'action': a_type,
-            'subject': a_subject,
+            'contents': contents,
             'created': a_created,
             'owner': '{0} {1}'.format(u_first, u_last),
             'project_id': p_id,
             'project_name': p_name,
-            'ticket_id': t_id,
-            'ticket_title': t_title,
-            'task_id': task_id,
-            'task_title': task_title,
         })
 
     return actions, target_user
 
-def create_new_project(user_id, name, description):
+def create_new_project(user, name, description):
 
     project = Projects.add_project(
         session = DBSession,
-        author_id = user_id,
+        author_id = user.id,
         organization_id = 1,
         name = name,
         description = description,
@@ -219,15 +207,24 @@ def create_new_project(user_id, name, description):
 
     assignment = UserProjectAssignments.assign_user_to_project(
         session = DBSession,
-        user_id = user_id,
+        user_id = user.id,
         project_id = project.id,
     )
     
+    action_project_link = "[{0}](/project?project_id={1})".format(
+        project.name,
+        project.id,
+    )
+    action_contents = "{0} {1} created a new project: {2}".format(
+        user.first,
+        user.last,
+        action_project_link,
+    )
     action = create_action(
-        user_id = user_id,
-        action_type = "created",
-        subject = "project",
+        user_id = user.id,
         project_id = project.id,
+        contents = action_contents,
+        additional_display = description,
     )
 
     return project
@@ -266,6 +263,19 @@ def assign_user_to_project(user_id, project_id, email):
         )
     else:
         assignment = _assignment
+        
+    action_contents = "**{0} {1}** has been assigned to **{2}** by {3} {4}".format(
+        target_user.first,
+        target_user.last,
+        Projects.get_name_from_id(DBSession, project_id),
+        user.first,
+        user.last,
+    )
+    action = create_action(
+        user_id = user.id,
+        project_id = project.id,
+        contents = action_contents,
+    )
     
     return target_user, assignment
     
@@ -384,14 +394,14 @@ def _check_ticket_auth(user_id, ticket_id):
     if valid == False:
         raise Exception('invalid credentials')
         
-    return _ticket
+    return _ticket, p_id
 
-def create_new_ticket(user_id, project_id, ticket_type_id, title, contents, \
+def create_new_ticket(user, project_id, ticket_type_id, title, contents, \
         assigned_id):
 
     valid = UserProjectAssignments.check_project_assignment(
         session = DBSession,
-        user_id = user_id,
+        user_id = user.id,
         project_id = project_id,
     )
 
@@ -410,7 +420,7 @@ def create_new_ticket(user_id, project_id, ticket_type_id, title, contents, \
 
     ticket = Tickets.add_ticket(
         session = DBSession,
-        author_id = user_id,
+        author_id = user.id,
         project_id = project_id,
         ticket_type_id = ticket_type_id,
         number = ticket_number,
@@ -420,13 +430,29 @@ def create_new_ticket(user_id, project_id, ticket_type_id, title, contents, \
         assigned_id = assigned_id,
     )
     
-    # register an action on creation
+    action_user_link = "[{0} {1}](/user?user_id={2})".format(
+        user.first,
+        user.last,
+        user.id,
+    )
+    action_ticket_link = "[{0}](/ticket?ticket_id={1})".format(
+        ticket.title,
+        ticket.id,
+    )
+    action_project_link = "[{0}](/project?project_id={1})".format(
+        Projects.get_name_from_id(DBSession, project_id),
+        project_id,
+    )
+    action_contents = "{0} opened a new ticket: {1} in project: {2}".format(
+        action_user_link,
+        action_ticket_link,
+        action_project_link,
+    )
     action = create_action(
-        user_id = user_id,
-        action_type = 'created',
-        subject = 'ticket',
+        user_id = user.id,
         project_id = project_id,
-        ticket_id = ticket.id,
+        contents = action_contents,
+        additional_display = contents,
     )
     
     return ticket
@@ -467,7 +493,7 @@ def get_tickets(project_id, closed=False):
 
 def get_ticket(user_id, ticket_id):
 
-    _ticket = _check_ticket_auth(user_id, ticket_id)
+    _ticket, project_id = _check_ticket_auth(user_id, ticket_id)
 
     t_id, t_number, t_title, t_contents, t_a_id, t_closed, t_closed_dt, \
         t_created, o_first, o_last, o_email, p_id, p_name, p_desc, p_created, \
@@ -480,8 +506,12 @@ def get_ticket(user_id, ticket_id):
         if t_closed_dt != None:
             closed_datetime = t_closed_dt.strftime("%b %d, %Y")
 
+        print "\n\nassigned_id: \n\n"
+        print t_a_id
+        print "\n\n"
+
         assigned_user_name = ''
-        if t_a_id != None:    
+        if t_a_id != None and t_a_id != '':    
             assigned_user = Users.get_by_id(
                 session = DBSession,
                 user_id = t_a_id,
@@ -510,7 +540,7 @@ def get_ticket(user_id, ticket_id):
 
 def create_new_ticket_comment(user_id, ticket_id, contents):
 
-    _ticket = _check_ticket_auth(user_id, ticket_id)
+    _ticket, project_id = _check_ticket_auth(user_id, ticket_id)
 
     ticket_comment = TicketComments.add_ticket_comment(
         session = DBSession,
@@ -524,19 +554,36 @@ def create_new_ticket_comment(user_id, ticket_id, contents):
         t_created, o_first, o_last, o_email, p_id, p_name, p_desc, \
         p_created, tt_name, tt_desc, tt_color = _ticket
     
+    action_user_link = "[{0} {1}](/user?user_id={2})".format(
+        user.first,
+        user.last,
+        user.id,
+    )
+    action_ticket_link = "[{0}](/ticket?ticket_id={1})".format(
+        ticket.title,
+        ticket.id,
+    )
+    action_project_link = "[{0}](/project?project_id={1})".format(
+        Projects.get_name_from_id(DBSession, project_id),
+        project_id,
+    )
+    action_contents = "{0} added a comment to ticket: {1} in project: {2} {3}".format(
+        action_user_link,
+        action_ticket_link,
+        action_project_link,
+    )
     action = create_action(
-        user_id = user_id,
-        action_type = "created",
-        subject = "ticket_comment",
-        project_id = p_id,
-        ticket_id = ticket_id,
+        user_id = user.id,
+        project_id = project_id,
+        contents = action_contents,
+        additional_display = contents,
     )
     
     return ticket_comment
 
 def get_ticket_comments(user_id, ticket_id):
 
-    _ticket = _check_ticket_auth(user_id, ticket_id)
+    _ticket, project_id = _check_ticket_auth(user_id, ticket_id)
 
     _comments = TicketComments.get_ticket_comments_by_ticket_id(
         session = DBSession,
@@ -671,7 +718,7 @@ def get_list_comments(list_id):
 
     return []
     
-def send_notification(user_id, action_id):
+def send_notification(user_id, action_id, additional_display):
 
     target_user = Users.get_by_id(
         session = DBSession,
@@ -683,15 +730,8 @@ def send_notification(user_id, action_id):
         action_id = action_id,
     )
 
-    a_id, a_type, a_subject, a_created, u_id, u_first, u_last, u_email, \
-        p_id, p_name, upa_id, t_id, t_title, task_id, task_title = _action
-
-    if a_type == 'created' and a_subject == 'project':
-        action_text = " created a project "
-    elif a_type == 'created' and a_subject == 'ticket':
-        action_text = " created a ticket "
-    elif a_type == 'created' and a_subject == 'ticket_comment':
-        action_text = ' created a comment in ticket '
+    a_id, a_contents, a_created, u_id, u_first, u_last, u_email, p_id, \
+            p_name, upa_id  = _action
 
     html = """
     <html>
@@ -711,9 +751,12 @@ def send_notification(user_id, action_id):
             <p>
                 <div style="margin-left: 20px; padding: 10px; font-size: 90%; margin-top: 10px; max-width: 450px; box-shadow: 0px 0px 0px 1px #DDD, 0px 4px 8px rgba(221, 221, 221, 0.9);">
                     <div class="small-light-text">{3}</div>
-                    <a style="color: #008CBA; text-decoration: none; line-height: inherit;" href="{0}user?user_id={4}">{5}</a>
-                    {6} 
-                    <a style="color: #008CBA; text-decoration: none; line-height: inherit;" href="{0}ticket?ticket_id={7}">{8}</a>.
+                    {3}
+                    <div>
+                        <quote>
+                            {4}
+                        </quote>
+                    </div>
                 </div>
             </p>
             <br/>
@@ -725,11 +768,8 @@ def send_notification(user_id, action_id):
         p_id,
         p_name,
         a_created,
-        u_id,
-        '{0} {1}'.format(u_first, u_last),
-        action_text,
-        t_id,
-        t_title,
+        a_contents,
+        markdown.markdown(additional_display),
     )
 
     success = False
@@ -889,6 +929,8 @@ def export_database(user_id):
             'creation_datetime': str(ticket.creation_datetime),
         })
     
+    # _ticket_priorities
+    
     _ticket_comments = TicketComments.get_all_ticket_comments(
         session = DBSession,
     )
@@ -963,8 +1005,8 @@ def export_database(user_id):
     
     output = {
         'user_types': user_types,
-        'organizations': organizations,
         'users': users,
+        'organizations': organizations,
         'projects': projects,
         'user_project_assignments': user_project_assignments,
         'ticket_types': ticket_types,
@@ -974,5 +1016,140 @@ def export_database(user_id):
     
     return output
     
+def inport_database(user_id, database):
+
+    if user_id != 1:
+        raise Exception("Invalid Credentails")
+
+    for user_type in database['user_types']:
+        with transaction.manager:
+            ut = UserTypes(
+                id = user_type['id'],
+                name = user_type['name'],
+                description = user_type['description'],
+            )
+            DBSession.add(ut)
+            transaction.commit()
     
+    for user in users:
+        with transaction.manager:
+            u = Users(
+                id = user['id'],
+                user_type_id = user['user_type_id'],
+                first = user['first'],
+                last = user['last'],
+                email = user['email'],
+                username = user['username'],
+                pass_hash = user['pass_hash'],
+                pass_salt = user['pass_salt'],
+                disabled = user['disabled'],
+                theme = user['theme'],
+                creation_datetime = user['creation_datetime'],
+            )
+            DBSession.add(u)
+            transaction.commit()
+        
+    for organization in database['organizations']:
+        with transaction.manager:
+            org = Organizations(
+                id = organization['id'],
+                author_id = organization['author_id'],
+                name = organization['name'],
+                description = organization['description'],
+                disabled = organization['disabled'],
+                creation_datetime = organization['creation_datetime'],
+            )
+    
+    for project in database['projects']:
+        with transaction.manager:
+            p = Projects(
+                id = project['id'],
+                author_id = project['author_id'],
+                organization_id = project['organization_id'],
+                number = project['number'],
+                name = project['name'],
+                description = project['description'],
+                creation_datetime = project['creation_datetime'],
+                disabled = project['disabled'],
+            )
+            DBSession.add(p)
+            transaction.commit()
+            
+    for user_project_assignment in database['user_project_assignments']:
+        with transaction.manager:
+            upa = UserProjectAssignments(
+                id = user_project_assignment['id'],
+                user_id = user_project_assignment['user_id'],
+                project_id = user_project_assignment['project_id'],
+                disabled = user_project_assignment['disabled'],
+                creation_datetime = user_project_assignment['creation_datetime'],
+            )
+            DBSession.add(upa)
+            transaction.commit()
+            
+    for ticket_type in database['ticket_types']:
+        with transaction.manager:
+            tt = TicketTypes(
+                id = ticket_type['id'],
+                author_id = ticket_type['author_id'],
+                project_id = ticket_type['project_id'],
+                name = ticket_type['name'],
+                description = ticket_type['description'],
+                color = ticket_type['color'],
+                creation_datetime = ticket_type['creation_datetime'],
+            )
+            DBSession.add(tt)
+            transaction.commit()
+            
+    for ticket_comment in database['ticket_comments']:
+        with transaction.manager:
+            tc = TicketComment(
+                id = ticket_comment['id'],
+                author_id = ticket_comment['author_id'],
+                ticket_id = ticket_comment['ticket_id'],
+                contents = ticket_comment['contents'],
+                update_datetime = ticket_comment['update_datetime'],
+                flagged = ticket_comment['flagged'],
+                flagged_author_id = ticket_comment['flagged_author_id'],
+                creation_datetime = ticket_comment['creation_datetime'],
+            )
+            DBSession.add(tc)
+            transaction.commit()
+    
+    for action_type in database['action_types']:
+        with transaction.manager:
+            at = ActionTypes(
+                id = action_type['id'],
+                name = action_type['name'],
+            )
+            DBSession.add(at)
+            transaction.commit()
+            
+    for action_subject in database['action_subjects']:
+        with transaction.manager:
+            asub = ActionSubject(
+                id = action_subject['id'],
+                name = action_subject['name'],
+            )
+            DBSession.add(asub)
+            transaction.commit()
+            
+    for action in database['actions']:
+        with transaction.manager:
+            a = Actions(
+                id = action['id'],
+                organization_id = action['organization_id'],
+                user_id = action['user_id'],
+                action_type = action['action_type'],
+                subject = action['subject'],
+                target_id = action['target_id'],
+                project_id = action['project_id'],
+                ticket_id = action['ticket_id'],
+                requirement_id = action['requirement_id'],
+                task_id = action['task_id'],
+                list_id = action['list_id'],
+                creation_datetime = action['creation_datetime'],
+            )
+            DBSession.add(a)
+            transaction.commit()
     

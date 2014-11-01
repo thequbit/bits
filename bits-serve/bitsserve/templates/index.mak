@@ -97,23 +97,7 @@
                         % for action in actions:
                         <div class="action-box shadow">
                             <div class="small-light-text">${str(action['created']).split('.')[0]}</div>
-                            <a href="/user?user_id=${action['owner_id']}">${action['owner']}</a>
-                            ${action['action']} 
-                            % if action['subject'] == 'project':
-                                a new project <a href="/project?project_id=${action['project_id']}">${action['project_name']}</a>.
-                                
-                            % elif action['subject'] == 'ticket':
-                                a new ticket <a href="/ticket?ticket_id=${action['ticket_id']}">${action['ticket_title']}</a> in
-                                <a href="/project?project_id=${action['project_id']}">${action['project_name']}</a>.
-                                
-                            % elif action['subject'] == 'ticket_comment':
-                                a comment to a ticket <a href="/ticket?ticket_id=${action['ticket_id']}">${action['ticket_title']}</a>.
-                                
-                            % elif action['subject'] == 'task':
-                                a new task <a href="/task?task_id=${action['task_id']}">${action['task_title']}</a> in
-                                <a href="/project?project_id=${action['project_id']}">${action['project_name']}</a> 
-                                
-                            % endif
+                            ${action['contents'] | n}
                         </div>
                         % endfor
                     % endif

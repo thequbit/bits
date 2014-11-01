@@ -319,10 +319,11 @@
         }
 
         div.action-box p {
-            color: #BBB;
-            margin-top: 10px;
-            font-size: 70%;
-            padding-left: 20px;
+            /*color: #BBB;*/
+            /*margin-top: 10px;*/
+            /*font-size: 70%;*/
+            /*padding-left: 5px;*/
+            margin-bottom: 0px !important;
         }
 
         input[type="checkbox"] {

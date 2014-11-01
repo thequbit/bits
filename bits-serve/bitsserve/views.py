@@ -41,6 +41,7 @@ from utils import (
     get_list_comments,
     
     export_database,
+    inport_database,
 )
 
 from .models import (
@@ -160,19 +161,20 @@ def projectsettings(request):
 def index(request):
 
     result = {'user': None}
-    #if True:
-    try:
+    if True:
+    #try:
 
         user, token = check_auth(request)
         result['user'] = user
 
         result['projects'] = get_user_projects(user)
 
-        result['actions'] = get_actions(user.id, limit=25)
-
-
-    except:
-        pass
+        actions = get_actions(user, limit=25)
+        
+        result['actions'] = actions
+        
+    #except:
+    #    pass
 
     return result #{'token': token, 'user': user, 'projects': projects}
 
@@ -434,7 +436,7 @@ def create_ticket(request):
         print "\n\n"
 
         ticket = create_new_ticket(
-            user_id = user.id,
+            user = user,
             project_id = project_id,
             ticket_type_id = ticket_type_id,
             title = title,
@@ -489,8 +491,8 @@ def create_project(request):
     """
 
     result = {'user': None}
-    #if True:
-    try:
+    if True:
+    #try:
 
         user, token = check_auth(request)
 
@@ -498,7 +500,7 @@ def create_project(request):
         description = request.POST['description']
 
         project = create_new_project(
-            user_id = user.id, 
+            user= user, 
             name = name,
             description = description,
         )
@@ -507,8 +509,8 @@ def create_project(request):
         
         result['success'] = True
 
-    except:
-        pass
+    #except:
+    #    pass
 
     return make_response(result)
 
@@ -646,6 +648,7 @@ def database_dump(request):
     result = {'success': False}
     if True:
     #try:
+    
         user, token = check_auth(request)
         
         result['database'] = export_database(user.id)
@@ -655,4 +658,26 @@ def database_dump(request):
     #except:
     #    pass
         
+    return make_response(result)
+    
+@view_config(route_name = 'database_upload.json')
+def database_upload(request):
+
+    result = {'success': False}
+    if True:
+    #try:
+        
+        user, token = check_auth(request)
+        
+        database = json.loads(request.POST['database'])
+        
+        print database
+        
+        inport_database(user.id, database)
+        
+        result['success'] = True
+        
+    #except:
+    #    pass
+
     return make_response(result)
