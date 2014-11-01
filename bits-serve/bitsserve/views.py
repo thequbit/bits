@@ -567,8 +567,8 @@ def create_ticket_comment(request):
     result = {'user': None}
     result['success'] = False
 
-    #if True:
-    try:
+    if True:
+    #try:
 
         user, token = check_auth(request)
 
@@ -580,7 +580,7 @@ def create_ticket_comment(request):
         ticket = get_ticket(user.id, ticket_id)
 
         ticket_comment = create_new_ticket_comment(
-            user.id,
+            user = user,
             ticket_id = ticket_id,
             contents = contents,
         )
@@ -589,8 +589,8 @@ def create_ticket_comment(request):
 
         result['success'] = True
 
-    except:
-        pass
+    #except:
+    #    pass
 
     return make_response(result)
 

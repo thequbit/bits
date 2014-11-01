@@ -149,10 +149,6 @@ def get_actions(user, limit):
         limit = limit,
     )
 
-    print "\n\n_actions:\n\n"
-    print _actions
-    print "\n\n"
-
     actions = []
     for a_id, a_contents, a_created, u_id, u_first, u_last, u_email, \
             p_id, p_name, upa_id in _actions:
@@ -540,13 +536,13 @@ def get_ticket(user_id, ticket_id):
  
     return ticket
 
-def create_new_ticket_comment(user_id, ticket_id, contents):
+def create_new_ticket_comment(user, ticket_id, contents):
 
-    _ticket, project_id = _check_ticket_auth(user_id, ticket_id)
+    _ticket, project_id = _check_ticket_auth(user.id, ticket_id)
 
     ticket_comment = TicketComments.add_ticket_comment(
         session = DBSession,
-        author_id = user_id,
+        author_id = user.id,
         ticket_id = ticket_id,
         contents = contents,
     )
@@ -562,15 +558,15 @@ def create_new_ticket_comment(user_id, ticket_id, contents):
         user.id,
     )
     action_ticket_link = "[{0}](/ticket?ticket_id={1})".format(
-        ticket.title,
-        ticket.id,
+        t_title,
+        t_id,
     )
     project_name, = Projects.get_name_from_id(DBSession, project_id)
     action_project_link = "[{0}](/project?project_id={1})".format(
         project_name,
         project_id,
     )
-    action_contents = "{0} added a comment to ticket: {1} in project: {2} {3}".format(
+    action_contents = "{0} added a comment to ticket: {1} in project: {2}".format(
         action_user_link,
         action_ticket_link,
         action_project_link,
