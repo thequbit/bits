@@ -430,6 +430,13 @@ def create_ticket(request):
         print "\n\nAssigned ID:\n\n"
         print assigned_id
         print "\n\n"
+        print type(assigned_id)
+        print "\n\n"
+
+        if assigned_id == '' or assigned_id == None \
+                or not assigned_id.isdigit():
+            print "\n\nAssigned_ID = None\n\n"
+            assigned_id = None
 
         ticket = create_new_ticket(
             user_id = user.id,
