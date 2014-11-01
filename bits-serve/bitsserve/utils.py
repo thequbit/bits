@@ -264,10 +264,11 @@ def assign_user_to_project(user_id, project_id, email):
     else:
         assignment = _assignment
         
+    project_name, = Projects.get_name_from_id(DBSession, project_id)
     action_contents = "**{0} {1}** has been assigned to **{2}** by {3} {4}".format(
         target_user.first,
         target_user.last,
-        Projects.get_name_from_id(DBSession, project_id),
+        project_name,
         user.first,
         user.last,
     )
@@ -439,8 +440,9 @@ def create_new_ticket(user, project_id, ticket_type_id, title, contents, \
         ticket.title,
         ticket.id,
     )
+    project_name, = Projects.get_name_from_id(DBSession, project_id)
     action_project_link = "[{0}](/project?project_id={1})".format(
-        Projects.get_name_from_id(DBSession, project_id),
+        project_name,
         project_id,
     )
     action_contents = "{0} opened a new ticket: {1} in project: {2}".format(
@@ -563,8 +565,9 @@ def create_new_ticket_comment(user_id, ticket_id, contents):
         ticket.title,
         ticket.id,
     )
+    project_name, = Projects.get_name_from_id(DBSession, project_id)
     action_project_link = "[{0}](/project?project_id={1})".format(
-        Projects.get_name_from_id(DBSession, project_id),
+        project_name,
         project_id,
     )
     action_contents = "{0} added a comment to ticket: {1} in project: {2} {3}".format(
@@ -751,11 +754,11 @@ def send_notification(user_id, action_id, additional_display):
             <p>
                 <div style="margin-left: 20px; padding: 10px; font-size: 90%; margin-top: 10px; max-width: 450px; box-shadow: 0px 0px 0px 1px #DDD, 0px 4px 8px rgba(221, 221, 221, 0.9);">
                     <div class="small-light-text">{3}</div>
-                    {3}
+                    {4}
                     <br/>
                     <div>
                         <blockquote>
-                            {4}
+                            {5}
                         </blockquote>
                     </div>
                 </div>
@@ -769,7 +772,7 @@ def send_notification(user_id, action_id, additional_display):
         p_id,
         p_name,
         a_created,
-        a_contents,
+        markdown.markdown(a_contents),
         markdown.markdown(additional_display),
     )
 
