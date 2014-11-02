@@ -80,16 +80,21 @@
                 </div>
                 </br>
                 <div id="assigned-container">
+                    
+                    
                     % if ticket['assigned_id'] != None:
                         Assigned: <a href="/user?user_id=${ticket['assigned_id']}">${ticket['assigned_user']}</a>
-                    % else:
-                        Ticket Assigned to: <a id="assigned-name" aria-expanded="false" href="#" data-dropdown="assigned-drop">Assign Ticket</a>
-                        <ul id="assigned-drop" class="f-dropdown" data-dropdown-content aria-hidden="true" tabindex="-1" data-options="is_hover:true">
-                        % for assigned_user in assigned_users:
-                            <li><a href="#" user_email="${assigned_user['email']}" user_name="${assigned_user['user']}">${assigned_user['user']}</a></li>
-                        % endfor
-                        </ul>
+                        <br/>
                     % endif
+                    <div class="small-light-text">
+                        <a id="assigned-name" aria-expanded="false" href="#" data-dropdown="assigned-drop">re-assign Ticket</a>
+                    </div>
+                    <ul id="assigned-drop" class="f-dropdown" data-dropdown-content aria-hidden="true" tabindex="-1" data-options="is_hover:true">
+                    % for assigned_user in assigned_users:
+                        <li><a href="#" user_email="${assigned_user['email']}" user_name="${assigned_user['user']}">${assigned_user['user']}</a></li>
+                    % endfor
+                    </ul>
+                    
                 </div>
                 <br/>           
  

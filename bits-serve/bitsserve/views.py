@@ -601,7 +601,7 @@ def web_assign_user_to_ticket(request):
         email = request.POST['email']
     
         assign_user_to_ticket(
-            user_id = user.id,
+            user = user,
             ticket_id = ticket_id,
             email = email,
         )

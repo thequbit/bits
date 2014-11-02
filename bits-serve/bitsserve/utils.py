@@ -685,11 +685,11 @@ def get_ticket_comments(user_id, ticket_id):
          })
     return comments
 
-def assign_user_to_ticket(user_id, ticket_id, email):
+def assign_user_to_ticket(user, ticket_id, email):
 
-    _ticket, project_id = _check_ticket_auth(user_id, ticket_id)
+    _ticket, project_id = _check_ticket_auth(user.id, ticket_id)
     
-    ticket = Tickets.assign_user_to_ticket(
+    ticket, target_user = Tickets.assign_user_to_ticket(
         session = DBSession,
         ticket_id = ticket_id,
         email = email,

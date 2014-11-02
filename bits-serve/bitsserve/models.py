@@ -905,7 +905,7 @@ class Tickets(Base):
             ticket.assigned_id = user.id
             session.add(ticket)
             transaction.commit()
-        return ticket
+        return ticket, user
 
 class TicketComments(Base):
 
