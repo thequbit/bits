@@ -1,6 +1,6 @@
 
 from config import config
-if config['root_domain'][:-1] != '/':
+if config['root_domain'][-1:] != '/':
     config['root_domain'] = '{0}/'.format(config['root_domain'])
 
 import time
