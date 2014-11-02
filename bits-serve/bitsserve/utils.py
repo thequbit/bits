@@ -497,6 +497,12 @@ def close_ticket(user, ticket_id):
         t_created, o_first, o_last, o_email, p_id, p_name, p_desc, \
         p_created, tt_name, tt_desc, tt_color = _ticket
     
+    project_name, = Projects.get_name_from_id(DBSession, project_id)
+    action_project_link = "[{0}]({2}project?project_id={1})".format(
+        project_name,
+        project_id,
+        config['root_domain'],
+    )
     action_ticket_link = "[{0}]({2}ticket?ticket_id={1})".format(
         t_title,
         t_id,
@@ -508,7 +514,8 @@ def close_ticket(user, ticket_id):
         user.id,
         config['root_domain'],
     )
-    action_contents = "{0} has been closed by {1}".format(
+    action_contents = "{0} : {1} has been closed by {2}".format(
+        action_project_link,
         action_ticket_link,
         action_user_link,
     )

@@ -34,6 +34,7 @@ from utils import (
     get_ticket_comments,
     create_new_ticket_comment,
     assign_user_to_ticket,
+    close_ticket,
     
     get_tasks,
     get_task,
@@ -425,22 +426,21 @@ def web_close_ticket(request):
     result = {'user': None}
     result['success'] = False
 
-    #if True:
-    try:
+    if True:
+    #try:
 
         user, token = check_auth(request)
 
         ticket_id = request.POST['ticket_id']
         
-        
-        
+        ticket = close_ticket(user, ticket_id);
 
         result['ticket_id'] = ticket.id
 
         result['success'] = True
 
-    except:
-        pass
+    #except:
+    #    pass
 
     return make_response(result)
 
