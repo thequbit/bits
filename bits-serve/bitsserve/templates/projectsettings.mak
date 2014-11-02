@@ -75,28 +75,38 @@
             <div class="box shadow">
                 <div class="bottom-border"><h5>Participants</h5></div>
                 <div class="box indent small-light-text">
-                    Manage the users that have access to this project.<br/><br/>
+                    Manage the users that have access to this project.
                 </div>
-                <div class="assigned-contianer">
-                % for assigned_user in assigned_users:
-                    <div class="indent">
-                    % if assigned_user['user_id'] == user.id:
-                        <a href="/user?user_id=${assigned_user['user_id']}">${assigned_user['user']}</a>
-                        <small>( owner )</small>
-                    % else:
-                        <a href="/user?user_id=${assigned_user['user_id']}">${assigned_user['user']}</a> 
-                        <small>( <a href="#">remove</a> )</small>
-                    % endif
-                    </div>
-                % endfor
-                </div>
+                
                 <div class="container-inner">
-                    <div><input id="email" type="text" placeholder="participant email"></input></div>
-                    <div class="right">
-                        <a href="#" id="add-user">Add User</a>
+                    <a id="assigned-name" aria-expanded="false" href="#" data-dropdown="assigned-drop">Assign User to Project</a>
+                    <div id="error-field" class="">
+                        <br/>
                     </div>
-                    </br>
+                    <ul id="assigned-drop" class="f-dropdown" data-dropdown-content aria-hidden="true" tabindex="-1" data-options="is_hover:true">
+                    % for organization_user in organization_users:
+                        <li><a href="#" user_email="${organization_user.email}" user_name="${organization_user.first} ${organization_user.last}">${organization_user.first} ${organization_user.last}</a></li>
+                    % endfor
+                    </ul>
                 </div>
+                
+                <div class="assigned-contianer">
+                    <div class="container-inner">
+                    Currently Assigned:
+                    % for assigned_user in assigned_users:
+                        <div class="indent">
+                        % if assigned_user['user_id'] == user.id:
+                            <a href="/user?user_id=${assigned_user['user_id']}">${assigned_user['user']}</a>
+                            <small>( owner )</small>
+                        % else:
+                            <a href="/user?user_id=${assigned_user['user_id']}">${assigned_user['user']}</a> 
+                            <small>( <a href="#">remove</a> )</small>
+                        % endif
+                        </div>
+                    % endfor
+                    </div>
+                </div>
+                
                 
             </div>
             <hr/>
@@ -105,13 +115,13 @@
     
     <script>
     
-        function add_user() {
+        function add_user(email, name) {
             
-            var email = $('#email').val();
+            //var email = $('#email').val();
             
             if ( email != '' ) {
             
-                url = '/assign_user.json'
+                url = '/assign_user_to_project.json'
                 $.ajax({
                     dataType: 'json',
                     type: 'POST',
@@ -126,6 +136,9 @@
                             //    alert('User already assigned to project');
                             //}
                             window.location.href="/projectsettings?project_id=${project['id']}";
+                        } else {
+                            $('#error-field').html(name + ' already assigned to project');
+                            $('#error-field').addClass('error-field');
                         }
                     },
                     error: function(data) {
@@ -137,9 +150,16 @@
     
         $(document).ready( function() {
         
-            $('#add-user').on('click', function(e) {
-                add_user();
-            })
+            $('#assigned-drop').on('click', function(e) {
+                assigned_user_email = $(e.target).attr('user_email');
+                assigned_user_name = $(e.target).attr('user_name');
+                //$('#assigned-name').html(assigned_user_name);
+                
+                $('#assigned-drop').removeClass('open');
+                $('#assigned-drop').css('left', '-99999px');
+                
+                add_user(assigned_user_email, assigned_user_name);
+            });
         
         });
     

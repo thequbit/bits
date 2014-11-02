@@ -64,15 +64,13 @@
                             </div>
                         </div>
                     % endfor
-                    % if len(projects) > 5:
-                        <div class="row">
-                            <div class="medium-12 columns">
-                                <div class="right" style="padding-right: 5px;">
-                                    <a href="/projects">view all</a>
-                                </div>
+                    <div class="row">
+                        <div class="medium-12 columns">
+                            <div class="right" style="padding-right: 5px;">
+                                <a href="/projects">view all</a>
                             </div>
                         </div>
-                    % endif
+                    </div>
                 % endif
             </div>
             <hr/>
@@ -87,27 +85,10 @@
                         % for action in actions:
                         <div class="action-box shadow">
                             <div class="small-light-text">${str(action['created']).split('.')[0]}</div>
-                            <a href="/user?user_id=${user.id}">${user.first} ${user.last}</a>
-                            ${action['action'][0].upper()}${action['action'][1:]} 
-                            % if action['subject'] == 'project':
-                                a new project <a href="/project?project_id=${action['project_id']}">${action['project_name']}</a>.
-                            % elif action['subject'] == 'ticket':
-                                a new ticket <a href="/ticket?ticket_id=${action['ticket_id']}">${action['ticket_title']}</a> in
-                                <a href="/project?project_id=${action['project_id']}">${action['project_name']}</a>.
-                            % elif action['subject'] == 'ticket_comment':
-                                a comment to a ticket <a href="/ticket?ticket_id=${action['ticket_id']}">${action['ticket_title']}</a>.
-                            % elif action['subject'] == 'task':
-                                a new task <a href="/task?task_id=${action['task_id']}">${action['task_title']}</a> in
-                                <a href="/project?project_id=${action['project_id']}">${action['project_name']}</a> 
-                            % endif
+                            ${action['contents'] | n}
                         </div>
                         % endfor
-                    % else:
-                        <div class="small-light-text">
-                            ${target_user.first} ${target_user.last} hasn't generated any activity yet.
-                        </div>
                     % endif
-                    
                 </div>
             </div>
             <hr/>

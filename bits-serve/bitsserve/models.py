@@ -97,6 +97,7 @@ class Users(Base):
 
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True)
+    organization_id = Column(Integer, ForeignKey('organizations.id'))
     user_type_id = Column(Integer, ForeignKey('usertypes.id'))
     first = Column(Text)
     last = Column(Text)
@@ -202,6 +203,16 @@ class Users(Base):
                 Users.id,
             ).all()
         return users
+        
+    @classmethod
+    def get_users_from_organization_id(cls, session, organization_id):
+        with transaction.manager:
+            users = session.query(
+                Users,
+            ).filter(
+                Users.organization_id == organization_id,
+            ).all()
+        return users
 
 class LoginTokens(Base):
 
@@ -269,19 +280,19 @@ class Organizations(Base):
 
     __tablename__ = 'organizations'
     id = Column(Integer, primary_key=True)
-    author_id = Column(Integer, ForeignKey('users.id'))
+    #author_id = Column(Integer, ForeignKey('users.id'))
     name = Column(Text)
     description = Column(Text)
     disabled = Column(Boolean)
     creation_datetime = Column(DateTime)
 
     @classmethod
-    def add_organization(cls, session, author_id, name, description):
+    def add_organization(cls, session, name, description):
         """ Adds a new organization from a user
         """
         with transaction.manager:
             organization = cls(
-                author_id = author_id,
+                #author_id = author_id,
                 name = name,
                 description = description,
                 disabled = False,
@@ -850,7 +861,7 @@ class Tickets(Base):
             ).first()
             
         return ticket
-        
+          
     @classmethod
     def get_raw_ticket_by_id(cls, session, ticket_id):
         with transaction.manager:
@@ -885,6 +896,16 @@ class Tickets(Base):
                 Tickets.id,
             ).all()
         return tickets
+        
+    @classmethod
+    def assign_user_to_ticket(cls, session, ticket_id, email):
+        with transaction.manager:
+            user = Users.get_by_email(session, email)
+            ticket = Tickets.get_raw_ticket_by_id(session, ticket_id)
+            ticket.assigned_id = user.id
+            session.add(ticket)
+            transaction.commit()
+        return ticket
 
 class TicketComments(Base):
 

@@ -47,9 +47,9 @@
             <div class="box shadow">
                 <div class="box-title">
                     Existing Tickets
-                    <!--<div class="right">
+                    <div class="right">
                         <a href="/newticket?project_id=${project['id']}">New</a>
-                    </div>-->
+                    </div>
                 </div>
                 % if not tickets:
                     <div class="indent">

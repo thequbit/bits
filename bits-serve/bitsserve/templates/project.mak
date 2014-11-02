@@ -72,7 +72,6 @@
                             <div class="short-line-height extra-small-light-text"> opened by ${task['owner']} on ${task['created']}</div>
                         </div>
                     % endfor
-                    % if len(tasks) > 5:
                     <div class="row">
                         <div class="medium-12 columns">
                             <div class="right" style="padding-right: 5px;">
@@ -80,7 +79,6 @@
                             </div>
                         </div>
                     </div>
-                    % endif
                 % endif                
             </div>
         </div>

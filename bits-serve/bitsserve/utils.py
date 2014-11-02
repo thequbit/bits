@@ -114,6 +114,15 @@ def check_auth(request):
     
     return user, token
 
+def get_organization_users(organization_id):
+
+    users = Users.get_users_from_organization_id(
+        session = DBSession,
+        organization_id = organization_id,
+    )
+    
+    return users
+
 def create_action(user_id, project_id, contents, additional_display=''):
 
     action = Actions.add_action(
@@ -180,8 +189,7 @@ def get_user_actions(user_id, limit):
             p_id, p_name, upa_id in _actions:
         actions.append({
             'id': a_id,
-            'action': a_type,
-            'contents': contents,
+            'contents': markdown.markdown(a_contents),
             'created': a_created,
             'owner': '{0} {1}'.format(u_first, u_last),
             'project_id': p_id,
@@ -232,7 +240,7 @@ def assign_user_to_project(user, project_id, email):
     )
     
     if target_user == None:
-        raise Excetion('Invalid User')
+        raise Exception('Invalid User')
 
     valid = UserProjectAssignments.check_project_assignment(
         session = DBSession,
@@ -257,15 +265,27 @@ def assign_user_to_project(user, project_id, email):
             project_id = project_id,
         )
     else:
-        assignment = _assignment
+        raise Exception('Assignment already set');
         
     project_name, = Projects.get_name_from_id(DBSession, project_id)
-    action_contents = "**{0} {1}** has been assigned to **{2}** by {3} {4}".format(
+    action_target_user_link = "[{0} {1}](/user?user_id={2})".format(
         target_user.first,
         target_user.last,
+        target_user.id,
+    )
+    action_project_link = "[{0}](/project?project_id={1})".format(
         project_name,
+        project_id,
+    )
+    action_user_link = "[{0} {1}](/user?user_id={2})".format(
         user.first,
         user.last,
+        user.id,
+    )
+    action_contents = "{0} has been assigned to {1} by {2}".format(
+        action_target_user_link,
+        action_project_link,
+        action_user_link,
     )
     action = create_action(
         user_id = user.id,
@@ -509,7 +529,7 @@ def get_ticket(user_id, ticket_id):
                 session = DBSession,
                 user_id = t_a_id,
             )
-            assgined_user_name =  '{0} {1}'.format(assigned_user.first, assigned_user.last),
+            assigned_user_name =  '{0} {1}'.format(assigned_user.first, assigned_user.last)
 
         ticket = {
             'id': t_id,
@@ -528,7 +548,7 @@ def get_ticket(user_id, ticket_id):
             'closed': t_closed,
             'closed_datetime': closed_datetime,
         }
- 
+   
     return ticket
 
 def create_new_ticket_comment(user, ticket_id, contents):
@@ -608,6 +628,18 @@ def get_ticket_comments(user_id, ticket_id):
             'owner_email': o_email,
          })
     return comments
+
+def assign_user_to_ticket(user_id, ticket_id, email):
+
+    _ticket, project_id = _check_ticket_auth(user_id, ticket_id)
+    
+    ticket = Tickets.assign_user_to_ticket(
+        session = DBSession,
+        ticket_id = ticket_id,
+        email = email,
+    )
+    
+    return ticket
 
 def create_new_task():
 

@@ -114,7 +114,7 @@ def main(argv=sys.argv):
     if default_organization == None:
         default_organization = Organizations.add_organization(
             session = DBSession,
-            author_id = system_user.id,
+            #author_id = system_user.id,
             name = 'Default Organization',
             description = 'Default Organization.',
         )

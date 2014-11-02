@@ -335,6 +335,13 @@
         div.box h5 {
             margin-bottom: 0px;
         }
+        
+        div.error-field {
+            font-size: 70%;
+            padding-left: 5px;
+            color: #FFF;
+            background-color: #F04124;
+        }
 
     </style>
 

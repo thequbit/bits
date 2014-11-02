@@ -16,6 +16,8 @@ from utils import (
     check_auth,
     do_login,
 
+    get_organization_users,
+
     create_action,
     get_actions,
     get_user_actions,
@@ -31,6 +33,7 @@ from utils import (
     get_ticket,
     get_ticket_comments,
     create_new_ticket_comment,
+    assign_user_to_ticket,
     
     get_tasks,
     get_task,
@@ -89,11 +92,11 @@ def logout(request):
     return result
 
 @view_config(route_name='user', renderer='templates/user.mak')
-def user(request):
+def web_user(request):
 
     result = {'user': None}
-    #if True:
-    try:
+    if True:
+    #try:
 
         user, token = check_auth(request)
         result['user'] = user
@@ -108,14 +111,14 @@ def user(request):
         result['actions'] = actions
         result['target_user'] = target_user
 
-    except:
-        pass
+    #except:
+    #    pass
 
     return result
 
 
 @view_config(route_name='usersettings', renderer='templates/usersettings.mak')
-def usersettings(request):
+def web_usersettings(request):
 
     result = {'user': None}
     #if True:
@@ -130,7 +133,7 @@ def usersettings(request):
     return result
 
 @view_config(route_name='projectsettings', renderer='templates/projectsettings.mak')
-def projectsettings(request):
+def web_projectsettings(request):
 
     result = {'user': None}
     #if True:
@@ -143,9 +146,9 @@ def projectsettings(request):
             
         result['project'] = get_project(user.id, project_id)
 
-        assigned_users = get_users_assigned_to_project(user.id, project_id)
+        result['organization_users'] = get_organization_users(user.organization_id);
         
-        result['assigned_users'] = assigned_users
+        result['assigned_users'] = get_users_assigned_to_project(user.id, project_id)
 
         result['tasks'] = get_tasks(project_id)
 
@@ -158,7 +161,7 @@ def projectsettings(request):
     return result
 
 @view_config(route_name='index', renderer='templates/index.mak')
-def index(request):
+def web_index(request):
 
     result = {'user': None}
     #if True:
@@ -179,7 +182,7 @@ def index(request):
     return result #{'token': token, 'user': user, 'projects': projects}
 
 @view_config(route_name='project', renderer='templates/project.mak')
-def project(request):
+def web_project(request):
 
     result = {'user': None}
     #if True:
@@ -203,7 +206,7 @@ def project(request):
     return result
 
 @view_config(route_name='tickets', renderer='templates/tickets.mak')
-def tickets(request):
+def web_tickets(request):
 
     result = {'user': None}
     #if True:
@@ -232,11 +235,11 @@ def tickets(request):
     return result 
 
 @view_config(route_name='ticket', renderer='templates/ticket.mak')
-def ticket(request):
+def web_ticket(request):
 
     result = {'user': None}
-    #if True:
-    try:
+    if True:
+    #try:
 
         user, token = check_auth(request)
         result['user'] = user
@@ -255,15 +258,17 @@ def ticket(request):
 
         result['tickets'] = get_tickets(ticket['project_id'])
 
+        result['assigned_users'] = get_users_assigned_to_project(user.id, ticket['project_id'])
+
         result['project'] = get_project(user.id, ticket['project_id'])
 
-    except:
-        pass
+    #except:
+    #    pass
 
     return result
 
 @view_config(route_name='task', renderer='templates/task.mak')
-def task(request):
+def web_task(request):
 
     result = {'user': None}
     #if True:
@@ -292,7 +297,7 @@ def task(request):
 
 
 @view_config(route_name='newticket', renderer='templates/newticket.mak')
-def new_ticket(request):
+def web_new_ticket(request):
 
     result = {'user': None}
     #if True:
@@ -315,7 +320,7 @@ def new_ticket(request):
     return result
 
 @view_config(route_name='newtask', renderer='templates/newtask.mak')
-def new_task(request):
+def web_new_task(request):
 
     result = {'user': None}
     #if True:
@@ -336,7 +341,7 @@ def new_task(request):
     return result
 
 @view_config(route_name='newlist', renderer='templates/newlist.mak')
-def new_list(request):
+def web_new_list(request):
 
     result = {'user': None}
     #if True:
@@ -358,7 +363,7 @@ def new_list(request):
 
 
 @view_config(route_name='newproject', renderer='templates/newproject.mak')
-def new_project(request):
+def web_new_project(request):
 
     result = {'user': None}
     ##if True:
@@ -377,7 +382,7 @@ def new_project(request):
  
 
 @view_config(route_name='authenticate.json')
-def authenticate(request):
+def web_authenticate(request):
 
     """ End-point to authenticate user, and return a login token
     """
@@ -411,57 +416,8 @@ def authenticate(request):
 
     return make_response(result)
 
-@view_config(route_name='create_ticket.json')
-def create_ticket(request):
-
-    """ Create a new ticket
-    """
-
-    result = {'user': None}
-    result['success'] = False
-
-    #if True:
-    try:
-
-        user, token = check_auth(request)
-
-        project_id = request.POST['project_id']
-        title = request.POST['title']
-        contents = request.POST['contents']
-        assigned_id = request.POST['assigned_user_id']
-        ticket_type_id = None #1 # request.POST['ticket_type_id']
-
-        #print "\n\nAssigned ID:\n\n"
-        #print assigned_id
-        #print "\n\n"
-        #print type(assigned_id)
-        #print "\n\n"
-
-        if assigned_id == '' or assigned_id == None \
-                or not assigned_id.isdigit():
-            print "\n\nAssigned_ID = None\n\n"
-            assigned_id = None
-
-        ticket = create_new_ticket(
-            user = user,
-            project_id = project_id,
-            ticket_type_id = ticket_type_id,
-            title = title,
-            contents = contents,
-            assigned_id = assigned_id,
-        )
-
-        result['ticket_id'] = ticket.id
-
-        result['success'] = True
-
-    except:
-        pass
-
-    return make_response(result)
-
 @view_config(route_name='close_ticket.json')
-def close_ticket(request):
+def web_close_ticket(request):
 
     """ Create a new ticket
     """
@@ -493,7 +449,7 @@ def close_ticket(request):
 
 
 @view_config(route_name='create_project.json')
-def create_project(request):
+def web_create_project(request):
     """ Create a new project
     """
 
@@ -521,14 +477,14 @@ def create_project(request):
 
     return make_response(result)
 
-@view_config(route_name='assign_user.json')
-def assign_user(request):
+@view_config(route_name='assign_user_to_project.json')
+def web_assign_user_to_project(request):
     """ Assign a user to a project
     """
 
     result = {}
-    if True:
-    #try:
+    #if True:
+    try:
 
         user, token = check_auth(request)
         
@@ -549,23 +505,63 @@ def assign_user(request):
         result['project_id'] =  project_id
         result['user_id'] = target_user.id
     
-        
         result['success'] = True
 
-    #except:
-    #    pass
+    except:
+        pass
 
     return make_response(result)
 
+@view_config(route_name='create_ticket.json')
+def web_create_ticket(request):
 
-
-@view_config(route_name='create_ticket_comment.json')
-def create_ticket_comment(request):
-    """ Get all of the organizations that the user has access to
+    """ Create a new ticket
     """
 
     result = {'user': None}
     result['success'] = False
+
+    #if True:
+    try:
+
+        user, token = check_auth(request)
+
+        project_id = request.POST['project_id']
+        title = request.POST['title']
+        contents = request.POST['contents']
+        assigned_id = request.POST['assigned_user_id']
+        ticket_type_id = None #1 # request.POST['ticket_type_id']
+
+        if assigned_id == '' or assigned_id == None \
+                or not assigned_id.isdigit():
+            print "\n\nAssigned_ID = None\n\n"
+            assigned_id = None
+
+        ticket = create_new_ticket(
+            user = user,
+            project_id = project_id,
+            ticket_type_id = ticket_type_id,
+            title = title,
+            contents = contents,
+            assigned_id = assigned_id,
+        )
+
+        result['ticket_id'] = ticket.id
+
+        result['success'] = True
+
+    except:
+        pass
+
+    return make_response(result)
+
+@view_config(route_name='create_ticket_comment.json')
+def web_create_ticket_comment(request):
+    """ Get all of the organizations that the user has access to
+    """
+
+    #result = {'user': None}
+    result = {'success': False}
 
     if True:
     #try:
@@ -594,8 +590,36 @@ def create_ticket_comment(request):
 
     return make_response(result)
 
+@view_config(route_name='assign_user_to_ticket.json')
+def web_assign_user_to_ticket(request):
+
+    result = {'success': False}
+    
+    if True:
+    #try:
+    
+        user, token = check_auth(request)
+    
+        ticket_id = request.POST['ticket_id']
+        email = request.POST['email']
+    
+        assign_user_to_ticket(
+            user_id = user.id,
+            ticket_id = ticket_id,
+            email = email,
+        )
+    
+        result['ticket_id'] = ticket_id
+    
+        result['success'] = True
+    
+    #except:
+    #    pass
+
+    return make_response(result)
+
 @view_config(route_name='create_task.json')
-def create_task(request):
+def web_create_task(request):
     """ Get all of the organizations that the user has access to
     """
     
@@ -650,7 +674,7 @@ def create_task(request):
     return make_response(result)
 
 @view_config(route_name='database_dump.json')
-def database_dump(request):
+def web_database_dump(request):
 
     result = {'success': False}
     #if True:
@@ -668,7 +692,7 @@ def database_dump(request):
     return make_response(result)
     
 @view_config(route_name = 'database_upload.json')
-def database_upload(request):
+def web_database_upload(request):
 
     result = {'success': False}
     #if True:

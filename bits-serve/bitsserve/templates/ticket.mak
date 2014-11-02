@@ -79,25 +79,36 @@
                     </div>
                 </div>
                 </br>
-                <div>
+                <div id="assigned-container">
                     % if ticket['assigned_id'] != None:
                         Assigned: <a href="/user?user_id=${ticket['assigned_id']}">${ticket['assigned_user']}</a>
+                    % else:
+                        Ticket Assigned to: <a id="assigned-name" aria-expanded="false" href="#" data-dropdown="assigned-drop">Assign Ticket</a>
+                        <ul id="assigned-drop" class="f-dropdown" data-dropdown-content aria-hidden="true" tabindex="-1" data-options="is_hover:true">
+                        % for assigned_user in assigned_users:
+                            <li><a href="#" user_email="${assigned_user['email']}" user_name="${assigned_user['user']}">${assigned_user['user']}</a></li>
+                        % endfor
+                        </ul>
                     % endif
                 </div>
                 <br/>           
  
                 <h5>Comments</h5>            
 
-                % for comment in comments:
-                    <div class="comment-containeri box shadow">
-                        <div class="small-light-text">
-                            On ${comment['created']} <a href="/user?user_id=${comment['owner_id']}">${comment['owner']}</a> wrote:
+                % if not comments:
+                    <div class="indent small-light-text">There are no comments yet for this ticket</div>
+                % else:
+                    % for comment in comments:
+                        <div class="comment-containeri box shadow">
+                            <div class="small-light-text">
+                                On ${comment['created']} <a href="/user?user_id=${comment['owner_id']}">${comment['owner']}</a> wrote:
+                            </div>
+                            <div class="container-inner">
+                                ${comment['contents'] | n}
+                            </div>
                         </div>
-                        <div class="container-inner">
-                            ${comment['contents'] | n}
-                        </div>
-                    </div>
-                % endfor
+                    % endfor
+                % endif
                 <br/>
 
                 <div>
@@ -115,9 +126,9 @@
             <div class="box shadow">
                 <div class="box-title">
                     Existing Tickets
-                    <!--<div class="right">
-                        <a href="/newticket?project_id=${project['id']}">New</a>
-                    </div>-->
+                    <div class="right">
+                        <a href="/newticket?project_id=${project['id']}">New Ticket</a>
+                    </div>
                 </div>
                 % if not tickets:
                     <div class="indent">
@@ -132,9 +143,11 @@
                     % endfor
                 % endif
             </div>
+            <hr/>
         </div> 
     </div>
-
+    
+    
     <script>
 
         function submit_comment(callback) {
@@ -198,12 +211,63 @@
             
         }
 
-        $('#submit-comment').on('click', function(e) {
-            submit_comment();
-        });
+        function assign_user(email) {
+
+            console.log('sending comment')
+
+            $('#submit-button-container').html('Please wait ...');
+
+            //var token = document.cookie.split('=')[1];
+            var url = '/assign_user_to_ticket.json';
+            var ticket_id = ${ticket['id']};
+            
+            $.ajax({
+                dataType: 'json',
+                type: 'POST',
+                data: {
+                    ticket_id: ticket_id,
+                    email: email,
+                },
+                url: url,
+                success: function(data) {
+                    if( data.success == true ) {
+                        console.log('SUCCESS!');
+                        window.location.href="/ticket?ticket_id=" + data.ticket_id;
+                    }
+                },
+                error: function(data) {
+                    console.log('an error happened while creating ticket ...');
+                    // TODO: report error
+                }
+            });
+
+        }
+
+        //var assigned_user_id = '';
+    
+        $(document).ready( function() {
         
-        $('#submit-comment-and-close').on('click', function(e) {
-            close_ticket();
+            $('#assigned-drop').on('click', function(e) {
+                assigned_user_email = $(e.target).attr('user_email');
+                assigned_user_name = $(e.target).attr('user_name');
+                $('#assigned-name').html(assigned_user_name);
+                
+                $('#assigned-drop').removeClass('open');
+                $('#assigned-drop').css('left', '-99999px');
+                
+                $('#assigned-container').html('Please wait ...');
+                
+                assign_user(assigned_user_email);
+            });
+        
+            $('#submit-comment').on('click', function(e) {
+            submit_comment();
+            });
+            
+            $('#submit-comment-and-close').on('click', function(e) {
+                close_ticket();
+            });
+        
         });
 
     </script>
