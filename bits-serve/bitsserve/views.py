@@ -433,10 +433,7 @@ def web_close_ticket(request):
         ticket_id = request.POST['ticket_id']
         
         
-        ticket = Tickets.close_ticket(
-            session = DBSession,
-            ticket_id = ticket_id,
-        )
+        
 
         result['ticket_id'] = ticket.id
 

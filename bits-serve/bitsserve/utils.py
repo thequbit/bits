@@ -1,5 +1,7 @@
 
 from config import config
+if config['root_domain'][:-1] != '/':
+    config['root_domain'] = '{0}/'.format(config['root_domain'])
 
 import time
 import json
@@ -214,9 +216,10 @@ def create_new_project(user, name, description):
         project_id = project.id,
     )
     
-    action_project_link = "[{0}](/project?project_id={1})".format(
+    action_project_link = "[{0}]({2}project?project_id={1})".format(
         project.name,
         project.id,
+        config['root_domain'],
     )
     action_contents = "{0} {1} created a new project: {2}".format(
         user.first,
@@ -268,19 +271,22 @@ def assign_user_to_project(user, project_id, email):
         raise Exception('Assignment already set');
         
     project_name, = Projects.get_name_from_id(DBSession, project_id)
-    action_target_user_link = "[{0} {1}](/user?user_id={2})".format(
+    action_target_user_link = "[{0} {1}]({3}user?user_id={2})".format(
         target_user.first,
         target_user.last,
         target_user.id,
+        config['root_domain'],
     )
-    action_project_link = "[{0}](/project?project_id={1})".format(
+    action_project_link = "[{0}]({2}project?project_id={1})".format(
         project_name,
         project_id,
+        config['root_domain'],
     )
-    action_user_link = "[{0} {1}](/user?user_id={2})".format(
+    action_user_link = "[{0} {1}]({3}user?user_id={2})".format(
         user.first,
         user.last,
         user.id,
+        config['root_domain'],
     )
     action_contents = "{0} has been assigned to {1} by {2}".format(
         action_target_user_link,
@@ -446,19 +452,22 @@ def create_new_ticket(user, project_id, ticket_type_id, title, contents, \
         assigned_id = assigned_id,
     )
     
-    action_user_link = "[{0} {1}](/user?user_id={2})".format(
+    action_user_link = "[{0} {1}]({3}user?user_id={2})".format(
         user.first,
         user.last,
         user.id,
+        config['root_domain'],
     )
-    action_ticket_link = "[{0}](/ticket?ticket_id={1})".format(
+    action_ticket_link = "[{0}]({2}ticket?ticket_id={1})".format(
         ticket.title,
         ticket.id,
+        config['root_domain'],
     )
     project_name, = Projects.get_name_from_id(DBSession, project_id)
-    action_project_link = "[{0}](/project?project_id={1})".format(
+    action_project_link = "[{0}]({2}project?project_id={1})".format(
         project_name,
         project_id,
+        config['root_domain'],
     )
     action_contents = "{0} opened a new ticket: {1} in project: {2}".format(
         action_user_link,
@@ -470,6 +479,43 @@ def create_new_ticket(user, project_id, ticket_type_id, title, contents, \
         project_id = project_id,
         contents = action_contents,
         additional_display = contents,
+    )
+    
+    return ticket
+
+def close_ticket(user, ticket_id):
+
+    _ticket, project_id = _check_ticket_auth(user.id, ticket_id)
+
+    ticket = Tickets.close_ticket(
+        session = DBSession,
+        ticket_id = ticket_id,
+    )
+
+    # unpack tuple
+    t_id, t_number, t_title, t_contents, t_a_id, t_closed, t_closed_dt, \
+        t_created, o_first, o_last, o_email, p_id, p_name, p_desc, \
+        p_created, tt_name, tt_desc, tt_color = _ticket
+    
+    action_ticket_link = "[{0}]({2}ticket?ticket_id={1})".format(
+        t_title,
+        t_id,
+        config['root_domain'],
+    )
+    action_user_link = "[{0} {1}]({3}user?user_id={2})".format(
+        user.first,
+        user.last,
+        user.id,
+        config['root_domain'],
+    )
+    action_contents = "{0} has been closed by {1}".format(
+        action_ticket_link,
+        action_user_link,
+    )
+    action = create_action(
+        user_id = user.id,
+        project_id = project_id,
+        contents = action_contents,
     )
     
     return ticket
@@ -562,24 +608,27 @@ def create_new_ticket_comment(user, ticket_id, contents):
         contents = contents,
     )
     
-    # unpack tuple to get project_id
+    # unpack tuple
     t_id, t_number, t_title, t_contents, t_a_id, t_closed, t_closed_dt, \
         t_created, o_first, o_last, o_email, p_id, p_name, p_desc, \
         p_created, tt_name, tt_desc, tt_color = _ticket
     
-    action_user_link = "[{0} {1}](/user?user_id={2})".format(
+    action_user_link = "[{0} {1}]({3}user?user_id={2})".format(
         user.first,
         user.last,
         user.id,
+        config['root_domain'],
     )
-    action_ticket_link = "[{0}](/ticket?ticket_id={1})".format(
+    action_ticket_link = "[{0}]({2}ticket?ticket_id={1})".format(
         t_title,
         t_id,
+        config['root_domain'],
     )
     project_name, = Projects.get_name_from_id(DBSession, project_id)
-    action_project_link = "[{0}](/project?project_id={1})".format(
+    action_project_link = "[{0}]({2}project?project_id={1})".format(
         project_name,
         project_id,
+        config['root_domain'],
     )
     action_contents = "{0} added a comment to ticket: {1} in project: {2}".format(
         action_user_link,
@@ -637,6 +686,40 @@ def assign_user_to_ticket(user_id, ticket_id, email):
         session = DBSession,
         ticket_id = ticket_id,
         email = email,
+    )
+    
+    # unpack tuple
+    t_id, t_number, t_title, t_contents, t_a_id, t_closed, t_closed_dt, \
+        t_created, o_first, o_last, o_email, p_id, p_name, p_desc, \
+        p_created, tt_name, tt_desc, tt_color = _ticket
+    
+    project_name, = Projects.get_name_from_id(DBSession, project_id)
+    action_target_user_link = "[{0} {1}]({3}user?user_id={2})".format(
+        target_user.first,
+        target_user.last,
+        target_user.id,
+        config['root_domain'],
+    )
+    action_ticket_link = "[{0}]({2}ticket?ticket_id={1})".format(
+        t_title,
+        t_id,
+        config['root_domain'],
+    )
+    action_user_link = "[{0} {1}]({3}user?user_id={2})".format(
+        user.first,
+        user.last,
+        user.id,
+        config['root_domain'],
+    )
+    action_contents = "{0} has been assigned to ticket {1} by {2}".format(
+        action_target_user_link,
+        action_ticket_link,
+        action_user_link,
+    )
+    action = create_action(
+        user_id = user.id,
+        project_id = project_id,
+        contents = action_contents,
     )
     
     return ticket
