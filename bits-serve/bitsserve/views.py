@@ -35,6 +35,7 @@ from utils import (
     create_new_ticket_comment,
     assign_user_to_ticket,
     close_ticket,
+    update_ticket_contents,
     
     get_tasks,
     get_task,
@@ -529,9 +530,11 @@ def web_create_ticket(request):
         assigned_id = request.POST['assigned_user_id']
         ticket_type_id = None #1 # request.POST['ticket_type_id']
 
+        if title.strip()== '':
+            raise Exception('no title')
+
         if assigned_id == '' or assigned_id == None \
                 or not assigned_id.isdigit():
-            print "\n\nAssigned_ID = None\n\n"
             assigned_id = None
 
         ticket = create_new_ticket(
@@ -542,6 +545,9 @@ def web_create_ticket(request):
             contents = contents,
             assigned_id = assigned_id,
         )
+
+        if ticket == None:
+            raise Exception('ticket creation error')
 
         result['ticket_id'] = ticket.id
 
@@ -569,8 +575,14 @@ def web_create_ticket_comment(request):
         #project_id = request.POST['project_id']
         ticket_id = request.POST['ticket_id']
         contents = request.POST['contents']
-        
+    
+        if contents.strip() == '':
+            raise Exception('no contents to comment')
+    
         ticket = get_ticket(user.id, ticket_id)
+
+        if ticket == None:
+            raise Exception('invalid ticket id')
 
         ticket_comment = create_new_ticket_comment(
             user = user,
@@ -610,6 +622,34 @@ def web_assign_user_to_ticket(request):
     
         result['success'] = True
     
+    #except:
+    #    pass
+
+    return make_response(result)
+
+@view_config(route_name='update_ticket_contents.json')
+def web_update_ticket_contents(request):
+
+    result = {'success': False}
+
+    if True:
+    #try:
+
+        user, token = check_auth(request)
+
+        ticket_id = request.POST['ticket_id']
+        contents = request.POST['contents']
+
+        update_ticket_contents(
+            user = user,
+            ticket_id = ticket_id,
+            contents = contents,
+        )
+
+        result['ticket_id'] = ticket_id
+
+        result['success'] = True
+
     #except:
     #    pass
 

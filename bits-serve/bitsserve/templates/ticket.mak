@@ -38,7 +38,14 @@
             color: red;
             font-weight: bold;
         }
-        
+
+        div.edit-link {
+            margin-bottom: 10px;
+        }
+
+        #submit-ticket {
+            margin: 0px !important;
+        }
  
     </style>
 
@@ -60,11 +67,19 @@
         <div class="medium-8 columns">
         % if ticket:
             <div class="ticket-container">
+                <div id="ticket-title">
                 <div style="display: inline-flex;">
-                <h4>Ticket #${ticket['number']} : ${ticket['title']}</h4>
+                <h4>Ticket #${ticket['number']} : ${ticket['title']}
+                    % if ticket['closed'] == False:
+                    <small>
+                        <a href="#" id="edit-ticket-title">edit</a>
+                    </small>
+                    % endif
+                </h4>
                 % if ticket['closed'] == True:
                     <h4 class="closed-label">[CLOSED]</h4>
                 % endif
+                </div>
                 </div>
                 
                 <div class="small-light-text">
@@ -73,15 +88,19 @@
                
                 <div class="indent indent-right">
                     <div class="box shadow">
-                        <div class="container-inner">
+                        <div id="ticket-contents" class="container-inner">
                             ${ticket['contents'] | n}
+                            <div class="edit-link">
+                                <div class="right small-text">
+                                    <a href="#" id="edit-ticket-contents">edit</a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 </br>
                 <div id="assigned-container">
-                    
-                    
+                     
                     % if ticket['assigned_id'] != None:
                         Assigned: <a href="/user?user_id=${ticket['assigned_id']}">${ticket['assigned_user']}</a>
                         <br/>
@@ -164,6 +183,11 @@
             //var project_id = ${project['id']};
             var contents = $('#comment-contents').val();
             
+            if ( contents.trim() == '' ) {
+                //alert('Please make sure there is contents to our comment before submitting.');
+                return;
+            }
+
             $.ajax({
                 dataType: 'json',
                 type: 'POST',
@@ -248,6 +272,33 @@
 
         }
 
+        function update_ticket_contents() {
+
+            var ticket_id = ${ticket['id']};
+            var contents = $('#new-ticket-contents').val();
+            var url = "/update_ticket_contents.json?";
+
+            $.ajax({
+                dataType: 'json',
+                type: 'POST',
+                data: {
+                    ticket_id : ticket_id,
+                    contents : contents,
+                },
+                url: url,
+                success: function(data) {
+                    if( data.success == true ) {
+                        window.location.href="/ticket?ticket_id=${ticket['id']}";
+                    }
+                },
+                error: function(data) {
+                    console.log('an error happened while closing ticket ...');
+                    console.log(data)
+                    // TODO: report error
+                }
+            });
+        }
+
         //var assigned_user_id = '';
     
         $(document).ready( function() {
@@ -266,11 +317,42 @@
             });
         
             $('#submit-comment').on('click', function(e) {
-            submit_comment();
+                submit_comment();
             });
             
             $('#submit-comment-and-close').on('click', function(e) {
                 close_ticket();
+            });
+
+            $('#edit-ticket-contents').on('click', function(e) {
+
+                var html = '';
+                html += '<textarea id="new-ticket-contents">${ticket['raw_contents']}</textarea>';
+                //html += '<div id="submit-button-container">'
+                html += '<a href="#" id="submit-ticket" class="small radius button">Submit</a>';
+                //html += '</div>'
+
+                $('#ticket-contents').html(html);
+                //$('#ticket-contents').value(${ticket['raw_contents']});
+
+                $('#submit-ticket').on('click', function(ee) {
+                
+                    update_ticket_contents();
+
+                });
+
+            });
+
+            $('#edit-ticket-title').on('click', function(e) {
+            
+                var html = '';
+                html += '<br/>';
+                html += '<input type="text" id="new-ticket-title" value="${ticket['title']}" style="font-size: 110%;"></input></b>';
+                html += '';
+                html += '<a href="#" id="submit-ticket-title" class="small radius button">Submit</a>';
+
+                $('#ticket-title').html(html);
+
             });
         
         });

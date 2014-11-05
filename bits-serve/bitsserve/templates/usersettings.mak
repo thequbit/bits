@@ -16,7 +16,7 @@
         <div class="medium-12 columns bottom-border">
             <a href="/">Home</a>
              >
-            <a href="/user?user_id${user.id}">${user.first} ${user.last}</a>
+            <a href="/user?user_id=${user.id}">${user.first} ${user.last}</a>
              > Settings
             <div class="right top-links">
                 <a href="/usersettings">${user.first} ${user.last}</a>

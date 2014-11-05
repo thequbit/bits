@@ -527,6 +527,18 @@ def close_ticket(user, ticket_id):
     
     return ticket
 
+def update_ticket_contents(user, ticket_id, contents):
+
+    _ticket, project_id = _check_ticket_auth(user.id, ticket_id)
+
+    ticket = Tickets.update_ticket_contents(
+        session = DBSession,
+        ticket_id = ticket_id,
+        contents = contents,
+    )
+
+    return ticket
+
 def get_tickets(project_id, closed=False):
 
     _tickets = Tickets.get_tickets_by_project_id(
@@ -598,6 +610,7 @@ def get_ticket(user_id, ticket_id):
             'number': t_number,
             'title': t_title,
             'contents': markdown.markdown(t_contents),
+            'raw_contents': t_contents,
             'closed': t_closed,
             'closed_datetime': closed_datetime,
         }

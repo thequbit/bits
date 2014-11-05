@@ -847,6 +847,8 @@ class Tickets(Base):
             tickets = ticket_query.filter(
                 Tickets.project_id == project_id,
                 Tickets.closed == closed,
+            ).order_by(
+                desc(Tickets.creation_datetime),
             ).all()
         return tickets
 
@@ -893,7 +895,7 @@ class Tickets(Base):
             tickets = session.query(
                 Tickets,
             ).order_by(
-                Tickets.id,
+                desc(Tickets.creation_datetime),
             ).all()
         return tickets
         
@@ -906,6 +908,19 @@ class Tickets(Base):
             session.add(ticket)
             transaction.commit()
         return ticket, user
+
+    @classmethod
+    def update_ticket_contents(cls, session, ticket_id, contents):
+        with transaction.manager:
+            ticket = session.query(
+                Tickets,
+            ).filter(
+                Tickets.id == ticket_id,
+            ).first()
+            ticket.contents = contents
+            session.add(ticket)
+            transaction.commit()
+        return ticket
 
 class TicketComments(Base):
 
@@ -1001,7 +1016,7 @@ class TicketComments(Base):
             ticket_comments = session.query(
                 TicketComments,
             ).order_by(
-                TicketComments.id,
+                TicketComments.creation_datetime,
             ).all()
         return ticket_comments
 

@@ -71,15 +71,18 @@
 
         $('#submit-ticket').on('click', function(e) {
 
-            console.log('sending comment')
-
-            $('#submit-button-container').html('Please wait ...');
-
             var token = document.cookie.split('=')[1];
             var url = '/create_ticket.json';
             var project_id = ${project['id']}
             var title = $('#ticket-title').val();
             var contents = $('#ticket-contents').val();
+
+            if ( title.trim() == '' ) {
+                alert('A ticket at least needs a title.  Please supply a title for the ticket before trying to create it.')
+                return;
+            }
+
+            $('#submit-button-container').html('Please wait ...');
 
             $.ajax({
                 dataType: 'json',
