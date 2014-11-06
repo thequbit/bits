@@ -59,7 +59,7 @@
                     % for ticket in tickets:
                         <div class="box-inner-container">
                             <a href="/ticket?ticket_id=${ticket['id']}">${ticket['title']}</a>
-                            <div class="short-line-height extra-small-light-text"> opened by ${ticket['owner']} on ${ticket['created']}</div>
+                            <div class="short-line-height extra-small-light-text">#${ticket['number']} opened by ${ticket['owner']} on ${ticket['created']}</div>
                         </div>
                     % endfor
                 % endif

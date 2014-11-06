@@ -539,6 +539,19 @@ def update_ticket_contents(user, ticket_id, contents):
 
     return ticket
 
+def update_ticket_title(user, ticket_id, title):
+
+    _ticket, project_id = _check_ticket_auth(user.id, ticket_id)
+
+    ticket = Tickets.update_ticket_title(
+        session = DBSession,
+        ticket_id = ticket_id,
+        title = title,
+    )
+
+    return ticket
+
+
 def get_tickets(project_id, closed=False):
 
     _tickets = Tickets.get_tickets_by_project_id(

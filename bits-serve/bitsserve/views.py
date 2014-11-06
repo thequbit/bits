@@ -36,7 +36,8 @@ from utils import (
     assign_user_to_ticket,
     close_ticket,
     update_ticket_contents,
-    
+    update_ticket_title,
+
     get_tasks,
     get_task,
     get_task_comments,
@@ -644,6 +645,34 @@ def web_update_ticket_contents(request):
             user = user,
             ticket_id = ticket_id,
             contents = contents,
+        )
+
+        result['ticket_id'] = ticket_id
+
+        result['success'] = True
+
+    #except:
+    #    pass
+
+    return make_response(result)
+
+@view_config(route_name='update_ticket_title.json')
+def web_update_ticket_title(request):
+
+    result = {'success': False}
+
+    if True:
+    #try:
+
+        user, token = check_auth(request)
+
+        ticket_id = request.POST['ticket_id']
+        title = request.POST['title']
+
+        update_ticket_title(
+            user = user,
+            ticket_id = ticket_id,
+            title = title,
         )
 
         result['ticket_id'] = ticket_id

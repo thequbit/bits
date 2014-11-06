@@ -922,6 +922,19 @@ class Tickets(Base):
             transaction.commit()
         return ticket
 
+    @classmethod
+    def update_ticket_title(cls, session, ticket_id, title):
+        with transaction.manager:
+            ticket = session.query(
+                Tickets,
+            ).filter(
+                Tickets.id == ticket_id,
+            ).first()
+            ticket.title = title
+            session.add(ticket)
+            transaction.commit()
+        return ticket
+
 class TicketComments(Base):
 
     __tablename__ = 'ticketcomments'

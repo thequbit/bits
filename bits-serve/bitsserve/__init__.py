@@ -55,6 +55,7 @@ def main(global_config, **settings):
     config.add_route('create_ticket_comment.json','create_ticket_comment.json')
     config.add_route('assign_user_to_ticket.json', 'assign_user_to_ticket.json')
     config.add_route('update_ticket_contents.json', 'update_ticket_contents.json')
+    config.add_route('update_ticket_title.json', 'update_ticket_title.json')
  
     config.add_route('create_task.json','create_task.json')
     
