@@ -1049,21 +1049,14 @@ class Tasks(Base):
 
     @classmethod
     def add_task(cls, session, author_id, project_id, title, contents, \
-            assigned, due):
+            assigned_id, due):
         with transaction.manager:
-            assigned_user_id = None
-            if assigned != '' and assigned != None:
-                assigned_user = Users.get_by_email(
-                    session = session,
-                    email = assigned,
-                )
-                assigned_user_id = assigned_user.id
             task = cls(
                 author_id = author_id,
                 project_id = project_id,
                 title = title,
                 contents = contents,
-                assigned_id = assigned_user_id,
+                assigned_id = assigned_id,
                 due_datetime = due,
                 completed = False,
                 completed_datetime = None,
@@ -1081,7 +1074,7 @@ class Tasks(Base):
             ).filter(
                 Tasks.id == task_id,
             ).first()
-            task.completed = False
+            task.completed = True
             task.completed_datetime = datetime.datetime.now()
             session.add(task)
             transaction.commit()
@@ -1121,11 +1114,13 @@ class Tasks(Base):
         return task
 
     @classmethod
-    def get_tasks_by_project_id(cls, session, project_id):
+    def get_tasks_by_project_id(cls, session, project_id, completed):
         with transaction.manager:
             task_query = Tasks._build_task_query(session)
             tasks = task_query.filter(
                 Tasks.project_id == project_id,
+            ).filter(
+                Tasks.completed == completed,
             ).all()
         return tasks
 

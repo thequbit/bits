@@ -41,6 +41,12 @@
             margin-bottom: 0px !important;
         }
         
+        h4.complete-label {
+            margin-left: 20px;
+            color: #008000;
+            font-weight: bold;
+        }
+        
  
     </style>
 
@@ -49,6 +55,8 @@
             <a href="/">Home</a>
              > 
             <a href="/project?project_id=${project['id']}">Project</a>
+             > 
+            <a href="/tasks?project_id=${project['id']}">Tasks</a>
              > Task
             <div class="right top-links">
                 <a href="/usersettings">${user.first} ${user.last}</a>
@@ -61,7 +69,20 @@
         <div class="medium-8 columns">
         % if task:
             <div class="task-container">
-                <h3><div class="task-title">Task</div> : ${task['title']}</h3>
+                <div id="task-title" style="display: inline-flex;">
+                    <h4>Ticket : ${task['title']}
+                    <!--
+                    % if task['completed'] == False:
+                        <small>
+                            <a href="#" id="edit-task-title">edit</a>
+                        </small>
+                    % endif
+                    -->
+                    </h4>
+                    % if task['completed'] == True:
+                        <h4 class="complete-label">[COMPLETE]</h4>
+                    % endif
+                </div>
                 <div class="small-light-text">
                     Opened by ${task['owner']} on ${task['created']}
                 </div>
@@ -72,39 +93,24 @@
                         </div>
                     </div>
                 </div>
-                <br/>           
- 
-                <h5>Comments</h5>            
-                % for comment in comments:
-                    <div class="comment-containeri box shadow">
-                        <div class="small-light-text">
-                            On ${comment['created']} <a href="/user?user_id=${comment['owner_id']}">${comment['owner']}</a> wrote:
-                        </div>
-                        <div class="container-inner">
-                            ${comment['contents'] | n}
-                        </div>
-                    </div>
-                % endfor
                 <br/>
-
-                <div>
-                    <label>Add Comment</label>
-                    <textarea id="comment-contents" placeholder="markdown supported"></textarea>
-                    <a href="#" id="submit-comment" class="small radius button">Submit</a>
-                    <div class="right">
-                        <a href="#" id="submit-comment-and-close" class="small radius button">Submit and Close</a>
-                    </div>
+                <div class="right indent-right">
+                    <a href="#" id="mark-complete" class="small radius button">Mark Complete</a>
                 </div>
+                <br/><br/><br/>
+                
+               
             </div>
         % endif
         </div>
+        
         <div class="medium-4 columns">
             <div class="box shadow">
                 <div class="box-title">
                     Existing Tasks
-                    <!--<div class="right">
-                        <a href="/newtask?project_id=${project['id']}">New</a>
-                    </div>-->
+                    <div class="right">
+                        <a href="/newtask?project_id=${project['id']}">New Task</a>
+                    </div>
                 </div>
                 % if not tasks:
                     <div class="indent">
@@ -124,25 +130,17 @@
 
     <script>
 
-        $('#submit-comment').on('click', function(e) {
-            
-            console.log('sending comment')
+        $('#mark-complete').on('click', function(e) {
             
             var token = document.cookie.split('=')[1]; 
-            var url = '/create_comment.json?token=' + token;
+            var url = '/complete_task.json?token=' + token;
             var task_id = ${task['id']}
-            //var author_id = localStorage.getItem("user_id")
-            //var project_id = ${project['id']};
-            var contents = $('#comment-contents').val();
             
             $.ajax({
                 dataType: 'json',
                 type: 'POST',
                 data: {
                     task_id : task_id,
-                    //author_id : author_id,
-                    //project_id : project_id,
-                    contents : contents
                 },
                 url: url,
                 success: function(data) {

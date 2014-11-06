@@ -21,7 +21,7 @@
     <div class="row">
         <div class="medium-8 columns">
             <div class="container-inner box shadow">
-                <h5>New Task<h5>
+                <h5>New Task</h5>
                 <div class="small-light-text padded-bottom">
                     When creating a task, be sure to include all of the nessisary information needed 
                     to complete the task such as links, phone numbers, and/or names.  The more information
@@ -29,11 +29,17 @@
                 </div>
                 <input id="task-title" placeholder="title" type="text"></textarea>                
                 <textarea id="task-contents" placeholder="markdown supported"></textarea>
-                <input id="task-assigned" placeholder="Assign task (email)" type="text">
+                Task Assigned to: <a id="assigned-name" aria-expanded="false" href="#" data-dropdown="assigned-drop">Assign Task</a>
+                <ul id="assigned-drop" class="f-dropdown" data-dropdown-content aria-hidden="true" tabindex="-1" data-options="is_hover:true">
+                % for assigned_user in assigned_users:
+                    <li><a href="#" user_id="${assigned_user['user_id']}" user_name="${assigned_user['user']}">${assigned_user['user']}</a></li>
+                % endfor
+                </ul>
             </div>
             <br/>
             <a href="#" id="submit-task" class="small radius button">Submit</a>
         </div>
+        
         <div class="medium-4 columns">
             <div class="box shadow">
                 <div class="box-title">
@@ -71,7 +77,7 @@
             var project_id = ${project['id']}
             var title = $('#task-title').val();
             var contents = $('#task-contents').val();
-            var assigned = $('#task-assigned').val();
+            //var assigned_id = $('#task-assigned').val();
 
             $.ajax({
                 dataType: 'json',
@@ -80,7 +86,7 @@
                     project_id : project_id,
                     title : title,
                     contents : contents,
-                    assigned : assigned,
+                    assigned_id : assigned_user_id,
                     //due : due,
                 },
                 url: url,
@@ -99,6 +105,19 @@
 
         });
 
-        // TODO: hook up submit and close button
+        var assigned_user_id = '';
+        
+        $(document).ready(function() {
+        
+            $('#assigned-drop').on('click', function(e) {
+                assigned_user_id = $(e.target).attr('user_id');
+                assigned_user_name = $(e.target).attr('user_name');
+                $('#assigned-name').html(assigned_user_name);
+                
+                $('#assigned-drop').removeClass('open');
+                $('#assigned-drop').css('left', '-99999px');
+            });
+        
+        });
 
     </script>

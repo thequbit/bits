@@ -56,7 +56,7 @@
         <div class="medium-4 columns">
             <div class="box shadow list-container">
                 <div class="box-title">
-                    <div class="task-title"><a href="/tasks?project_id=${project['id']}">Tasks</a></div>
+                    <div class="task-title"><a href="/tasks?project_id=${project['id']}">Tasks</a> ( ${len(tasks)} )</div>
                     <div class="right">
                         <a href="/newtask?project_id=${project['id']}">New</a>
                     </div>
@@ -69,9 +69,10 @@
                     % for task in tasks[:5]:
                         <div class="box-inner-container">
                             <a href="/task?task_id=${task['id']}">${task['title']}</a>
-                            <div class="short-line-height extra-small-light-text"> opened by ${task['owner']} on ${task['created']}</div>
+                            <div class="short-line-height extra-small-light-text">Opened by ${task['owner']} on ${task['created']}</div>
                         </div>
                     % endfor
+                    % if len(tickets) > 5:
                     <div class="row">
                         <div class="medium-12 columns">
                             <div class="right" style="padding-right: 5px;">
@@ -79,13 +80,14 @@
                             </div>
                         </div>
                     </div>
+                    % endif
                 % endif                
             </div>
         </div>
         <div class="medium-4 columns">
             <div class="box shadow list-container">
                 <div class="box-title">
-                    <div class="ticket-title"><a href="/tickets?project_id=${project['id']}">Tickets</a></div>
+                    <div class="ticket-title"><a href="/tickets?project_id=${project['id']}">Tickets ( ${len(tickets)} )</a></div>
                     <div class="right">
                         <a href="/newticket?project_id=${project['id']}">New</a>
                     </div>
@@ -116,7 +118,7 @@
         <div class="medium-4 columns">
             <div class="box shadow list-container">
                 <div class="box-title">
-                    <div class="list-title"><a href="/lists?project_id=${project['id']}">Lists</a></div>
+                    <div class="list-title"><a href="/lists?project_id=${project['id']}">Lists ( ${len(lists)} )</a></div>
                     <div class="right">
                         <a href="/newlist?project_id=${project['id']}">New</a>
                     </div>

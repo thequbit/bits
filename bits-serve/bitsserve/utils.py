@@ -757,7 +757,25 @@ def assign_user_to_ticket(user, ticket_id, email):
     
     return ticket
 
-def create_new_task():
+def create_new_task(user, project_id, title, contents, assigned_id):
+
+    valid = UserProjectAssignments.check_project_assignment(
+        session = DBSession,
+        user_id = user.id,
+        project_id = project_id,
+    )
+
+    if valid == False:
+        raise Exception('unauthorized user')
+
+    valid = UserProjectAssignments.check_project_assignment(
+        session = DBSession,
+        user_id = assigned_id,
+        project_id = project_id,
+    )
+
+    if valid == False:
+        raise Exception('unauthorized assignee')
 
     task = Tasks.add_task(
         session = DBSession,
@@ -765,17 +783,47 @@ def create_new_task():
         project_id = project_id,
         title = title,
         contents = contents,
-        assigned = assigned,
+        assigned_id = assigned_id,
         due = None, #due,
     )
 
+    action_user_link = "[{0} {1}]({3}user?user_id={2})".format(
+        user.first,
+        user.last,
+        user.id,
+        config['root_domain'],
+    )
+    action_task_link = "[{0}]({2}task?task_id={1})".format(
+        task.title,
+        task.id,
+        config['root_domain'],
+    )
+    project_name, = Projects.get_name_from_id(DBSession, project_id)
+    action_project_link = "[{0}]({2}project?project_id={1})".format(
+        project_name,
+        project_id,
+        config['root_domain'],
+    )
+    action_contents = "{0} opened a new task: {1} in project: {2}".format(
+        action_user_link,
+        action_task_link,
+        action_project_link,
+    )
+    action = create_action(
+        user_id = user.id,
+        project_id = project_id,
+        contents = action_contents,
+        additional_display = contents,
+    )
+    
     return task
 
-def get_tasks(project_id):
+def get_tasks(project_id, completed):
 
     _tasks = Tasks.get_tasks_by_project_id(
         session = DBSession,
         project_id = project_id,
+        completed = completed,
     )
 
     tasks = []
@@ -828,6 +876,35 @@ def get_task(task_id):
 def get_task_comments(task_id):
 
     return []
+
+def complete_task(user, task_id):
+
+    _task = Tasks.get_by_id(
+        session = DBSession,
+        task_id = task_id,
+    )
+
+    if _task == None:
+        raise Exception('invalid ticket id')
+
+    t_id, t_title, t_contents, t_due, t_completed, t_completed_dt, \
+        t_created, o_id, o_first, o_last, o_email, p_id, p_name = _task
+
+    valid = UserProjectAssignments.check_project_assignment(
+        session = DBSession,
+        user_id = user.id,
+        project_id = p_id,
+    )
+
+    if valid == False:
+        raise Exception('unauthorized user')
+
+    task = Tasks.complete_task(
+        session = DBSession,
+        task_id = t_id,
+    )
+
+    return task
 
 def get_lists(project_id):
 

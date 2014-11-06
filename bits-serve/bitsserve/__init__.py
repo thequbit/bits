@@ -34,6 +34,7 @@ def main(global_config, **settings):
 
     config.add_route('newtask', '/newtask')
     config.add_route('task', '/task')
+    config.add_route('tasks', '/tasks')
 
     config.add_route('newlist', '/newlist')
     #config.add_route('list', '/list')
@@ -58,6 +59,7 @@ def main(global_config, **settings):
     config.add_route('update_ticket_title.json', 'update_ticket_title.json')
  
     config.add_route('create_task.json','create_task.json')
+    config.add_route('complete_task.json','complete_task.json')
     
     config.add_route('database_dump.json', 'database_dump.json')
     config.add_route('database_upload.json', 'database_upload.json')

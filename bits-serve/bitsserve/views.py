@@ -38,9 +38,11 @@ from utils import (
     update_ticket_contents,
     update_ticket_title,
 
+    create_new_task,
     get_tasks,
     get_task,
     get_task_comments,
+    complete_task,
     
     get_lists,
     get_list,
@@ -188,8 +190,8 @@ def web_index(request):
 def web_project(request):
 
     result = {'user': None}
-    #if True:
-    try:
+    if True:
+    #try:
 
         user, token = check_auth(request)
         result['user'] = user
@@ -198,13 +200,14 @@ def web_project(request):
             
         result['project'] = get_project(user.id, project_id)
 
-        result['tasks'] = get_tasks(project_id)
+        result['tasks'] = get_tasks(project_id, completed=False)
 
         result['tickets'] = get_tickets(project_id)
 
+        result['lists'] = [] #get_lists(project_id)
 
-    except:
-        pass
+    #except:
+    #    pass
 
     return result
 
@@ -270,12 +273,41 @@ def web_ticket(request):
 
     return result
 
+@view_config(route_name='tasks', renderer='templates/tasks.mak')
+def web_tasks(request):
+
+    result = {'user': None}
+    if True:
+    #try:
+
+        user, token = check_auth(request)
+        result['user'] = user
+
+        project_id = int(request.GET['project_id'])
+
+        completed = False
+        try:
+            completed = int(request.GET['completed']);
+        except:
+            pass
+
+        result['completed'] = completed
+
+        result['tasks'] = get_tasks(project_id, completed)
+
+        result['project'] = get_project(user.id, project_id)
+
+    #except:
+    #    pass
+
+    return result 
+
 @view_config(route_name='task', renderer='templates/task.mak')
 def web_task(request):
 
     result = {'user': None}
-    #if True:
-    try:
+    if True:
+    #try:
 
         user, token = check_auth(request)
         result['user'] = user
@@ -288,13 +320,13 @@ def web_task(request):
 
         result['comments'] = get_task_comments(task['id'])
 
-        result['tasks'] = get_tasks(task['project_id'])
+        result['tasks'] = get_tasks(task['project_id'], completed=False)
 
         result['project'] = get_project(user.id, task['project_id'])
 
 
-    except:
-        pass
+    #except:
+    #    pass
 
     return result
 
@@ -336,7 +368,9 @@ def web_new_task(request):
 
         result['project'] = get_project(user.id, project_id)
 
-        result['tickets'] = get_tickets(project_id)
+        result['assigned_users'] = get_users_assigned_to_project(user.id, project_id)
+
+        result['tasks'] = get_tasks(project_id)
 
     except:
         pass
@@ -692,52 +726,61 @@ def web_create_task(request):
     result = {'user': None}
     result['success'] = False
 
-    #if True:
-    try:
+    if True:
+    #try:
 
         user, token = check_auth(request)
 
         project_id = request.POST['project_id']
         title = request.POST['title']
         contents = request.POST['contents']
-        assigned = request.POST['assigned']
+        assigned_id = request.POST['assigned_id']
         #due = request.POST['due']
 
-        task = Tasks.add_task(
-            session = DBSession,
-            author_id = user.id,
+        task = create_new_task(
+            user = user,
             project_id = project_id,
             title = title,
             contents = contents,
-            assigned = assigned,
-            due = None, #due,
+            assigned_id = assigned_id,
         )
+        
+        result['task_id'] = task.id;
+        
+        result['success'] = True
 
-        if task == None:
-            result['error_code'] = 1
-            raise Exception('invalid assigned')
+    #except:
+    #    pass
+
+    return make_response(result)
+
+@view_config(route_name='complete_task.json')
+def web_complete_task(request):
+
+    """ Complete a task
+    """
+
+    result = {'user': None}
+    result['success'] = False
+
+    if True:
+    #try:
+
+        user, token = check_auth(request)
+
+        task_id = request.POST['task_id']
+        
+        task = complete_task(user, task_id);
 
         result['task_id'] = task.id
 
-        action = Actions.add_action(
-            session = DBSession,
-            organization_id = 1,
-            user_id = user.id,
-            action_type = "created",
-            subject = "task",
-            project_id = task.id,
-            ticket_id = None,
-            requirement_id = None,
-            task_id = task.id,
-            list_id = None,
-        )
-
         result['success'] = True
 
-    except:
-        pass
+    #except:
+    #    pass
 
     return make_response(result)
+
 
 @view_config(route_name='database_dump.json')
 def web_database_dump(request):
