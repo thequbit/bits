@@ -43,7 +43,6 @@ def main(global_config, **settings):
     config.add_route('project', '/project')
     config.add_route('projectsettings', '/projectsettings')
  
-
     config.add_route('authenticate.json', 'authenticate.json')
     config.add_route('get_projects.json', 'get_projects.json')
     config.add_route('get_organizations.json', 'get_organizations.json')
@@ -60,6 +59,8 @@ def main(global_config, **settings):
  
     config.add_route('create_task.json','create_task.json')
     config.add_route('complete_task.json','complete_task.json')
+    
+    config.add_route('save_user_settings.json', 'save_user_settings.json')
     
     config.add_route('database_dump.json', 'database_dump.json')
     config.add_route('database_upload.json', 'database_upload.json')

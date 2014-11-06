@@ -48,6 +48,8 @@ from utils import (
     get_list,
     get_list_comments,
     
+    save_user_settings,
+    
     export_database,
     inport_database,
 )
@@ -781,6 +783,29 @@ def web_complete_task(request):
 
     return make_response(result)
 
+@view_config(route_name='save_user_settings.json')
+def web_save_user_settings(request):
+
+    result = {'success': False}
+
+    if True:
+    #try:
+
+        user, token = check_auth(request)
+
+        theme = request.POST['theme']
+
+        save_user_settings(
+            user = user,
+            theme = theme,
+        )
+
+        result['success'] = True
+
+    #except:
+    #    pass
+
+    return make_response(result)
 
 @view_config(route_name='database_dump.json')
 def web_database_dump(request):

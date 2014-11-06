@@ -1036,6 +1036,16 @@ def send_notification(user_id, action_id, additional_display):
     
     return success
 
+def save_user_settings(user, theme):
+
+    Users.set_theme(
+        session = DBSession,
+        user_id = user.id,
+        theme = theme,
+    )
+    
+    return
+
 def export_database(user_id):
 
     if user_id != 1:

@@ -214,6 +214,21 @@ class Users(Base):
             ).all()
         return users
 
+    @classmethod
+    def set_theme(cls, session, user_id, theme):
+        """ Set the user's display theme
+        """
+        with transaction.manager:
+            user = session.query(
+                Users,
+            ).filter(
+                Users.id == user_id,
+            ).first()
+            user.theme = theme
+            session.add(user)
+            transaction.commit()
+        return user
+
 class LoginTokens(Base):
 
     __tablename__ = 'logintokens'

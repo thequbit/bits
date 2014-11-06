@@ -1,13 +1,5 @@
 <%inherit file="base.mak"/>
 
-    % if not user:
-    
-    <script>
-        window.location.href = "/login";
-    </script>
-    
-    % else:
-
     <style>
     
     </style>
@@ -26,7 +18,7 @@
     
     <div class="row">
         <div class="medium-12 columns">
-            <h5>User Settings<div class="right small-text"><a class="">Save Settings</a></div></h5>
+            <h5>User Settings<div class="right small-text"><a href="#" id="save-settings" class="">Save Settings</a></div></h5>
             
         </div>
     </div>
@@ -47,13 +39,14 @@
                             <div class="small-6 columns"><input type="radio" name="theme" checked></input>Light</div>
                             <div class="small-6 columns"><input type="radio" name="theme"></input>Dark</div>
                         % elif user.theme == 'dark':
-                            <div class="small-6 columns"><input type="radio" name="theme"></input>Dark</div>
-                            <div class="small-6 columns"><input type="radio" name="theme" checked></input>Light</div>
+                            <div class="small-6 columns"><input type="radio" name="theme"></input>Light</div>
+                            <div class="small-6 columns"><input type="radio" name="theme" checked></input>Dark</div>
                         % endif
                         
                         </div>
                     </div>
                 </div>
+                
             </div>
         </div>
         <div class="medium-4 columns">
@@ -63,5 +56,38 @@
             
         </div>
     </div>
+ 
+    <script>
     
-    % endif
+        $('#save-settings').on('click', function(e) {
+            
+            var token = document.cookie.split('=')[1]; 
+            var url = '/save_user_settings.json?token=' + token;
+            
+            var theme = 'light';
+            if ( $('input[name=theme]:radio')[1].checked == true ) {
+                theme = 'dark';
+            }
+            
+            $.ajax({
+                dataType: 'json',
+                type: 'POST',
+                data: {
+                    theme : theme,
+                },
+                url: url,
+                success: function(data) {
+                    if( data.success == true ) {
+                        console.log('SUCCESS!');
+                        window.location.href="/usersettings";
+                    }
+                },
+                error: function(data) {
+                    console.log('an error happened while creating task ...');
+                    // TODO: report error
+                }
+            });
+           
+        });
+    
+    </script>

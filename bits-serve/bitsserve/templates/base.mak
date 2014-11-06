@@ -21,21 +21,26 @@
         
         % if user:
 
-            % if not user.theme or user.theme == 'light':
+            % if user.theme == 'light':
 
-                <!-- default theme (light) -->
+                /* -- default theme (light) -- */
+
+                body {
+                    font-family: 'Lato', sans-serif !important;
+                }
 
                 div.title-bar {
                     background-color: rgba(0,140,186,0.2) !important;
                 }
                 
-            % elif user.theme == 'dark':
+            % else:
             
-                <!-- dark theme  -->
+                /* -- dark theme  -- */
             
                 body {
                     color: #CCCCCC !important;
                     background-color: #050505 !important;
+                    font-family: 'Lato', sans-serif !important;
                 }
                 
                 h1, h2, h3, h4, h5, h6, h7, h8, h9 {
@@ -55,9 +60,7 @@
 
         % endif
         
-        body {
-            font-family: 'Lato', sans-serif !important;
-        }
+        
         
         a.extra-small-button {
             /*padding: 0.875rem 1.00rem 0.9375rem !important;*/
