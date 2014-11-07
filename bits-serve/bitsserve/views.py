@@ -419,6 +419,33 @@ def web_new_project(request):
 
     return result
  
+@view_config(route_name='manageproject', renderer='templates/manageproject.mak')
+def web_manage_project(request):
+
+    result = {'user': None}
+    if True:
+    #try:
+
+        user, token = check_auth(request)
+
+        project_id = request.GET['project_id']
+
+        result['user'] = user
+
+        result['project'] = get_project(user.id, project_id)
+        
+        result['tasks'] = get_tasks(project_id, completed=False)
+
+        result['tickets'] = get_tickets(project_id)
+
+        result['lists'] = [] #get_lists(project_id)
+
+        #result['projects'] = get_projects(user);
+
+    #except:
+    #    pass
+
+    return result
 
 @view_config(route_name='authenticate.json')
 def web_authenticate(request):
@@ -737,7 +764,7 @@ def web_create_task(request):
         title = request.POST['title']
         contents = request.POST['contents']
         assigned_id = request.POST['assigned_id']
-        #due = request.POST['due']
+        due = request.POST['due']
 
         task = create_new_task(
             user = user,
@@ -745,6 +772,7 @@ def web_create_task(request):
             title = title,
             contents = contents,
             assigned_id = assigned_id,
+            due = due,
         )
         
         result['task_id'] = task.id;

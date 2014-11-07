@@ -14,7 +14,7 @@ from sqlalchemy import (
     ForeignKey,
     )
 
-from sqlalchemy import func, desc
+from sqlalchemy import func, desc, asc
 
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -1136,6 +1136,8 @@ class Tasks(Base):
                 Tasks.project_id == project_id,
             ).filter(
                 Tasks.completed == completed,
+            ).order_by(
+                asc(Tasks.due_datetime),
             ).all()
         return tasks
 

@@ -5,6 +5,7 @@ if config['root_domain'][-1:] != '/':
 
 import time
 import json
+import datetime
 
 import markdown
 
@@ -381,6 +382,7 @@ def get_project(user_id, project_id):
         'name': p_name,
         'description': p_desc,
         'created': p_created.strftime("%b %d, %Y"),
+        'creation_date_formatted': p_created.strftime("%d-%m-%Y"),
         'disabled': p_disabled,
         'owner_id': o_id,
         'owner': '{0} {1}'.format(o_first, o_last),
@@ -757,7 +759,7 @@ def assign_user_to_ticket(user, ticket_id, email):
     
     return ticket
 
-def create_new_task(user, project_id, title, contents, assigned_id):
+def create_new_task(user, project_id, title, contents, assigned_id, due):
 
     valid = UserProjectAssignments.check_project_assignment(
         session = DBSession,
@@ -784,7 +786,7 @@ def create_new_task(user, project_id, title, contents, assigned_id):
         title = title,
         contents = contents,
         assigned_id = assigned_id,
-        due = None, #due,
+        due = datetime.datetime.strptime(due, "%m-%d-%Y"),
     )
 
     action_user_link = "[{0} {1}]({3}user?user_id={2})".format(
@@ -830,19 +832,25 @@ def get_tasks(project_id, completed):
     for t_id, t_title, t_contents, t_due, t_completed, t_completed_dt, \
             t_created, o_id, o_first, o_last, o_email, p_id, p_name \
             in _tasks:
+        duration = 7; # default to 7 days for task
+        if t_due != None:
+            delta = t_due - t_created
+            duration = delta.days;
         tasks.append({
             'id': t_id,
             'title': t_title,
             'contents': t_contents,
-            'due': t_due,
+            'due': str(t_due),
             'completed': t_completed,
             'completed_datetime': t_completed_dt,
             'created': t_created.strftime("%b %d, %Y"),
+            'creation_date_formatted': t_created.strftime("%d-%m-%Y"),
             'owner_id': o_id,
             'owner': '{0} {1}'.format(o_first, o_last),
             'owner_email': o_email,
             'project_id': p_id,
             'project_name': p_name,
+            'duration': duration,
         })
 
     return tasks
@@ -860,10 +868,11 @@ def get_task(task_id):
         'id': t_id,
         'title': t_title,
         'contents': t_contents,
-        'due': t_due,
+        'due': str(t_due),
         'completed': t_completed,
         'completed_datetime': t_completed_dt,
         'created': t_created.strftime("%b %d, %Y"),
+        'creation_date_formatted': t_created.strftime("%d-%m-%Y"),
         'owner_id': o_id,
         'owner': '{0} {1}'.format(o_first, o_last),
         'owner_email': o_email,

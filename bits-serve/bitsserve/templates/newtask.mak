@@ -2,6 +2,9 @@
 
     <style>
  
+        .datepicker.dropdown-menu {
+            max-width: 250px !important;
+        }
 
     </style>
 
@@ -29,12 +32,19 @@
                 </div>
                 <input id="task-title" placeholder="title" type="text"></textarea>                
                 <textarea id="task-contents" placeholder="markdown supported"></textarea>
-                Task Assigned to: <a id="assigned-name" aria-expanded="false" href="#" data-dropdown="assigned-drop">Assign Task</a>
+                
+                <div class="right" style="display: flex;">
+                    <div style="padding-right: 20px; padding-top: 6px;">Due Date:</div><input type="text" value="" id="due-date-datepicker" style="width: 130px;">
+                </div>
+                
+                Task Assigned to:<br/><a id="assigned-name" aria-expanded="false" href="#" data-dropdown="assigned-drop">Assign Task</a>
                 <ul id="assigned-drop" class="f-dropdown" data-dropdown-content aria-hidden="true" tabindex="-1" data-options="is_hover:true">
                 % for assigned_user in assigned_users:
                     <li><a href="#" user_id="${assigned_user['user_id']}" user_name="${assigned_user['user']}">${assigned_user['user']}</a></li>
                 % endfor
                 </ul>
+                
+                <br/>
             </div>
             <br/>
             <a href="#" id="submit-task" class="small radius button">Submit</a>
@@ -77,6 +87,7 @@
             var project_id = ${project['id']}
             var title = $('#task-title').val();
             var contents = $('#task-contents').val();
+            var due = $('#due-date-datepicker').val();
             //var assigned_id = $('#task-assigned').val();
 
             $.ajax({
@@ -87,7 +98,7 @@
                     title : title,
                     contents : contents,
                     assigned_id : assigned_user_id,
-                    //due : due,
+                    due : due,
                 },
                 url: url,
                 success: function(data) {
@@ -117,6 +128,11 @@
                 $('#assigned-drop').removeClass('open');
                 $('#assigned-drop').css('left', '-99999px');
             });
+            
+            $('#due-date-datepicker').fdatepicker({
+                format: 'mm-dd-yyyy'
+            });
+        
         
         });
 

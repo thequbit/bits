@@ -21,6 +21,7 @@
             <div class="right top-links">
                 <a href="/projectsettings?project_id=${project['id']}">Settings</a>
                 <a href="/usersettings">${user.first} ${user.last}</a>
+                
             </div>
         </div>
     </div>
@@ -33,9 +34,9 @@
                 <textarea id="ticket-contents" placeholder="markdown supported"></textarea>
                 Ticket Assigned to: <a id="assigned-name" aria-expanded="false" href="#" data-dropdown="assigned-drop">Assign Ticket</a>
                 <ul id="assigned-drop" class="f-dropdown" data-dropdown-content aria-hidden="true" tabindex="-1" data-options="is_hover:true">
-                % for assigned_user in assigned_users:
-                    <li><a href="#" user_id="${assigned_user['user_id']}" user_name="${assigned_user['user']}">${assigned_user['user']}</a></li>
-                % endfor
+                    % for assigned_user in assigned_users:
+                        <li><a href="#" user_id="${assigned_user['user_id']}" user_name="${assigned_user['user']}">${assigned_user['user']}</a></li>
+                    % endfor
                 </ul>
             </div>
             <br/>
@@ -121,6 +122,7 @@
                 $('#assigned-drop').css('left', '-99999px');
             });
         
+            
         });
 
     </script>

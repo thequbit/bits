@@ -8,12 +8,11 @@
     <title>bits - Requirements and Ticketing System</title>
 
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1.0" />-->
    
     <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'> 
     
     <link rel="stylesheet" href="static/foundation/css/foundation.css" />
-    <link rel="stylesheet" href="static/foundation/css/foundation-datepicker.css" />
     
     <link href='http://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
     
@@ -28,6 +27,7 @@
 
                 body {
                     font-family: 'Lato', sans-serif !important;
+                    height: none !important;
                 }
 
                 div.title-bar {
@@ -307,7 +307,9 @@
         div.title-bar {
             width: 100%;
             border-bottom: 1px solid #DDD;
+            margin: 0px;
             margin-bottom: 10px;
+            
             
         }
 
@@ -346,6 +348,7 @@
             color: #FFF;
             background-color: #F04124;
         }
+        
 
     </style>
 
@@ -360,35 +363,28 @@
 
     % else:
 
-        <div class="title-bar"> 
-            <div class="row">
-                <div class="large-12 columns">
-                    <!--<div class="right" style="padding-top: 10px;">
-                        <a href="/logout">Logout</a>
-                    </div>-->
-                    <h3>bits</h3>
-                </div>
+        <div class="title-bar">
+            <div class="indent">
+                <h3>bits</h3>
             </div>
         </div>
         
         <script src="static/foundation/js/vendor/jquery.js"></script>
        
-        <div class="row">
-             <div class="large-12 columns">
-                ${self.body()}
-            </div>
+        <div>
+            ${self.body()}
         </div>
-    
         
         <script src="static/foundation/js/foundation/foundation.js"></script>
-        
+                
         <script src="static/foundation/js/foundation/foundation.dropdown.js"></script>
 
         <script src="static/foundation/js/vendor/modernizr.js"></script>
 
-        <script src="static/foundation/js/foundation-datepicker.js"></script>
-
         <script>
+        
+            $('body').css('height','auto');
+        
             $(document).foundation({
                 dropdown: {
                     // specify the class used for active dropdowns

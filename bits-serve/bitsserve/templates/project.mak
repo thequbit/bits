@@ -43,7 +43,9 @@
 
     <div class="row">
         <div class="medium-12 columns">
+            <div class="right"><a href="/manageproject?project_id=${project['id']}">Manage</a></div>
             <h5>${project['name']} <small>${project['owner']}</small></h5>
+            
             <div class="box shadow">
                 <div class="container-inner">
                     <p>${project['description']}</p>

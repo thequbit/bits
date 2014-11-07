@@ -42,6 +42,7 @@ def main(global_config, **settings):
     config.add_route('newproject', '/newproject')
     config.add_route('project', '/project')
     config.add_route('projectsettings', '/projectsettings')
+    config.add_route('manageproject', '/manageproject')
  
     config.add_route('authenticate.json', 'authenticate.json')
     config.add_route('get_projects.json', 'get_projects.json')

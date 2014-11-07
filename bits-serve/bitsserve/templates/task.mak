@@ -47,6 +47,10 @@
             font-weight: bold;
         }
         
+        div.due-lable {
+            padding-top: 10px;
+        }
+        
  
     </style>
 
@@ -85,6 +89,9 @@
                 </div>
                 <div class="small-light-text">
                     Opened by ${task['owner']} on ${task['created']}
+                </div>
+                <div class="small-text due-lable" >
+                    Due on ${task['due'].split(' ')[0]}.
                 </div>
                 <div class="indent indent-right">
                     <div class="box shadow">
@@ -156,8 +163,6 @@
             });
            
         });
-
-        // TODO: hook up submit and close button
 
     </script>
     
