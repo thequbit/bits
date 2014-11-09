@@ -63,6 +63,14 @@
         
         
         
+        div.manage-link {
+            margin-top: 10px;
+        }
+        
+        div.page-title h4 {
+            padding-top: 6px;
+        }
+        
         a.extra-small-button {
             /*padding: 0.875rem 1.00rem 0.9375rem !important;*/
             
@@ -345,6 +353,108 @@
             padding-left: 5px;
             color: #FFF;
             background-color: #F04124;
+        }
+        
+        div.task-container {
+            border-bottom: 1px solid #DDD;
+            padding-bottom: 5px;
+        }
+
+        div.task {
+            margin-top: 10px;
+            border: 1px solid #DDD;
+            padding: 15px;15px
+        }
+
+        textarea {
+           min-height: 150px;
+        }
+
+        div.task-container h3 {
+            margin-bottom: 0rem !important;
+        }
+
+        div.comment-container {
+            
+        }
+
+        div.container-inner {
+            padding: 10px;            
+        }
+        
+        div.container-inner p {
+            margin-bottom: 0px !important;
+        }
+        
+        h4.complete-label {
+            margin-left: 20px;
+            color: #008000;
+            font-weight: bold;
+        }
+        
+        div.due-label {
+            padding-top: 10px;
+        }
+        
+        div.ticket-container {
+            border-bottom: 1px solid #DDD;
+            padding-bottom: 5px;
+        }
+
+        div.ticket {
+            margin-top: 10px;
+            border: 1px solid #DDD;
+            padding: 15px;15px
+        }
+
+        textarea {
+           min-height: 150px;
+        }
+
+        div.ticket-container h3 {
+            margin-bottom: 0rem !important;
+        }
+
+        div.comment-container {
+            
+        }
+
+        div.container-inner {
+            padding: 10px;            
+        }
+        
+        div.container-inner p {
+            margin-bottom: 0px !important;
+        }
+        
+        h4.closed-label {
+            margin-left: 20px;
+            color: red;
+            font-weight: bold;
+        }
+
+        div.edit-link {
+            margin-bottom: 10px !important;
+        }
+
+        #submit-ticket {
+            margin: 0px !important;
+        }
+ 
+        div.inner-container {
+            margin-bottom: 10px;
+        }
+
+        div.inner-container .extra-small-light-text {
+            line-height: 75% !important;
+        }
+
+        div.project-description {
+            padding: 10px;
+        }
+        
+        div.disabled {
+            opacity: .25;
         }
 
     </style>

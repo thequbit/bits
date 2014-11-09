@@ -1,18 +1,9 @@
 <%inherit file="base.mak"/>
 
-    <style>
-    
-        div.ticket-container a {
-            /*padding-left: 2px;
-            padding-top: 4px !important;*/
-        }
-    
-    </style>
-    
     <div class="row">
-        <div class="medium-12 columns bottom-border">
+        <div class="large-12 columns bottom-border">
             <a href="/">Home</a>
-             >
+             > 
             <a href="/project?project_id=${project['id']}">${project['name']}</a>
              > Tickets
             <div class="right top-links">
@@ -21,41 +12,39 @@
             </div>
         </div>
     </div>
-    
+
     <div class="row">
         <div class="medium-12 column">
-            <h5>Tickets</h5>
-        </div>
-    </div>
-    
-    <div class="row">
-        <div class="medium-12 column">
-            <div class="small-text bottom-border">
-                % if closed == False:
-                    Displayed below are all of the <b>open</b> tickets for the current project.
-                % else:
-                    Displayed below are all of the <b>closed</b> tickets for the current project.
-                % endif
-                <div class=" normal-text right">
-                    <a href="/newticket?project_id=${project['id']}">New Ticket</a>
+            <div class="page-title">
+                <div class="right manage-link">
+                    <a href="/manageproject?project_id=${project['id']}">Manage Project</a>
                 </div>
+                <h4>Tickets</h4>
             </div>
         </div>
     </div>
-    
-    <br/>
 
-    <div style="display: inline-block; margin-left: 20px;">
-        <a href="/tickets?project_id=${project['id']}&closed=0">Open Tickets</a>
-        % if closed == False:
-            <div style="background-color: #008CBA !important; height: 3px;"></div>
-        % endif
-    </div>
-    <div style="display: inline-block; margin-left: 20px;">
-        <a href="/tickets?project_id=${project['id']}&closed=1">Closed Tickets</a>
-        % if closed == True:
-            <div style="background-color: #008CBA !important; height: 3px;"></div>
-        % endif
+    <br/><br/>
+    
+    
+    <div class="row">
+        <div class="medium-12 column">
+            <div style="display: inline-block; margin-left: 20px;">
+                <a href="/tickets?project_id=${project['id']}&closed=0">Open Tickets</a>
+                % if closed == False:
+                    <div style="background-color: #008CBA !important; height: 3px;"></div>
+                % endif
+            </div>
+            <div style="display: inline-block; margin-left: 20px;">
+                <a href="/tickets?project_id=${project['id']}&closed=1">Closed Tickets</a>
+                % if closed == True:
+                    <div style="background-color: #008CBA !important; height: 3px;"></div>
+                % endif
+            </div>
+            <div class="right">
+                <a href="/newtask?project_id=${project['id']}">New Task</a>
+            </div>
+        </div>
     </div>
 
     <div class="row">

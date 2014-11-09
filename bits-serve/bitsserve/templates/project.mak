@@ -1,58 +1,41 @@
 <%inherit file="base.mak"/>
 
-    % if not project:
-    
-    <script>
-        window.location.href = "/login";
-    </script>
-    
-    % else:
-
+   
     <style>
 
-        div.inner-container {
-            margin-bottom: 10px;
-        }
-
-        div.inner-container .extra-small-light-text {
-            line-height: 75% !important;
-        }
-
-        div.project-description {
-            padding: 10px;
-        }
         
-        div.disabled {
-            opacity: .25;
-        }
 
     </style>
     
     <div class="row">
-        <div class="medium-12 columns bottom-border">
+        <div class="large-12 columns bottom-border">
             <a href="/">Home</a>
              > 
-            Project
+            <a href="/project?project_id=${project['id']}">${project['name']}</a>
+            
             <div class="right top-links">
                 <a href="/projectsettings?project_id=${project['id']}">Settings</a>
                 <a href="/usersettings">${user.first} ${user.last}</a>
             </div>
         </div>
     </div>
-    <br/>
 
     <div class="row">
-        <div class="medium-12 columns">
-            <div class="right"><a href="/manageproject?project_id=${project['id']}">Manage</a></div>
-            <h5>${project['name']} <small>${project['owner']}</small></h5>
-            
-            <div class="box shadow">
-                <div class="container-inner">
-                    <p>${project['description']}</p>
+        <div class="medium-12 column">
+            <div class="page-title">
+                <div class="right manage-link">
+                    <a href="/manageproject?project_id=${project['id']}">Manage Project</a>
+                </div>
+                <div id="ticket-title">
+                    <h4>${project['name']} <small>${project['owner']}</small></h4>
+                    
                 </div>
             </div>
         </div>
     </div>
+
+    <br/><br/>
+
     
     <div class="row">
         <div class="medium-4 columns">
@@ -258,4 +241,3 @@
     </div>
     <hr/>
     
-    % endif

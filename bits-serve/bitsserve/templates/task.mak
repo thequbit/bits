@@ -1,55 +1,8 @@
 <%inherit file="base.mak"/>
 
-    % if not task:
-    
-    <script>
-        window.location.href = "/login";
-    </script>
-    
-    % else:
-
     <style>
     
-        div.task-container {
-            border-bottom: 1px solid #DDD;
-            padding-bottom: 5px;
-        }
-
-        div.task {
-            margin-top: 10px;
-            border: 1px solid #DDD;
-            padding: 15px;15px
-        }
-
-        textarea {
-           min-height: 150px;
-        }
-
-        div.task-container h3 {
-            margin-bottom: 0rem !important;
-        }
-
-        div.comment-container {
-            
-        }
-
-        div.container-inner {
-            padding: 10px;            
-        }
         
-        div.container-inner p {
-            margin-bottom: 0px !important;
-        }
-        
-        h4.complete-label {
-            margin-left: 20px;
-            color: #008000;
-            font-weight: bold;
-        }
-        
-        div.due-lable {
-            padding-top: 10px;
-        }
         
  
     </style>
@@ -58,22 +11,24 @@
         <div class="large-12 columns bottom-border">
             <a href="/">Home</a>
              > 
-            <a href="/project?project_id=${project['id']}">Project</a>
+            <a href="/project?project_id=${project['id']}">${project['name']}</a>
              > 
             <a href="/tasks?project_id=${project['id']}">Tasks</a>
              > Task
             <div class="right top-links">
+                <a href="/projectsettings?project_id=${project['id']}">Settings</a>
                 <a href="/usersettings">${user.first} ${user.last}</a>
             </div>
         </div>
     </div>
 
-
     <div class="row">
-        <div class="medium-8 columns">
-        % if task:
-            <div class="task-container">
-                <div id="task-title" style="display: inline-flex;">
+        <div class="medium-12 column">
+            <div class="page-title">
+                <div class="right manage-link">
+                    <a href="/manageproject?project_id=${project['id']}">Manage Project</a>
+                </div>
+                <div id="task-title">
                     <h4>Ticket : ${task['title']}
                     <!--
                     % if task['completed'] == False:
@@ -87,10 +42,24 @@
                         <h4 class="complete-label">[COMPLETE]</h4>
                     % endif
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <br/><br/>
+    
+ 
+    
+    <div class="row">
+        <div class="medium-8 columns">
+            <div class="task-container">
+            
+                
+            
                 <div class="small-light-text">
                     Opened by ${task['owner']} on ${task['created']}
                 </div>
-                <div class="small-text due-lable" >
+                <div class="small-text due-label" >
                     Due on ${task['due'].split(' ')[0]}.
                 </div>
                 <div class="indent indent-right">
@@ -106,9 +75,7 @@
                 </div>
                 <br/><br/><br/>
                 
-               
             </div>
-        % endif
         </div>
         
         <div class="medium-4 columns">
@@ -165,5 +132,3 @@
         });
 
     </script>
-    
-    % endif

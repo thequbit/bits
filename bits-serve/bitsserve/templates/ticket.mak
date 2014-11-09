@@ -1,54 +1,5 @@
 <%inherit file="base.mak"/>
 
-    <style>
-    
-        div.ticket-container {
-            border-bottom: 1px solid #DDD;
-            padding-bottom: 5px;
-        }
-
-        div.ticket {
-            margin-top: 10px;
-            border: 1px solid #DDD;
-            padding: 15px;15px
-        }
-
-        textarea {
-           min-height: 150px;
-        }
-
-        div.ticket-container h3 {
-            margin-bottom: 0rem !important;
-        }
-
-        div.comment-container {
-            
-        }
-
-        div.container-inner {
-            padding: 10px;            
-        }
-        
-        div.container-inner p {
-            margin-bottom: 0px !important;
-        }
-        
-        h4.closed-label {
-            margin-left: 20px;
-            color: red;
-            font-weight: bold;
-        }
-
-        div.edit-link {
-            margin-bottom: 10px !important;
-        }
-
-        #submit-ticket {
-            margin: 0px !important;
-        }
- 
-    </style>
-
     <div class="row">
         <div class="large-12 columns bottom-border">
             <a href="/">Home</a>
@@ -58,34 +9,47 @@
             <a href="/tickets?project_id=${project['id']}">Tickets</a>
              > Ticket
             <div class="right top-links">
+                <a href="/projectsettings?project_id=${project['id']}">Settings</a>
                 <a href="/usersettings">${user.first} ${user.last}</a>
             </div>
         </div>
     </div>
 
     <div class="row">
+        <div class="medium-12 column">
+            <div class="page-title">
+                <div class="right manage-link">
+                    <a href="/manageproject?project_id=${project['id']}">Manage Project</a>
+                </div>
+                <div id="ticket-title">
+                    <h4>Ticket #${ticket['number']} : ${ticket['title']}
+                    % if ticket['closed'] == False:
+                        <small>
+                            <a href="#" id="edit-ticket-title">edit</a>
+                        </small>
+                    % endif
+                    </h4>
+                    % if ticket['closed'] == True:
+                        <h4 class="closed-label">[CLOSED]</h4>
+                    % endif
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <br/><br/>
+
+
+
+    <div class="row">
         <div class="medium-8 columns">
-        % if ticket:
             <div class="ticket-container">
                 <div id="ticket-title-wrapper">
-                     
                     <div>
                         <div id="edit-ticket-title-wrapper" style="display: none">
                             <br/>
                             <input type="text" id="new-ticket-title" value="${ticket['title'] | h}" style="font-weight: bold; width: 100%;"></input>
                             <a href="#" id="submit-ticket-title" class="small radius button">Submit</a>
-                        </div>
-                        <div id="ticket-title" style="display: inline-flex;">
-                            <h4>Ticket #${ticket['number']} : ${ticket['title']}
-                            % if ticket['closed'] == False:
-                                <small>
-                                    <a href="#" id="edit-ticket-title">edit</a>
-                                </small>
-                            % endif
-                            </h4>
-                            % if ticket['closed'] == True:
-                                <h4 class="closed-label">[CLOSED]</h4>
-                            % endif
                         </div>
                     </div>
                 </div>
@@ -159,7 +123,7 @@
                     </div>
                 </div>
             </div>
-        % endif
+
         </div>
         <div class="medium-4 columns">
             <div class="box shadow">

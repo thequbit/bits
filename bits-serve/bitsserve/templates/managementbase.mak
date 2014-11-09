@@ -16,8 +16,14 @@
     
     <link href='http://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
     
+    <style type="text/css">
+        html, body{ height:100%; padding:0px; margin:0px; overflow: hidden;}
+    </style>
+
+    
     <style>
 
+        
         
         % if user:
 

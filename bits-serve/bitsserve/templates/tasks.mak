@@ -1,13 +1,4 @@
 <%inherit file="base.mak"/>
-
-    <style>
-    
-        div.task-container a {
-            /*padding-left: 2px;
-            padding-top: 4px !important;*/
-        }
-    
-    </style>
     
     <div class="row">
         <div class="medium-12 columns bottom-border">
@@ -24,38 +15,40 @@
     
     <div class="row">
         <div class="medium-12 column">
-            <h5>Tasks</h5>
-        </div>
-    </div>
-    
-    <div class="row">
-        <div class="medium-12 column">
-            <div class="small-text bottom-border">
-                % if completed == False:
-                    Displayed below are all of the <b>open</b> tasks for the current project.
-                % else:
-                    Displayed below are all of the <b>completed</b> tasks for the current project.
-                % endif
-                <div class=" normal-text right">
-                    <a href="/newtask?project_id=${project['id']}">New Task</a>
+            <div class="page-title">
+                <div class="right manage-link">
+                    <a href="/manageproject?project_id=${project['id']}">Manage Project</a>
                 </div>
+                <h4>Tasks</h4>
             </div>
         </div>
     </div>
-    
-    <br/>
 
-    <div style="display: inline-block; margin-left: 20px;">
-        <a href="/tasks?project_id=${project['id']}&completed=0">Open Tasks</a>
-        % if completed == False:
-            <div style="background-color: #008CBA !important; height: 3px;"></div>
-        % endif
-    </div>
-    <div style="display: inline-block; margin-left: 20px;">
-        <a href="/tasks?project_id=${project['id']}&completed=1">Completed Tasks</a>
-        % if completed == True:
-            <div style="background-color: #008CBA !important; height: 3px;"></div>
-        % endif
+    <br/><br/>
+
+
+
+
+
+    <div class="row">
+        <div class="medium-12 column">
+            
+            <div style="display: inline-block; margin-left: 20px;">
+                <a href="/tasks?project_id=${project['id']}&completed=0">Open Tasks</a>
+                % if completed == False:
+                    <div style="background-color: #008CBA !important; height: 3px;"></div>
+                % endif
+            </div>
+            <div style="display: inline-block; margin-left: 20px;">
+                <a href="/tasks?project_id=${project['id']}&completed=1">Completed Tasks</a>
+                % if completed == True:
+                    <div style="background-color: #008CBA !important; height: 3px;"></div>
+                % endif
+            </div>
+            <div class="right">
+                <a href="/newtask?project_id=${project['id']}">New Task</a>
+            </div>
+        </div>
     </div>
 
     <div class="row">
@@ -86,5 +79,7 @@
         % endif
         </div>
     </div>
+    
+    
     
     <hr/>
