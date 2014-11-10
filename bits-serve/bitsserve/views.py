@@ -108,10 +108,11 @@ def web_user(request):
         user, token = check_auth(request)
         result['user'] = user
 
-        user_id = request.GET['user_id']
+        target_user_id = request.GET['user_id']
 
         actions, target_user = get_user_actions(
-            user_id = user_id,
+            user = user,
+            target_user_id = target_user_id,
             limit = 50,
         )
         

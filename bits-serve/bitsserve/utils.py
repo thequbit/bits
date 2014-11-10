@@ -174,17 +174,18 @@ def get_actions(user, limit):
 
     return actions
 
-def get_user_actions(user_id, limit):
+def get_user_actions(user, target_user_id, limit):
 
     _actions = Actions.get_user_actions(
         session = DBSession,
-        user_id = user_id,
+        user_id = user.id,
+        target_user_id = target_user_id,
         limit = limit,
     )
     
     target_user = Users.get_by_id(
         session = DBSession,
-        user_id = user_id,
+        user_id = user.id,
     )
     
     actions = []

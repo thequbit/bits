@@ -1666,14 +1666,15 @@ class Actions(Base):
         return actions
 
     @classmethod
-    def get_user_actions(cls, session, user_id, limit=25):
+    def get_user_actions(cls, session, user_id, target_user_id, limit=25):
         """ Get's the action feed for a user
         """ 
         with transaction.manager:
             action_query = Actions._build_action_query(session)
             actions = action_query.filter(
-                Actions.user_id == user_id,
-             
+                Actions.user_id == target_user_id,
+            ).filter(
+                UserProjectAssignments.user_id == user_id
             ).group_by(
                 Actions.id,
             ).order_by(
