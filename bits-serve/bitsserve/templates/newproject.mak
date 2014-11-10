@@ -32,7 +32,6 @@
                 </div>
                 <input type="text" id="project-name" placeholder="Project Name"></text>
                 <textarea id="project-description" placeholder="Project Description"></textarea>
-                <input type="text" id="participants" placeholder="Project participants(email)"></text>
             </div>
             <div id="error-message-wrapper" class="box shadow error-box" style="display: none;">
                 <div id="error-message" class="container-inner box-small-text"></div>

@@ -194,6 +194,7 @@ def get_user_actions(user_id, limit):
             'id': a_id,
             'contents': markdown.markdown(a_contents),
             'created': a_created,
+            'created': a_created,
             'owner': '{0} {1}'.format(u_first, u_last),
             'project_id': p_id,
             'project_name': p_name,
@@ -222,9 +223,14 @@ def create_new_project(user, name, description):
         project.id,
         config['root_domain'],
     )
-    action_contents = "{0} {1} created a new project: {2}".format(
+    action_user_link = "[{0} {1}]({3}user?user_id={2})".format(
         user.first,
         user.last,
+        user.id,
+        config['root_domain'],
+    )
+    action_contents = "{0} created a new project: {1}".format(
+        action_user_link,
         action_project_link,
     )
     action = create_action(
@@ -770,14 +776,23 @@ def create_new_task(user, project_id, title, contents, assigned_id, due):
     if valid == False:
         raise Exception('unauthorized user')
 
-    valid = UserProjectAssignments.check_project_assignment(
-        session = DBSession,
-        user_id = assigned_id,
-        project_id = project_id,
-    )
+    if assigned_id != None and assigned_id != '':
 
-    if valid == False:
-        raise Exception('unauthorized assignee')
+        valid = UserProjectAssignments.check_project_assignment(
+            session = DBSession,
+            user_id = assigned_id,
+            project_id = project_id,
+        )
+
+        if valid == False:
+            raise Exception('unauthorized assignee')
+            
+    else:
+        assigned_id = None
+
+    due_dt = None
+    if due != None and due != '':
+        due_dt = datetime.datetime.strptime(due, "%m-%d-%Y"),
 
     task = Tasks.add_task(
         session = DBSession,
@@ -786,7 +801,7 @@ def create_new_task(user, project_id, title, contents, assigned_id, due):
         title = title,
         contents = contents,
         assigned_id = assigned_id,
-        due = datetime.datetime.strptime(due, "%m-%d-%Y"),
+        due = due_dt,
     )
 
     action_user_link = "[{0} {1}]({3}user?user_id={2})".format(

@@ -115,7 +115,15 @@ def web_user(request):
             limit = 50,
         )
         
+        current_project_name = ''
+        for i in range(0,len(actions)):
+            if current_project_name != actions[i]['project_name']:
+                current_project_name = actions[i]['project_name']
+            else:
+                actions[i]['project_name'] = ''
+        
         result['actions'] = actions
+        
         result['target_user'] = target_user
 
     #except:
@@ -405,7 +413,7 @@ def web_new_list(request):
 def web_new_project(request):
 
     result = {'user': None}
-    ##if True:
+    #if True:
     try:
 
         user, token = check_auth(request)
@@ -516,8 +524,8 @@ def web_create_project(request):
     """
 
     result = {'user': None}
-    #if True:
-    try:
+    if True:
+    #try:
 
         user, token = check_auth(request)
 
@@ -534,8 +542,8 @@ def web_create_project(request):
         
         result['success'] = True
 
-    except:
-        pass
+    #except:
+    #    pass
 
     return make_response(result)
 

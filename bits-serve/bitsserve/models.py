@@ -1673,10 +1673,11 @@ class Actions(Base):
             action_query = Actions._build_action_query(session)
             actions = action_query.filter(
                 Actions.user_id == user_id,
+             
             ).group_by(
                 Actions.id,
             ).order_by(
-                desc(Actions.creation_datetime),
+                Actions.project_id,
             ).all()
         return actions
 
