@@ -29,7 +29,7 @@
                     <a href="/manageproject?project_id=${project['id']}">Manage Project</a>
                 </div>
                 <div id="task-title">
-                    <h4>Ticket : ${task['title']}
+                    <h4>Task : ${task['title']}
                     <!--
                     % if task['completed'] == False:
                         <small>
