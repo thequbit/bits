@@ -35,7 +35,30 @@
             -->
         </div>
     </div>
-    
+   
+    <div class="row">
+        <div class="medium-12 column">
+            <div style="display: inline-block; margin-left: 20px;">
+                <a href="/user?user_id=${target_user.id}&assignments=0">User Activity</a>
+                % if assignments == False:
+                    <div style="background-color: #008CBA !important; height: 3px;"></div>
+                % endif
+            </div>
+            <div style="display: inline-block; margin-left: 20px;">
+                <a href="/user?user_id=${target_user.id}&assignments=1">User Assignments</a>
+                % if assignments == True:
+                    <div style="background-color: #008CBA !important; height: 3px;"></div>
+                % endif
+            </div>
+            <!--
+            <div class="right">
+                <a href="/">New Task</a>
+            </div>
+            -->
+        </div>
+    </div>
+
+    % if assignments == False: 
     <div class="row">
         <div class="medium-8 columns">
             <div class="row">
@@ -45,11 +68,6 @@
                         % if action['header'] == True:
                             <br/>
                             <hr/>
-                            <!--
-                            <div class="right">
-                                <a id="${action['project_name'].replace(' ','-')}-link" href="#">Show Actions</a>
-                            </div>
-                            -->
                             <h5>${action['project_name']}</h5>
                             <div class="indent">
                             <a id="${action['project_name'].replace(' ','-')}-link">Show Actions</a>
@@ -101,3 +119,4 @@
         });
 
     </script>
+    % endif

@@ -110,27 +110,36 @@ def web_user(request):
 
         target_user_id = request.GET['user_id']
 
+        assignments = False
+        try:
+            assignments = int(request.GET['assignments'])
+        except:
+            pass
+
         actions, target_user = get_user_actions(
             user = user,
             target_user_id = target_user_id,
-            limit = 8,
+            limit = 0,
         )
         
         current_project_name = ''
-        current_project_count = 0
+        current_action_count = 0
+        MAX_ACTION_COUNT = 50 # todo: put this in the config.py settings file
         for i in range(0,len(actions)):
             if current_project_name != actions[i]['project_name']:
                 current_project_name = actions[i]['project_name']
-                current_project_count = 0
+                current_action_count = 0
                 actions[i]['header'] = True
             else:
                 actions[i]['header'] = False
-                if current_project_count == 8:
+                if current_action_count == MAX_ACTION_COUNT:
                     actions[i] = None
                 else:
-                    current_project_count += 1
+                    current_action_count += 1
         
         result['actions'] = actions
+
+        result['assignments'] = assignments
         
         result['target_user'] = target_user
 
