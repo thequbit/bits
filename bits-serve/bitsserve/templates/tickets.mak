@@ -42,7 +42,7 @@
                 % endif
             </div>
             <div class="right">
-                <a href="/newtask?project_id=${project['id']}">New Task</a>
+                <a href="/newtask?project_id=${project['id']}">New Ticket</a>
             </div>
         </div>
     </div>
