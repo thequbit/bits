@@ -113,15 +113,22 @@ def web_user(request):
         actions, target_user = get_user_actions(
             user = user,
             target_user_id = target_user_id,
-            limit = 50,
+            limit = 8,
         )
         
         current_project_name = ''
+        current_project_count = 0
         for i in range(0,len(actions)):
             if current_project_name != actions[i]['project_name']:
                 current_project_name = actions[i]['project_name']
+                current_project_count = 0
+                actions[i]['header'] = True
             else:
-                actions[i]['project_name'] = ''
+                actions[i]['header'] = False
+                if current_project_count == 8:
+                    actions[i] = None
+                else:
+                    current_project_count += 1
         
         result['actions'] = actions
         

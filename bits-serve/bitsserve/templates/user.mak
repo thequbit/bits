@@ -2,6 +2,11 @@
 
     <style>
 
+        div.action-item {
+            /* dummy for jquery call */
+        }
+
+
     </style>
 
     <div class="row">
@@ -34,18 +39,29 @@
     <div class="row">
         <div class="medium-8 columns">
             <div class="row">
-                <div class="small-12 columns">
+                <div id="project-actions" class="small-12 columns">
                     % for action in actions:
-                        % if action['project_name'] != '':
+                        % if action != None:
+                        % if action['header'] == True:
                             <br/>
+                            <hr/>
+                            <!--
+                            <div class="right">
+                                <a id="${action['project_name'].replace(' ','-')}-link" href="#">Show Actions</a>
+                            </div>
+                            -->
                             <h5>${action['project_name']}</h5>
+                            <div class="indent">
+                            <a id="${action['project_name'].replace(' ','-')}-link">Show Actions</a>
+                            </div>
                         % endif
-                        <div class="indent">
+                        <div class="indent ${action['project_name'].replace(' ','-')}-item" style="display: none;">
                             <div class="action-box shadow">
                                 <div class="small-light-text">${str(action['created']).split('.')[0]}</div>
                                 ${action['contents'] | n}
                             </div>
                         </div>
+                        % endif
                     % endfor
                     
                 </div>
@@ -53,3 +69,35 @@
             <hr/>
         </div>
     </div>
+
+    <script>
+        
+        $(document).ready( function() {
+
+            % for action in actions:
+                % if action != None:
+                    % if action['header'] == True:
+                        $('#${action['project_name'].replace(' ','-')}-link').on('click', function(e) {
+                            console.log('click!');
+                            if ( $('div.${action['project_name'].replace(' ','-')}-item').is(":visible") ) {
+                                console.log('hiding actions');
+                                $('div.${action['project_name'].replace(' ','-')}-item').hide();
+                                $('#${action['project_name'].replace(' ','-')}-link').html('Show Actions');
+                            } else {
+                                console.log('showing actions');
+                                $('div.${action['project_name'].replace(' ','-')}-item').show();
+                                $('#${action['project_name'].replace(' ','-')}-link').html('Hide Actions');
+                            }
+                            
+                        });
+                    % endif
+                % endif
+            % endfor
+
+            // show the first project list of actions on the page
+            $('div.${actions[0]['project_name'].replace(' ','-')}-item').show();
+            $('#${actions[0]['project_name'].replace(' ','-')}-link').html('Hide Actions');
+
+        });
+
+    </script>
