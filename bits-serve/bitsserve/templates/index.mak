@@ -90,9 +90,9 @@
         </div>
 
         <div class="medium-8 columns">
-            <h4>Ticket Assignments <small>Ticket assigned to ${user.first} ${user.last}</small></h4>
             <div class="row">
                 <div class="small-12 columns">
+                    <h4>Ticket Assignments <small>Ticket assigned to ${user.first} ${user.last}</small></h4>
                     % if ticket_assignments:
                         % for ticket_assignment in ticket_assignments:
                         <div class="box shadow ticket-container">
@@ -112,6 +112,8 @@
                             -->
                         </div>
                         % endfor
+                    % else:
+                        <div class="small-light-text">You have no tickets assigned to you.</div>
                     % endif
                 </div>
             </div>
@@ -120,9 +122,9 @@
         
         
         <div class="medium-8 columns">
-            <h4>Task Assignments <small>Tasks assigned to ${user.first} ${user.last}</small></h4>
             <div class="row">
                 <div class="small-12 columns">
+                    <h4>Task Assignments <small>Tasks assigned to ${user.first} ${user.last}</small></h4>
                     % if task_assignments:
                         % for task_assignment in task_assignments:
                         <div class="box shadow ticket-container">
@@ -142,6 +144,8 @@
                             -->
                         </div>
                         % endfor
+                    % else:
+                        <div class="small-light-text">You have no tasks assigned to you.</div>
                     % endif
                 </div>
             </div>
