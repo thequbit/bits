@@ -37,12 +37,14 @@ from utils import (
     close_ticket,
     update_ticket_contents,
     update_ticket_title,
+    get_ticket_assignments,
 
     create_new_task,
     get_tasks,
     get_task,
     get_task_comments,
     complete_task,
+    get_task_assignments,
     
     get_lists,
     get_list,
@@ -139,6 +141,10 @@ def web_user(request):
         
         result['actions'] = actions
 
+        result['ticket_assignments'] = get_ticket_assignments(user, limit=25)
+        
+        result['task_assignments'] = get_task_assignments(user, limit=25)
+
         result['assignments'] = assignments
         
         result['target_user'] = target_user
@@ -196,20 +202,24 @@ def web_projectsettings(request):
 def web_index(request):
 
     result = {'user': None}
-    #if True:
-    try:
+    if True:
+    #try:
 
         user, token = check_auth(request)
         result['user'] = user
 
         result['projects'] = get_user_projects(user)
 
+        result['ticket_assignments'] = get_ticket_assignments(user, limit=25)
+        
+        result['task_assignments'] = get_task_assignments(user, limit=25)
+
         actions = get_actions(user, limit=25)
         
         result['actions'] = actions
         
-    except:
-        pass
+    #except:
+    #    pass
 
     return result #{'token': token, 'user': user, 'projects': projects}
 

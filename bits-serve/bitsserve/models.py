@@ -878,7 +878,27 @@ class Tickets(Base):
             ).first()
             
         return ticket
-          
+    
+    @classmethod
+    def get_tickets_by_user_id(cls, session, user_id, limit):
+        with transaction.manager:
+            ticket_query = Tickets._build_ticket_query(session)
+            tickets = ticket_query.join(
+                UserProjectAssignments,
+                UserProjectAssignments.project_id == \
+                    Tickets.project_id,
+            ).filter(
+                UserProjectAssignments.user_id == user_id,
+            ).filter(
+                Tickets.assigned_id == user_id,
+            ).filter(
+                Tickets.closed == False,
+            ).order_by(
+                Tickets.project_id,
+            ).all()
+            
+        return tickets
+      
     @classmethod
     def get_raw_ticket_by_id(cls, session, ticket_id):
         with transaction.manager:
@@ -1136,6 +1156,25 @@ class Tasks(Base):
                 Tasks.project_id == project_id,
             ).filter(
                 Tasks.completed == completed,
+            ).order_by(
+                asc(Tasks.due_datetime),
+            ).all()
+        return tasks
+
+    @classmethod
+    def get_tasks_by_user_id(cls, session, user_id, limit):
+        with transaction.manager:
+            task_query = Tasks._build_task_query(session)
+            tasks = task_query.join(
+                UserProjectAssignments,
+                UserProjectAssignments.project_id == \
+                    Tasks.project_id,
+            ).filter(
+                UserProjectAssignments.user_id == user_id,
+            ).filter(
+                Tasks.completed == False,
+            ).filter(
+                Tasks.assigned_id == user_id,
             ).order_by(
                 asc(Tasks.due_datetime),
             ).all()

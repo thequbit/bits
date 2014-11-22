@@ -90,7 +90,67 @@
         </div>
 
         <div class="medium-8 columns">
-            <h5>Activity<h5>
+            <h4>Ticket Assignments <small>Ticket assigned to ${user.first} ${user.last}</small></h4>
+            <div class="row">
+                <div class="small-12 columns">
+                    % if ticket_assignments:
+                        % for ticket_assignment in ticket_assignments:
+                        <div class="box shadow ticket-container">
+                            <h5>
+                                <div class="">
+                                    <a href="/project?project_id=${ticket_assignment['project_id']}">${ticket_assignment['project_name']}</a> : 
+                                    <a href="/ticket?ticket_id=${ticket_assignment['id']}">${ticket_assignment['title']}</a>
+                                    <div class="small-text indent">
+                                        #${ticket_assignment['number']} opened by <a href="/user?user_id=${user.id}">${ticket_assignment['owner']}</a> on ${ticket_assignment['created']}
+                                    </div>
+                                </div>
+                            </h5>
+                            <!--
+                            <div class="container-inner">
+                                ${ticket_assignment['contents'] | n}
+                            </div>
+                            -->
+                        </div>
+                        % endfor
+                    % endif
+                </div>
+            </div>
+            <hr/>
+        </div>
+        
+        
+        <div class="medium-8 columns">
+            <h4>Task Assignments <small>Tasks assigned to ${user.first} ${user.last}</small></h4>
+            <div class="row">
+                <div class="small-12 columns">
+                    % if task_assignments:
+                        % for task_assignment in task_assignments:
+                        <div class="box shadow ticket-container">
+                            <h5>
+                                <div class="">
+                                    <a href="/project?project_id=${task_assignment['project_id']}">${task_assignment['project_name']}</a> : 
+                                    <a href="/ticket?ticket_id=${task_assignment['id']}">${task_assignment['title']}</a>
+                                    <div class="small-text indent">
+                                        Opened by <a href="/user?user_id=${user.id}">${task_assignment['owner']}</a> on ${task_assignment['created']}
+                                    </div>
+                                </div>
+                            </h5>
+                            <!--
+                            <div class="container-inner">
+                                ${task_assignment['contents'] | n}
+                            </div>
+                            -->
+                        </div>
+                        % endfor
+                    % endif
+                </div>
+            </div>
+            <hr/>
+        </div>
+        
+
+        <div class="medium-8 columns">
+            <h4>Project Activity <small>Project activity for projects ${user.first} ${user.last} is assigned to</small></h4>
             <div class="row">
                 <div class="small-12 columns">
                     % if actions:

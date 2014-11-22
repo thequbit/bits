@@ -338,6 +338,21 @@
             margin-bottom: 0px !important;
         }
 
+        div.assignment-box {
+            /* background-color: white; */
+            padding: 10px;
+            font-size: 90%;
+            margin-top: 10px;
+        }
+
+        div.assignment-box p {
+            /*color: #BBB;*/
+            /*margin-top: 10px;*/
+            /*font-size: 70%;*/
+            /*padding-left: 5px;*/
+            margin-bottom: 0px !important;
+        }
+
         input[type="checkbox"] {
             margin: 0px 0px 0.5rem;
             margin-right: 8px !important;
@@ -359,6 +374,10 @@
             border-bottom: 1px solid #DDD;
             padding-bottom: 5px;
         }
+        
+        div.task-container h3 {
+            margin-bottom: 0rem !important;
+        }
 
         div.task {
             margin-top: 10px;
@@ -370,9 +389,7 @@
            min-height: 150px;
         }
 
-        div.task-container h3 {
-            margin-bottom: 0rem !important;
-        }
+        
 
         div.comment-container {
             
@@ -400,6 +417,10 @@
             border-bottom: 1px solid #DDD;
             padding-bottom: 5px;
         }
+        
+        div.ticket-container h3 {
+            margin-bottom: 0rem !important;
+        }
 
         div.ticket {
             margin-top: 10px;
@@ -411,9 +432,7 @@
            min-height: 150px;
         }
 
-        div.ticket-container h3 {
-            margin-bottom: 0rem !important;
-        }
+        
 
         div.comment-container {
             

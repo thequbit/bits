@@ -560,6 +560,34 @@ def update_ticket_title(user, ticket_id, title):
 
     return ticket
 
+def get_ticket_assignments(user, limit):
+
+    _tickets = Tickets.get_tickets_by_user_id(
+        session = DBSession,
+        user_id = user.id,
+        limit = limit,
+    )
+
+    tickets = []
+    for t_id, t_number, t_title, t_contents, t_a_id, t_closed, t_closed_dt, \
+            t_created, o_first, o_last, o_email, p_id, p_name, p_desc, \
+            p_created, tt_name, tt_desc, tt_color in _tickets:
+        tickets.append({
+            'id': t_id,
+            'created': t_created.strftime("%b %d, %Y"),
+            'owner': '{0} {1}'.format(o_first, o_last),
+            'owner_email': o_email,
+            'type': tt_name,
+            'type_description': tt_desc,
+            'type_color': tt_color,
+            'number': t_number,
+            'title': t_title,
+            'contents': markdown.markdown(t_contents),
+            'project_name': p_name,
+            'project_id': p_id,
+        })
+        
+    return tickets
 
 def get_tickets(project_id, closed=False):
 
@@ -793,7 +821,7 @@ def create_new_task(user, project_id, title, contents, assigned_id, due):
 
     due_dt = None
     if due != None and due != '':
-        due_dt = datetime.datetime.strptime(due, "%m-%d-%Y"),
+        due_dt = datetime.datetime.strptime(due, "%m-%d-%Y")
 
     task = Tasks.add_task(
         session = DBSession,
@@ -930,6 +958,45 @@ def complete_task(user, task_id):
     )
 
     return task
+
+def get_task_assignments(user, limit):
+
+    _tasks = Tasks.get_tasks_by_user_id(
+        session = DBSession,
+        user_id = user.id,
+        limit = limit,
+    )
+
+    tasks = []
+    for t_id, t_title, t_contents, t_due, t_completed, t_completed_dt, \
+            t_created, o_id, o_first, o_last, o_email, p_id, p_name \
+            in _tasks:
+        duration = 7; # default to 7 days for task
+        if t_due != None:
+            delta = t_due - t_created
+            duration = delta.days;
+        tasks.append({
+            'id': t_id,
+            'title': t_title,
+            'contents': t_contents,
+            'due': str(t_due),
+            'completed': t_completed,
+            'completed_datetime': t_completed_dt,
+            'created': t_created.strftime("%b %d, %Y"),
+            'creation_date_formatted': t_created.strftime("%d-%m-%Y"),
+            'owner_id': o_id,
+            'owner': '{0} {1}'.format(o_first, o_last),
+            'owner_email': o_email,
+            'project_id': p_id,
+            'project_name': p_name,
+            'duration': duration,
+        })
+        
+    print '\n\n'
+    print tasks
+    print '\n\n'
+
+    return tasks
 
 def get_lists(project_id):
 
