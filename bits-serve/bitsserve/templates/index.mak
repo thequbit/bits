@@ -120,7 +120,6 @@
             <hr/>
         </div>
         
-        
         <div class="medium-8 columns">
             <div class="row">
                 <div class="small-12 columns">
@@ -152,11 +151,10 @@
             <hr/>
         </div>
         
-
         <div class="medium-8 columns">
-            <h4>Project Activity <small>Project activity for projects ${user.first} ${user.last} is assigned to</small></h4>
             <div class="row">
                 <div class="small-12 columns">
+                    <h4>Project Activity <small>Project activity for projects ${user.first} ${user.last} is assigned to</small></h4>
                     % if actions:
                         % for action in actions:
                         <div class="action-box shadow">

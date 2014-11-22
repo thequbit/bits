@@ -85,7 +85,7 @@ def login(request):
 def logout(request):
 
     result = {'user': None}
-    ###if True:
+    #if True:
     try:
 
         user, token = check_auth(request)
@@ -104,8 +104,8 @@ def logout(request):
 def web_user(request):
 
     result = {'user': None}
-    if True:
-    #try:
+    #if True:
+    try:
 
         user, token = check_auth(request)
         result['user'] = user
@@ -149,8 +149,8 @@ def web_user(request):
         
         result['target_user'] = target_user
 
-    #except:
-    #    pass
+    except:
+        pass
 
     return result
 
@@ -202,8 +202,8 @@ def web_projectsettings(request):
 def web_index(request):
 
     result = {'user': None}
-    if True:
-    #try:
+    #if True:
+    try:
 
         user, token = check_auth(request)
         result['user'] = user
@@ -218,8 +218,8 @@ def web_index(request):
         
         result['actions'] = actions
         
-    #except:
-    #    pass
+    except:
+        pass
 
     return result #{'token': token, 'user': user, 'projects': projects}
 
@@ -227,8 +227,8 @@ def web_index(request):
 def web_project(request):
 
     result = {'user': None}
-    if True:
-    #try:
+    #if True:
+    try:
 
         user, token = check_auth(request)
         result['user'] = user
@@ -243,8 +243,8 @@ def web_project(request):
 
         result['lists'] = [] #get_lists(project_id)
 
-    #except:
-    #    pass
+    except:
+        pass
 
     return result
 
@@ -281,8 +281,8 @@ def web_tickets(request):
 def web_ticket(request):
 
     result = {'user': None}
-    if True:
-    #try:
+    #if True:
+    try:
 
         user, token = check_auth(request)
         result['user'] = user
@@ -305,8 +305,8 @@ def web_ticket(request):
 
         result['project'] = get_project(user.id, ticket['project_id'])
 
-    #except:
-    #    pass
+    except:
+        pass
 
     return result
 
@@ -314,8 +314,8 @@ def web_ticket(request):
 def web_tasks(request):
 
     result = {'user': None}
-    if True:
-    #try:
+    #if True:
+    try:
 
         user, token = check_auth(request)
         result['user'] = user
@@ -334,8 +334,8 @@ def web_tasks(request):
 
         result['project'] = get_project(user.id, project_id)
 
-    #except:
-    #    pass
+    except:
+        pass
 
     return result 
 
@@ -343,8 +343,8 @@ def web_tasks(request):
 def web_task(request):
 
     result = {'user': None}
-    if True:
-    #try:
+    #if True:
+    try:
 
         user, token = check_auth(request)
         result['user'] = user
@@ -362,8 +362,8 @@ def web_task(request):
         result['project'] = get_project(user.id, task['project_id'])
 
 
-    #except:
-    #    pass
+    except:
+        pass
 
     return result
 
@@ -458,8 +458,8 @@ def web_new_project(request):
 def web_manage_project(request):
 
     result = {'user': None}
-    if True:
-    #try:
+    #if True:
+    try:
 
         user, token = check_auth(request)
 
@@ -477,8 +477,8 @@ def web_manage_project(request):
 
         #result['projects'] = get_projects(user);
 
-    #except:
-    #    pass
+    except:
+        pass
 
     return result
 
@@ -526,8 +526,8 @@ def web_close_ticket(request):
     result = {'user': None}
     result['success'] = False
 
-    if True:
-    #try:
+    #if True:
+    try:
 
         user, token = check_auth(request)
 
@@ -539,11 +539,10 @@ def web_close_ticket(request):
 
         result['success'] = True
 
-    #except:
-    #    pass
+    except:
+        pass
 
     return make_response(result)
-
 
 @view_config(route_name='create_project.json')
 def web_create_project(request):
@@ -551,8 +550,8 @@ def web_create_project(request):
     """
 
     result = {'user': None}
-    if True:
-    #try:
+    #if True:
+    try:
 
         user, token = check_auth(request)
 
@@ -569,8 +568,8 @@ def web_create_project(request):
         
         result['success'] = True
 
-    #except:
-    #    pass
+    except:
+        pass
 
     return make_response(result)
 
@@ -665,8 +664,8 @@ def web_create_ticket_comment(request):
     #result = {'user': None}
     result = {'success': False}
 
-    if True:
-    #try:
+    #if True:
+    try:
 
         user, token = check_auth(request)
 
@@ -693,8 +692,8 @@ def web_create_ticket_comment(request):
 
         result['success'] = True
 
-    #except:
-    #    pass
+    except:
+        pass
 
     return make_response(result)
 
@@ -703,8 +702,8 @@ def web_assign_user_to_ticket(request):
 
     result = {'success': False}
     
-    if True:
-    #try:
+    #if True:
+    try:
     
         user, token = check_auth(request)
     
@@ -721,8 +720,8 @@ def web_assign_user_to_ticket(request):
     
         result['success'] = True
     
-    #except:
-    #    pass
+    except:
+        pass
 
     return make_response(result)
 
@@ -731,8 +730,8 @@ def web_update_ticket_contents(request):
 
     result = {'success': False}
 
-    if True:
-    #try:
+    #if True:
+    try:
 
         user, token = check_auth(request)
 
@@ -749,8 +748,8 @@ def web_update_ticket_contents(request):
 
         result['success'] = True
 
-    #except:
-    #    pass
+    except:
+        pass
 
     return make_response(result)
 
@@ -759,8 +758,8 @@ def web_update_ticket_title(request):
 
     result = {'success': False}
 
-    if True:
-    #try:
+    #if True:
+    try:
 
         user, token = check_auth(request)
 
@@ -777,8 +776,8 @@ def web_update_ticket_title(request):
 
         result['success'] = True
 
-    #except:
-    #    pass
+    except:
+        pass
 
     return make_response(result)
 
@@ -790,8 +789,8 @@ def web_create_task(request):
     result = {'user': None}
     result['success'] = False
 
-    if True:
-    #try:
+    #if True:
+    try:
 
         user, token = check_auth(request)
 
@@ -814,8 +813,8 @@ def web_create_task(request):
         
         result['success'] = True
 
-    #except:
-    #    pass
+    except:
+        pass
 
     return make_response(result)
 
@@ -828,8 +827,8 @@ def web_complete_task(request):
     result = {'user': None}
     result['success'] = False
 
-    if True:
-    #try:
+    #if True:
+    try:
 
         user, token = check_auth(request)
 
@@ -841,8 +840,8 @@ def web_complete_task(request):
 
         result['success'] = True
 
-    #except:
-    #    pass
+    except:
+        pass
 
     return make_response(result)
 
@@ -851,8 +850,8 @@ def web_save_user_settings(request):
 
     result = {'success': False}
 
-    if True:
-    #try:
+    #if True:
+    try:
 
         user, token = check_auth(request)
 
@@ -865,8 +864,8 @@ def web_save_user_settings(request):
 
         result['success'] = True
 
-    #except:
-    #    pass
+    except:
+        pass
 
     return make_response(result)
 
