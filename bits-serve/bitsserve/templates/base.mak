@@ -475,6 +475,11 @@
         div.disabled {
             opacity: .25;
         }
+        
+        input.single-input {
+            width: 90%;
+            margin-bottom: 10px;
+        }
 
     </style>
 
@@ -492,10 +497,11 @@
         <div class="title-bar"> 
             <div class="row">
                 <div class="large-12 columns">
-                    <!--<div class="right" style="padding-top: 10px;">
-                        <a href="/logout">Logout</a>
-                    </div>-->
-                    <h3>bits</h3>
+                    <h3>bits
+                        <small>
+                            <a href="/settings">Settings</a>
+                        </small>
+                    </h3>
                 </div>
             </div>
         </div>

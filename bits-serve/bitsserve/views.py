@@ -52,6 +52,8 @@ from utils import (
     
     save_user_settings,
     
+    add_user,
+    
     export_database,
     inport_database,
 )
@@ -99,6 +101,53 @@ def logout(request):
         pass
 
     return result
+
+
+@view_config(route_name='index', renderer='templates/index.mak')
+def web_index(request):
+
+    result = {'user': None}
+    #if True:
+    try:
+
+        user, token = check_auth(request)
+        result['user'] = user
+
+        result['projects'] = get_user_projects(user)
+
+        result['ticket_assignments'] = get_ticket_assignments(user, limit=25)
+        
+        result['task_assignments'] = get_task_assignments(user, limit=25)
+
+        actions = get_actions(user, limit=25)
+        
+        result['actions'] = actions
+        
+    except:
+        pass
+
+    return result
+
+
+@view_config(route_name='settings', renderer='templates/settings.mak')
+def web_settings(request):
+
+    result = {'user': None}
+    #if True:
+    try:
+
+        user, token = check_auth(request)
+        
+        if user.email != 'system':
+            raise Exception('Invalid Credentials')
+        
+        result['user'] = user
+        
+    except:
+        pass
+
+    return result 
+
 
 @view_config(route_name='user', renderer='templates/user.mak')
 def web_user(request):
@@ -197,31 +246,6 @@ def web_projectsettings(request):
         pass
 
     return result
-
-@view_config(route_name='index', renderer='templates/index.mak')
-def web_index(request):
-
-    result = {'user': None}
-    #if True:
-    try:
-
-        user, token = check_auth(request)
-        result['user'] = user
-
-        result['projects'] = get_user_projects(user)
-
-        result['ticket_assignments'] = get_ticket_assignments(user, limit=25)
-        
-        result['task_assignments'] = get_task_assignments(user, limit=25)
-
-        actions = get_actions(user, limit=25)
-        
-        result['actions'] = actions
-        
-    except:
-        pass
-
-    return result #{'token': token, 'user': user, 'projects': projects}
 
 @view_config(route_name='project', renderer='templates/project.mak')
 def web_project(request):
@@ -867,6 +891,42 @@ def web_save_user_settings(request):
     except:
         pass
 
+    return make_response(result)
+
+@view_config(route_name='add_user.json')
+def web_add_user(request):
+
+    result = {'success': False}
+    if True:
+    #try:
+    
+        user, token = check_auth(request)
+        
+        organization_id = request.POST['organization_id']
+        user_type_id = request.POST['user_type_id']
+        first = request.POST['first']
+        last = request.POST['last']
+        email = request.POST['email']
+        password = request.POST['password']
+
+        
+        new_user = add_user(
+            user = user,
+            organization_id = organization_id,
+            user_type_id = user_type_id,
+            first = first,
+            last = last,
+            email = email,
+            password = password,
+        )
+        
+        result['new_user_id'] = new_user.id
+        
+        result['success'] = True
+        
+    #except:
+    #    pass
+        
     return make_response(result)
 
 @view_config(route_name='database_dump.json')

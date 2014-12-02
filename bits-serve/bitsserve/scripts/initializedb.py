@@ -42,10 +42,47 @@ def main(argv=sys.argv):
     engine = engine_from_config(settings, 'sqlalchemy.')
     DBSession.configure(bind=engine)
     Base.metadata.create_all(engine)
-#    with transaction.manager:
-#        model = MyModel(name='one', value=1)
-#        DBSession.add(model)
 
+
+    #
+    # Create default Organization
+    #
+
+    default_organization = Organizations.get_by_name(
+        session = DBSession,
+        organization_name = 'Default Organization',
+    )
+
+    if default_organization == None:
+        default_organization = Organizations.add_organization(
+            session = DBSession,
+            #author_id = system_user.id,
+            name = 'Default Organization',
+            description = 'Default Organization.',
+        )
+    
+    
+    #
+    # Create default user type
+    #
+    
+    regular_user_type_id = UserTypes.user_type_id_from_user_type(
+        session = DBSession,
+        user_type_name = "Standard User",
+    )
+    
+    if regular_user_type_id == None:
+        regular_user_type = UserTypes.add_user_type(
+            session = DBSession,
+            name = "Standard User",
+            description = "Standard User"
+        )
+    
+    
+    #
+    # Create system user
+    #
+    
     system_user = Users.get_by_email(
         session = DBSession,
         email = "system",
@@ -60,6 +97,7 @@ def main(argv=sys.argv):
 
         system_user = Users.add_user(
             session = DBSession,
+            organization_id = default_organization.id,
             user_type_id = system_user_type.id,
             first = "System",
             last = "User",
@@ -67,54 +105,4 @@ def main(argv=sys.argv):
             password = "password",
         )
 
-    regular_user_type_id = UserTypes.user_type_id_from_user_type(
-        session = DBSession,
-        user_type_name = "Standard User",
-    )
     
-    if regular_user_type_id == None:
-        regular_user_type = UserTypes.add_user_type(
-            session = DBSession,
-            name = "Standard User",
-            description = "Standard User"
-        )
-
-        tim_user = Users.add_user(
-            session = DBSession,
-            user_type_id = regular_user_type.id,
-            first = "Tim",
-            last = "Duffy",
-            email = "tim@timduffy.me",
-            password = "password",
-        )
-
-        megan_user = Users.add_user(
-            session = DBSession,
-            user_type_id = regular_user_type.id,
-            first = "Megan",
-            last = "Duffy",
-            email = "megan@meganduffy.me",
-            password = "password",
-        )
-
-        temp_user = Users.add_user(
-            session = DBSession,
-            user_type_id = regular_user_type.id,
-            first = 'Temp',
-            last = 'User',
-            email = 'temp',
-            password = 'password',
-        )
-
-    default_organization = Organizations.get_by_name(
-        session = DBSession,
-        organization_name = 'Default Organization',
-    )
-
-    if default_organization == None:
-        default_organization = Organizations.add_organization(
-            session = DBSession,
-            #author_id = system_user.id,
-            name = 'Default Organization',
-            description = 'Default Organization.',
-        )

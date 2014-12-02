@@ -9,7 +9,7 @@
             <a href="/">Home</a>
              >
             <a href="/user?user_id=${user.id}">${user.first} ${user.last}</a>
-             > Settings
+             > User Settings
             <div class="right top-links">
                 <a href="/usersettings">${user.first} ${user.last}</a>
             </div>

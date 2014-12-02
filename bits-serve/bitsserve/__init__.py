@@ -24,6 +24,8 @@ def main(global_config, **settings):
     config.add_route('login', '/login')
     config.add_route('logout', '/logout')
     
+    config.add_route('settings','/settings')
+    
     config.add_route('user','/user')
     
     config.add_route('usersettings', '/usersettings')
@@ -62,6 +64,8 @@ def main(global_config, **settings):
     config.add_route('complete_task.json','complete_task.json')
     
     config.add_route('save_user_settings.json', 'save_user_settings.json')
+    
+    config.add_route('add_user.json','add_user.json')
     
     config.add_route('database_dump.json', 'database_dump.json')
     config.add_route('database_upload.json', 'database_upload.json')

@@ -1138,6 +1138,24 @@ def save_user_settings(user, theme):
     
     return
 
+def add_user(user, organization_id, user_type_id, first, last, \
+        email, password):
+
+    if user.email != 'system':
+        raise Exception('Invalid Credentials')
+        
+    new_user = Users.add_user(
+        session = DBSession,
+        organization_id = organization_id,
+        user_type_id = user_type_id,
+        first = first,
+        last = last,
+        email = email,
+        password = password,
+    )
+
+    return new_user
+
 def export_database(user_id):
 
     if user_id != 1:

@@ -110,7 +110,8 @@ class Users(Base):
     creation_datetime = Column(DateTime)
  
     @classmethod
-    def add_user(cls, session, user_type_id, first, last, email, password):
+    def add_user(cls, session, organization_id, user_type_id, first, last, \
+            email, password):
         """ Adds a new user to the database.  Generates a salt and hashes the 
             password concatendated with that salt.  Also must decode the
             user_type field into a user_type_id
@@ -122,6 +123,7 @@ class Users(Base):
                 pass_salt
             )).hexdigest()
             user = cls(
+                organization_id = organization_id,
                 user_type_id = user_type_id,
                 first = first,
                 last = last,
