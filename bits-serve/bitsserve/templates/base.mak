@@ -518,9 +518,11 @@
             <div class="row">
                 <div class="large-12 columns">
                     <h3>bits
-                        <small>
-                            <a href="/settings">Settings</a>
-                        </small>
+                        % if user.email == 'system':
+                            <small>
+                                <a href="/settings">Settings</a>
+                            </small>
+                        % endif
                     </h3>
                 </div>
             </div>
