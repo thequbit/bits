@@ -206,10 +206,10 @@
             
                 if ( state == '+' ) {
                     $('#hide-show-tickets').html('-');
-                    $('#tickets-container').fadeIn();
+                    $('#tickets-container').show();
                 } else {
                     $('#hide-show-tickets').html('+');
-                    $('#tickets-container').fadeOut();
+                    $('#tickets-container').hide();
                 }
                 
             });
