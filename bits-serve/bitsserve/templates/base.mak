@@ -480,6 +480,12 @@
             width: 90%;
             margin-bottom: 10px;
         }
+        
+        div.top-bottom-border {
+            border-top: 1px solid #008CBA;
+            border-bottom: 1px solid #008CBA;
+            margin-bottom: 10px;
+        }
 
     </style>
 
