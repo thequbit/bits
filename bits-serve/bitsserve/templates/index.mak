@@ -98,7 +98,8 @@
             <div class="top-bottom-border">
                 
                 <div class="plus-link"><a id="hide-show-tickets">+</a></div>
-                <div id="tickets-container" class="show-hide-container">
+                <div id="tickets-container" class="show-hide-container indent">
+                
                     % if ticket_assignments:
                         % for ticket_assignment in ticket_assignments:
                         <div class="box shadow ticket-container">
@@ -137,7 +138,7 @@
             <div class="top-bottom-border">
                 
                 <div class="plus-link"><a id="hide-show-tasks">+</a></div>
-                <div id="tasks-container" class="show-hide-container">
+                <div id="tasks-container" class="show-hide-container indent">
                 
                     % if task_assignments:
                         % for task_assignment in task_assignments:
@@ -177,7 +178,7 @@
             <div class="top-bottom-border">
                 
                 <div class="plus-link"><a id="hide-show-activity">+</a></div>
-                <div id="activity-container" class="show-hide-container">
+                <div id="activity-container" class="show-hide-container indent">
             
                     % if actions:
                         % for action in actions:
