@@ -486,6 +486,20 @@
             border-bottom: 1px solid #008CBA;
             margin-bottom: 10px;
         }
+        
+        div.plus-link {
+            margin-top: 5px;
+            margin-left: 5px;
+        }
+        
+        div.plus-link a {
+            font-size: 220%;
+        }
+        
+        div.show-hide-container {
+            display: none;
+        }
+        
 
     </style>
 
