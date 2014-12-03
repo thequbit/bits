@@ -220,10 +220,10 @@
             
                 if ( state == '+' ) {
                     $('#hide-show-tasks').html('-');
-                    $('#tasks-container').fadeIn();
+                    $('#tasks-container').show();
                 } else {
                     $('#hide-show-tasks').html('+');
-                    $('#tasks-container').fadeOut();
+                    $('#tasks-container').hide();
                 }
               
             });
@@ -234,10 +234,10 @@
             
                 if ( state == '+' ) {
                     $('#hide-show-activity').html('-');
-                    $('#activity-container').fadeIn();
+                    $('#activity-container').show();
                 } else {
                     $('#hide-show-activity').html('+');
-                    $('#activity-container').fadeOut();
+                    $('#activity-container').hide();
                 }
                 
             
