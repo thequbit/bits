@@ -104,12 +104,12 @@
                         % if ticket_assignment['header'] == True:
 
                             <div class="plus-link">
-                                <a id="${ticket_assignment['project_name'].replace(' ','-')}-tickets-link">+</a> ${ticket_assignment['project_name']}
+                                <a id="${ticket_assignment['project_name'].replace(' ','-').replace("'","-")}-tickets-link">+</a> ${ticket_assignment['project_name']}
                             </div>
 
                         % endif
                         
-                        <div class="indent ${ticket_assignment['project_name'].replace(' ','-')}-ticket-item" style="display: none;">
+                        <div class="indent ${ticket_assignment['project_name'].replace(' ','-').replace("'","-")}-ticket-item" style="display: none;">
                             <div class="box shadow ticket-container">
                             
                                 <h5>
@@ -150,12 +150,12 @@
                         % if task_assignment['header'] == True:
 
                             <div class="plus-link">
-                                <a id="${task_assignment['project_name'].replace(' ','-')}-tasks-link">+</a> ${task_assignment['project_name']}
+                                <a id="${task_assignment['project_name'].replace(' ','-').replace("'","-")}-tasks-link">+</a> ${task_assignment['project_name']}
                             </div>
 
                         % endif
                         
-                        <div class="indent ${task_assignment['project_name'].replace(' ','-')}-task-item" style="display: none;">
+                        <div class="indent ${task_assignment['project_name'].replace(' ','-').replace("'","-")}-task-item" style="display: none;">
                             <div class="box shadow ticket-container">
                             
                                 <h5>
@@ -216,17 +216,17 @@
             % for ticket_assignment in ticket_assignments:
                 % if ticket_assignment != None:
                     % if ticket_assignment['header'] == True:
-                        $('#${ticket_assignment['project_name'].replace(' ','-')}-tickets-link').on('click', function(e) {
+                        $('#${ticket_assignment['project_name'].replace(' ','-').replace("'","-")}-tickets-link').on('click', function(e) {
                         
                             console.log('click!');
-                            if ( $('div.${ticket_assignment['project_name'].replace(' ','-')}-ticket-item').is(":visible") ) {
+                            if ( $('div.${ticket_assignment['project_name'].replace(' ','-').replace("'","-")}-ticket-item').is(":visible") ) {
                                 console.log('hiding ticket_assignment');
-                                $('div.${ticket_assignment['project_name'].replace(' ','-')}-ticket-item').hide();
-                                $('#${ticket_assignment['project_name'].replace(' ','-')}-tickets-link').html('+');
+                                $('div.${ticket_assignment['project_name'].replace(' ','-').replace("'","-")}-ticket-item').hide();
+                                $('#${ticket_assignment['project_name'].replace(' ','-').replace("'","-")}-tickets-link').html('+');
                             } else {
                                 console.log('showing ticket_assignment');
-                                $('div.${ticket_assignment['project_name'].replace(' ','-')}-ticket-item').show();
-                                $('#${ticket_assignment['project_name'].replace(' ','-')}-tickets-link').html('-');
+                                $('div.${ticket_assignment['project_name'].replace(' ','-').replace("'","-")}-ticket-item').show();
+                                $('#${ticket_assignment['project_name'].replace(' ','-').replace("'","-")}-tickets-link').html('-');
                             }
                             
                         });
@@ -237,17 +237,17 @@
             % for task_assignment in task_assignments:
                 % if task_assignment != None:
                     % if task_assignment['header'] == True:
-                        $('#${task_assignment['project_name'].replace(' ','-')}-tasks-link').on('click', function(e) {
+                        $('#${task_assignment['project_name'].replace(' ','-').replace("'","-")}-tasks-link').on('click', function(e) {
                         
                             console.log('click!');
-                            if ( $('div.${task_assignment['project_name'].replace(' ','-')}-task-item').is(":visible") ) {
+                            if ( $('div.${task_assignment['project_name'].replace(' ','-').replace("'","-")}-task-item').is(":visible") ) {
                                 console.log('hiding task_assignment');
-                                $('div.${task_assignment['project_name'].replace(' ','-')}-task-item').hide();
-                                $('#${task_assignment['project_name'].replace(' ','-')}-task-slink').html('+');
+                                $('div.${task_assignment['project_name'].replace(' ','-').replace("'","-")}-task-item').hide();
+                                $('#${task_assignment['project_name'].replace(' ','-').replace("'","-")}-task-slink').html('+');
                             } else {
                                 console.log('showing task_assignment');
-                                $('div.${task_assignment['project_name'].replace(' ','-')}-task-item').show();
-                                $('#${task_assignment['project_name'].replace(' ','-')}-tasks-link').html('-');
+                                $('div.${task_assignment['project_name'].replace(' ','-').replace("'","-")}-task-item').show();
+                                $('#${task_assignment['project_name'].replace(' ','-').replace("'","-")}-tasks-link').html('-');
                             }
                             
                         });
@@ -258,54 +258,6 @@
         });
         
     
-        /*
-        $(document).ready( function() {
-        
-            $('#hide-show-tickets').on('click', function(e) {
-            
-                var state = $('#hide-show-tickets').html();
-            
-                if ( state == '+' ) {
-                    $('#hide-show-tickets').html('-');
-                    $('#tickets-container').show();
-                } else {
-                    $('#hide-show-tickets').html('+');
-                    $('#tickets-container').hide();
-                }
-                
-            });
-            
-            $('#hide-show-tasks').on('click', function(e) {
-            
-                var state = $('#hide-show-tasks').html();
-            
-                if ( state == '+' ) {
-                    $('#hide-show-tasks').html('-');
-                    $('#tasks-container').show();
-                } else {
-                    $('#hide-show-tasks').html('+');
-                    $('#tasks-container').hide();
-                }
-              
-            });
-            
-            $('#hide-show-activity').on('click', function(e) {
-            
-                var state = $('#hide-show-activity').html();
-            
-                if ( state == '+' ) {
-                    $('#hide-show-activity').html('-');
-                    $('#activity-container').show();
-                } else {
-                    $('#hide-show-activity').html('+');
-                    $('#activity-container').hide();
-                }
-                
-            
-            });
-        
-        });
-        */
         
     
     </script>
