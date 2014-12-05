@@ -173,21 +173,6 @@ def web_user(request):
             limit = 0,
         )
         
-        current_project_name = ''
-        current_action_count = 0
-        MAX_ACTION_COUNT = 50 # todo: put this in the config.py settings file
-        for i in range(0,len(actions)):
-            if current_project_name != actions[i]['project_name']:
-                current_project_name = actions[i]['project_name']
-                current_action_count = 0
-                actions[i]['header'] = True
-            else:
-                actions[i]['header'] = False
-                if current_action_count == MAX_ACTION_COUNT:
-                    actions[i] = None
-                else:
-                    current_action_count += 1
-        
         result['actions'] = actions
 
         result['ticket_assignments'] = get_ticket_assignments(user, limit=25)

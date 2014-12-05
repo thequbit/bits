@@ -93,39 +93,45 @@
     
     <div class="row">
         <div class="medium-12 columns">
+        
             <h4>Tickets <small>assigned to ${user.first} ${user.last}.</small></h4>
-            
-            <div class="top-bottom-border">
                 
-                <div class="plus-link"><a id="hide-show-tickets">+</a></div>
-                <div id="tickets-container" class="show-hide-container indent">
-                
-                    % if ticket_assignments:
-                        % for ticket_assignment in ticket_assignments:
-                        <div class="box shadow ticket-container">
-                            <h5>
-                                <div class="">
-                                    <a href="/project?project_id=${ticket_assignment['project_id']}">${ticket_assignment['project_name']}</a> : 
-                                    <a href="/ticket?ticket_id=${ticket_assignment['id']}">${ticket_assignment['title']}</a>
-                                    <div class="small-text indent">
-                                        #${ticket_assignment['number']} opened by <a href="/user?user_id=${user.id}">${ticket_assignment['owner']}</a> on ${ticket_assignment['created']}
-                                    </div>
-                                </div>
-                            </h5>
-                            <!--
-                            <div class="container-inner">
-                                ${ticket_assignment['contents'] | n}
+            % if ticket_assignments:
+                % for ticket_assignment in ticket_assignments:
+                    
+                    <div class="bottom-buffer">
+                    
+                        % if ticket_assignment['header'] == True:
+
+                            <div class="plus-link">
+                                <a id="${ticket_assignment['project_name'].replace(' ','-')}-tickets-link">+</a> ${ticket_assignment['project_name']}
                             </div>
-                            -->
+
+                        % endif
+                        
+                        <div class="indent ${ticket_assignment['project_name'].replace(' ','-')}-ticket-item" style="display: none;">
+                            <div class="box shadow ticket-container">
+                            
+                                <h5>
+                                    <div class="">
+                                        <a href="/project?project_id=${ticket_assignment['project_id']}">${ticket_assignment['project_name']}</a> : 
+                                        <a href="/ticket?ticket_id=${ticket_assignment['id']}">${ticket_assignment['title']}</a>
+                                        <div class="small-text indent">
+                                            #${ticket_assignment['number']} opened by <a href="/user?user_id=${user.id}">${ticket_assignment['owner']}</a> on ${ticket_assignment['created']}
+                                        </div>
+                                    </div>
+                                </h5>
+
+                            </div>
                         </div>
-                        % endfor
-                    % else:
-                        <div class="small-light-text">You have no tickets assigned to you.</div>
-                    % endif
-                </div>
-                
-            </div>
-            <!--<hr/>-->
+                    
+                    </div>
+                    
+                % endfor
+            % else:
+                <div class="indent small-light-text">You have no tickets assigned to you.</div>
+            % endif
+            
         </div>
     </div>
     
@@ -133,39 +139,45 @@
     
     <div class="row">
         <div class="medium-12 columns">            
-            <h4>Task <small>assigned to ${user.first} ${user.last}.</small></h4>
             
-            <div class="top-bottom-border">
+            <h4>Tasks <small>assigned to ${user.first} ${user.last}.</small></h4>
                 
-                <div class="plus-link"><a id="hide-show-tasks">+</a></div>
-                <div id="tasks-container" class="show-hide-container indent">
-                
-                    % if task_assignments:
-                        % for task_assignment in task_assignments:
-                        <div class="box shadow ticket-container">
-                            <h5>
-                                <div class="">
-                                    <a href="/project?project_id=${task_assignment['project_id']}">${task_assignment['project_name']}</a> : 
-                                    <a href="/task?task_id=${task_assignment['id']}">${task_assignment['title']}</a>
-                                    <div class="small-text indent">
-                                        Opened by <a href="/user?user_id=${user.id}">${task_assignment['owner']}</a> on ${task_assignment['created']}
-                                    </div>
-                                </div>
-                            </h5>
-                            <!--
-                            <div class="container-inner">
-                                ${task_assignment['contents'] | n}
-                            </div>
-                            -->
-                        </div>
-                        % endfor
-                    % else:
-                        <div class="small-light-text">You have no tasks assigned to you.</div>
-                    % endif
+            % if task_assignments:
+                % for task_assignment in task_assignments:
                     
-                </div>
-            </div>
-            <!--<hr/>-->
+                    <div class="bottom-buffer">
+                    
+                        % if task_assignment['header'] == True:
+
+                            <div class="plus-link">
+                                <a id="${task_assignment['project_name'].replace(' ','-')}-tasks-link">+</a> ${task_assignment['project_name']}
+                            </div>
+
+                        % endif
+                        
+                        <div class="indent ${task_assignment['project_name'].replace(' ','-')}-task-item" style="display: none;">
+                            <div class="box shadow ticket-container">
+                            
+                                <h5>
+                                    <div class="">
+                                        <a href="/project?project_id=${task_assignment['project_id']}">${task_assignment['project_name']}</a> : 
+                                        <a href="/ticket?ticket_id=${task_assignment['id']}">${task_assignment['title']}</a>
+                                        <div class="small-text indent">
+                                            Opened by <a href="/user?user_id=${user.id}">${task_assignment['owner']}</a> on ${task_assignment['created']}
+                                        </div>
+                                    </div>
+                                </h5>
+
+                            </div>
+                        </div>
+                    
+                    </div>
+                    
+                % endfor
+            % else:
+                <div class="indent small-light-text">You have no tickets assigned to you.</div>
+            % endif
+            
         </div>
     </div>
     
@@ -175,10 +187,10 @@
         <div class="medium-12 columns">
             <h4>Project Activity <small> that ${user.first} ${user.last} is assigned to.</small></h4>
             
-            <div class="top-bottom-border">
+            <!--<div class="top-bottom-border">-->
                 
-                <div class="plus-link"><a id="hide-show-activity">+</a></div>
-                <div id="activity-container" class="show-hide-container indent">
+                <!--<div class="plus-link"><a id="hide-show-activity">+</a></div>-->
+                <div id="activity-container" class="indent">
             
                     % if actions:
                         % for action in actions:
@@ -192,13 +204,61 @@
                     % endif
                     
                 </div>
-            </div>
-            <!--<hr/>-->
+            <!--</div>-->
+ 
         </div>
     </div>
     
     <script>
     
+        $(document).ready( function() {
+
+            % for ticket_assignment in ticket_assignments:
+                % if ticket_assignment != None:
+                    % if ticket_assignment['header'] == True:
+                        $('#${ticket_assignment['project_name'].replace(' ','-')}-tickets-link').on('click', function(e) {
+                        
+                            console.log('click!');
+                            if ( $('div.${ticket_assignment['project_name'].replace(' ','-')}-ticket-item').is(":visible") ) {
+                                console.log('hiding ticket_assignment');
+                                $('div.${ticket_assignment['project_name'].replace(' ','-')}-ticket-item').hide();
+                                $('#${ticket_assignment['project_name'].replace(' ','-')}-tickets-link').html('+');
+                            } else {
+                                console.log('showing ticket_assignment');
+                                $('div.${ticket_assignment['project_name'].replace(' ','-')}-ticket-item').show();
+                                $('#${ticket_assignment['project_name'].replace(' ','-')}-tickets-link').html('-');
+                            }
+                            
+                        });
+                    % endif
+                % endif
+            % endfor
+            
+            % for task_assignment in task_assignments:
+                % if task_assignment != None:
+                    % if task_assignment['header'] == True:
+                        $('#${task_assignment['project_name'].replace(' ','-')}-tasks-link').on('click', function(e) {
+                        
+                            console.log('click!');
+                            if ( $('div.${task_assignment['project_name'].replace(' ','-')}-task-item').is(":visible") ) {
+                                console.log('hiding task_assignment');
+                                $('div.${task_assignment['project_name'].replace(' ','-')}-task-item').hide();
+                                $('#${task_assignment['project_name'].replace(' ','-')}-task-slink').html('+');
+                            } else {
+                                console.log('showing task_assignment');
+                                $('div.${task_assignment['project_name'].replace(' ','-')}-task-item').show();
+                                $('#${task_assignment['project_name'].replace(' ','-')}-tasks-link').html('-');
+                            }
+                            
+                        });
+                    % endif
+                % endif
+            % endfor
+
+        });
+        
+    
+        /*
         $(document).ready( function() {
         
             $('#hide-show-tickets').on('click', function(e) {
@@ -245,5 +305,7 @@
             });
         
         });
+        */
+        
     
     </script>

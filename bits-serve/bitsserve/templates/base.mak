@@ -488,16 +488,25 @@
         }
         
         div.plus-link {
-            margin-top: 5px;
             margin-left: 5px;
+            font-size: 120%
         }
         
         div.plus-link a {
-            font-size: 220%;
+            padding-left: 7px;
+            padding-right: 7px;
+            border: 1px solid #008CBA;
+            border-radius: 15px;
+            font-weight: bold;
+            /*font-size: 150%;*/
         }
         
         div.show-hide-container {
             display: none;
+        }
+        
+        div.bottom-buffer {
+            margin-bottom: 10px;
         }
         
 

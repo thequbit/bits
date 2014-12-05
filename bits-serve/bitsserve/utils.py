@@ -159,10 +159,15 @@ def get_actions(user, limit):
         #organization_id = 1,
         limit = limit,
     )
-
+    
     actions = []
+    current_project_name = ''
     for a_id, a_contents, a_created, u_id, u_first, u_last, u_email, \
             p_id, p_name, upa_id in _actions:
+        header = False
+        if current_project_name != p_name:
+            current_project_name = p_name
+            header = True
         actions.append({
             'id': a_id,
             'contents': markdown.markdown(a_contents),
@@ -170,6 +175,7 @@ def get_actions(user, limit):
             'owner': '{0} {1}'.format(u_first, u_last),
             'project_id': p_id,
             'project_name': p_name,
+            'header': header,
         })
 
     return actions
@@ -189,16 +195,25 @@ def get_user_actions(user, target_user_id, limit):
     )
     
     actions = []
+    current_project_name = ''
+    #current_action_count = 0
     for a_id, a_contents, a_created, u_id, u_first, u_last, u_email, \
             p_id, p_name, upa_id in _actions:
+        header = False
+        if current_project_name != p_name:
+            current_project_name = p_name
+            #current_action_count = 0
+            header = True
+        #else:
+            #current_action_count += 1
         actions.append({
             'id': a_id,
             'contents': markdown.markdown(a_contents),
             'created': a_created,
-            'created': a_created,
             'owner': '{0} {1}'.format(u_first, u_last),
             'project_id': p_id,
             'project_name': p_name,
+            'header': header,
         })
 
     return actions, target_user
@@ -569,9 +584,14 @@ def get_ticket_assignments(user, limit):
     )
 
     tickets = []
+    current_project_name = ''
     for t_id, t_number, t_title, t_contents, t_a_id, t_closed, t_closed_dt, \
             t_created, o_first, o_last, o_email, p_id, p_name, p_desc, \
             p_created, tt_name, tt_desc, tt_color in _tickets:
+        header = False
+        if current_project_name != p_name:
+            current_project_name = p_name
+            header = True
         tickets.append({
             'id': t_id,
             'created': t_created.strftime("%b %d, %Y"),
@@ -585,6 +605,7 @@ def get_ticket_assignments(user, limit):
             'contents': markdown.markdown(t_contents),
             'project_name': p_name,
             'project_id': p_id,
+            'header': header
         })
         
     return tickets
@@ -968,9 +989,14 @@ def get_task_assignments(user, limit):
     )
 
     tasks = []
+    current_project_name = ''
     for t_id, t_title, t_contents, t_due, t_completed, t_completed_dt, \
             t_created, o_id, o_first, o_last, o_email, p_id, p_name \
             in _tasks:
+        header = False
+        if current_project_name != p_name:
+            current_project_name = p_name
+            header = True
         duration = 7; # default to 7 days for task
         if t_due != None:
             delta = t_due - t_created
@@ -990,6 +1016,7 @@ def get_task_assignments(user, limit):
             'project_id': p_id,
             'project_name': p_name,
             'duration': duration,
+            'header': header,
         })
         
     print '\n\n'
