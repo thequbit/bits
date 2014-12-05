@@ -51,6 +51,17 @@ except:
            "project you are assigned to changed.  You can see more here: " \
            "http://bits.timduffy.me"
 
+def sanitize(text):
+    chars = [
+        " ", "`","~","!","@","#","$","%","^","&","*","(",")","+","=",
+        "{","[","}","]","|","\\",":",";","'",'"',"<",",",">",".","?","/"
+    ]
+
+    for char in chars:
+        text = text.replace(char, '-');
+    
+    return text
+
 def make_response(resp_dict):
 
     print "[DEBUG]"

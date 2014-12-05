@@ -104,12 +104,12 @@
                         % if ticket_assignment['header'] == True:
 
                             <div class="plus-link">
-                                <a id="${ticket_assignment['project_name'].replace(' ','-').replace("'","-")}-tickets-link">+</a> ${ticket_assignment['project_name']}
+                                <a id="${ sanitize(ticket_assignment['project_name']) }-tickets-link">+</a> ${ticket_assignment['project_name']}
                             </div>
 
                         % endif
                         
-                        <div class="indent ${ticket_assignment['project_name'].replace(' ','-').replace("'","-")}-ticket-item" style="display: none;">
+                        <div class="indent ${ sanitize(ticket_assignment['project_name']) }-ticket-item" style="display: none;">
                             <div class="box shadow ticket-container">
                             
                                 <h5>
@@ -150,12 +150,12 @@
                         % if task_assignment['header'] == True:
 
                             <div class="plus-link">
-                                <a id="${task_assignment['project_name'].replace(' ','-').replace("'","-")}-tasks-link">+</a> ${task_assignment['project_name']}
+                                <a id="${ sanitize(task_assignment['project_name']) }-tasks-link">+</a> ${task_assignment['project_name']}
                             </div>
 
                         % endif
                         
-                        <div class="indent ${task_assignment['project_name'].replace(' ','-').replace("'","-")}-task-item" style="display: none;">
+                        <div class="indent ${ sanitize(task_assignment['project_name']) }-task-item" style="display: none;">
                             <div class="box shadow ticket-container">
                             
                                 <h5>
@@ -195,7 +195,7 @@
                     % if actions:
                         % for action in actions:
                         <div class="action-box shadow">
-                            <div class="small-light-text">${str(action['created']).split('.')[0]}</div>
+                            <div class="small-light-text">${str(action['created']) .split('.')[0]}</div>
                             ${action['contents'] | n}
                         </div>
                         % endfor
@@ -211,22 +211,24 @@
     
     <script>
     
+        <%! from bitsserve.utils import sanitize %>
+    
         $(document).ready( function() {
 
             % for ticket_assignment in ticket_assignments:
                 % if ticket_assignment != None:
                     % if ticket_assignment['header'] == True:
-                        $('#${ticket_assignment['project_name'].replace(' ','-').replace("'","-")}-tickets-link').on('click', function(e) {
+                        $('#${ sanitize(ticket_assignment['project_name']) }-tickets-link').on('click', function(e) {
                         
                             console.log('click!');
-                            if ( $('div.${ticket_assignment['project_name'].replace(' ','-').replace("'","-")}-ticket-item').is(":visible") ) {
+                            if ( $('div.${ sanitize(ticket_assignment['project_name']) }-ticket-item').is(":visible") ) {
                                 console.log('hiding ticket_assignment');
-                                $('div.${ticket_assignment['project_name'].replace(' ','-').replace("'","-")}-ticket-item').hide();
-                                $('#${ticket_assignment['project_name'].replace(' ','-').replace("'","-")}-tickets-link').html('+');
+                                $('div.${ sanitize(ticket_assignment['project_name']) }-ticket-item').hide();
+                                $('#${ sanitize(ticket_assignment['project_name']) }-tickets-link').html('+');
                             } else {
                                 console.log('showing ticket_assignment');
-                                $('div.${ticket_assignment['project_name'].replace(' ','-').replace("'","-")}-ticket-item').show();
-                                $('#${ticket_assignment['project_name'].replace(' ','-').replace("'","-")}-tickets-link').html('-');
+                                $('div.${ sanitize(ticket_assignment['project_name']) }-ticket-item').show();
+                                $('#${ sanitize(ticket_assignment['project_name']) }-tickets-link').html('-');
                             }
                             
                         });
@@ -237,17 +239,17 @@
             % for task_assignment in task_assignments:
                 % if task_assignment != None:
                     % if task_assignment['header'] == True:
-                        $('#${task_assignment['project_name'].replace(' ','-').replace("'","-")}-tasks-link').on('click', function(e) {
+                        $('#${ sanitize(task_assignment['project_name']) }-tasks-link').on('click', function(e) {
                         
                             console.log('click!');
-                            if ( $('div.${task_assignment['project_name'].replace(' ','-').replace("'","-")}-task-item').is(":visible") ) {
+                            if ( $('div.${ sanitize(task_assignment['project_name']) }-task-item').is(":visible") ) {
                                 console.log('hiding task_assignment');
-                                $('div.${task_assignment['project_name'].replace(' ','-').replace("'","-")}-task-item').hide();
-                                $('#${task_assignment['project_name'].replace(' ','-').replace("'","-")}-task-slink').html('+');
+                                $('div.${ sanitize(task_assignment['project_name']) }-task-item').hide();
+                                $('#${ sanitize(task_assignment['project_name']) }-task-slink').html('+');
                             } else {
                                 console.log('showing task_assignment');
-                                $('div.${task_assignment['project_name'].replace(' ','-').replace("'","-")}-task-item').show();
-                                $('#${task_assignment['project_name'].replace(' ','-').replace("'","-")}-tasks-link').html('-');
+                                $('div.${ sanitize(task_assignment['project_name']) }-task-item').show();
+                                $('#${ sanitize(task_assignment['project_name']) }-tasks-link').html('-');
                             }
                             
                         });
