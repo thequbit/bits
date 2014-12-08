@@ -39,7 +39,9 @@
                             <div class="indent">
                             
                                 <h7>
-                                    <a id="${ sanitize(project['name']) }-tickets-link">+</a>
+                                    <div class="plus-link">
+                                        <a id="${ sanitize(project['name']) }-tickets-link">+</a>
+                                    </div>
                                     Tickets <small>assigned to ${user.first} ${user.last}.</small>
                                 </h7>
                                 
@@ -76,7 +78,9 @@
                             <div class="indent">
                             
                                 <h7>
-                                    <a id="${ sanitize(project['name']) }-tasks-link">+</a>
+                                    <div class="plus-link">
+                                        <a id="${ sanitize(project['name']) }-tasks-link">+</a>
+                                    </div>
                                     Tasks <small>assigned to ${user.first} ${user.last}.</small>
                                 </h7>
                 
@@ -244,7 +248,7 @@
                                 if ( $('div.${ sanitize(task_assignment['project_name']) }-task-item').is(":visible") ) {
                                     console.log('hiding task_assignment');
                                     $('div.${ sanitize(task_assignment['project_name']) }-task-item').hide();
-                                    $('#${ sanitize(task_assignment['project_name']) }-task-slink').html('+');
+                                    $('#${ sanitize(task_assignment['project_name']) }-tasks-link').html('+');
                                 } else {
                                     console.log('showing task_assignment');
                                     $('div.${ sanitize(task_assignment['project_name']) }-task-item').show();

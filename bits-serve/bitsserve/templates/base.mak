@@ -489,17 +489,16 @@
         }
         
         div.plus-link {
-            margin-left: 5px;
-            font-size: 120%
+            min-width: 22px;
+            /*border: 1px solid #008CBA;
+            border-radius: 7px;*/
+            display: inline-block
         }
         
         div.plus-link a {
-            padding-left: 7px;
-            padding-right: 7px;
-            border: 1px solid #008CBA;
-            border-radius: 15px;
+            padding-bottom: 2px;
             font-weight: bold;
-            /*font-size: 150%;*/
+            /*font-size: 120%;*/
         }
         
         div.show-hide-container {

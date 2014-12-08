@@ -157,10 +157,6 @@ def build_index_projects(user, limit=25):
         for i in range(len(projects))
         ])
         
-    print "\n\n"
-    print lookup
-    print "\n\n"
-    
     ticket_assignments = get_ticket_assignments(user, limit=25)
      
     for ticket_assignment in ticket_assignments:
