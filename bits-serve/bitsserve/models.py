@@ -1703,6 +1703,8 @@ class Actions(Base):
                 Actions.id,
             ).order_by(
                 desc(Actions.creation_datetime),
+            ).limit(
+                limit,
             ).all()
         return actions
 

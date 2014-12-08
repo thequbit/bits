@@ -128,6 +128,55 @@ def check_auth(request):
     
     return user, token
 
+def build_index_projects(user, limit=25):
+
+#    projects = get_user_projects(user)
+#
+#    ticket_assignments = get_ticket_assignments(user, limit=25)
+#    
+#    for ticket_assignment in ticket_assignments:
+#        for i in range(0, len(projects)):
+#            if projects[i]['name'] == ticket_assignment['project_name']:
+#                projects[i]['ticket_assignments'].append(ticket_assignment)
+#                break
+#    
+#    task_assignments = get_task_assignments(user, limit=25)
+#
+#    for task_assignment in task_assignments:
+#        for i in range(0, len(projects)):
+#            if projects[i]['name'] == task_assignment['project_name']:
+#                projects[i]['task_assignments'].append(ticket_assignment)
+#                break
+#                
+#    return projects
+
+    projects = get_user_projects(user)
+    
+    lookup = dict([
+        (projects[i]['name'], i)
+        for i in range(len(projects))
+        ])
+        
+    print "\n\n"
+    print lookup
+    print "\n\n"
+    
+    ticket_assignments = get_ticket_assignments(user, limit=25)
+     
+    for ticket_assignment in ticket_assignments:
+        name = ticket_assignment['project_name']
+        if lookup.get(name, None) != None:
+            projects[lookup[name]]['ticket_assignments'].append(ticket_assignment)
+            
+    task_assignments = get_task_assignments(user, limit=25)
+            
+    for task_assignment in task_assignments:
+        name = task_assignment['project_name']
+        if lookup.get(name, None) != None:
+            projects[lookup[name]]['task_assignments'].append(task_assignment)
+     
+    return projects
+
 def get_organization_users(organization_id):
 
     users = Users.get_users_from_organization_id(
@@ -384,6 +433,9 @@ def get_user_projects(user):
                 'requirement_count': r_count,
                 'ticket_count': t_count,
                 'note_count': 0,
+                'ticket_assignments': [],
+                'task_assignments': [],
+                #'requirements': [],
             })
 
     return projects

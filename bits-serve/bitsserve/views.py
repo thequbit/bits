@@ -16,6 +16,8 @@ from utils import (
     check_auth,
     do_login,
 
+    build_index_projects, 
+
     get_organization_users,
 
     create_action,
@@ -107,24 +109,26 @@ def logout(request):
 def web_index(request):
 
     result = {'user': None}
-    #if True:
-    try:
+    if True:
+    #try:
 
         user, token = check_auth(request)
         result['user'] = user
 
-        result['projects'] = get_user_projects(user)
+        result['projects'] = build_index_projects(user, limit=25)
 
-        result['ticket_assignments'] = get_ticket_assignments(user, limit=25)
+        #result['projects'] = get_user_projects(user)
+
+        #result['ticket_assignments'] = get_ticket_assignments(user, limit=25)
         
-        result['task_assignments'] = get_task_assignments(user, limit=25)
+        #result['task_assignments'] = get_task_assignments(user, limit=25)
 
         actions = get_actions(user, limit=25)
         
         result['actions'] = actions
         
-    except:
-        pass
+    #except:
+    #    pass
 
     return result
 

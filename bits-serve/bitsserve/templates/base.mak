@@ -416,6 +416,7 @@
         div.ticket-container {
             border-bottom: 1px solid #DDD;
             padding-bottom: 5px;
+            margin-top: 10px !important;
         }
         
         div.ticket-container h3 {
@@ -507,6 +508,12 @@
         
         div.bottom-buffer {
             margin-bottom: 10px;
+        }
+        
+        h7 small {
+            font-size: 60%;
+            color: #6F6F6F;
+            line-height: 0;
         }
         
 
