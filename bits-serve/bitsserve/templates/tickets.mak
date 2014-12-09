@@ -53,7 +53,7 @@
             % for ticket in tickets:
                 <div class="box shadow ticket-container">
                     <h5>
-                        <div class="bottom-border"><a href="/ticket?ticket_id=${ticket['id']}">${ticket['title']}</a>
+                        <div class="bottom-border"><a class="small-indent" href="/ticket?ticket_id=${ticket['id']}">${ticket['title']}</a>
                             <div class="small-text indent">#${ticket['number']} opened by <a href="/user?user_id=${user.id}">${ticket['owner']}</a> on ${ticket['created']}</div>
                             % if ticket['closed'] == True:
                                 <div class="small-text">Closed <!-- by <a href="/user?user_id=${user.id}">${ticket['owner']}</a>-->on ${ticket['closed_datetime']}</div>

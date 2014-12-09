@@ -515,6 +515,10 @@
             line-height: 0;
         }
         
+        a.small-indent {
+            padding-left: 10px;
+        }
+        
 
     </style>
 

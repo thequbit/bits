@@ -727,7 +727,7 @@ def get_ticket(user_id, ticket_id):
    
     return ticket
 
-def create_new_ticket_comment(user, ticket_id, contents):
+def create_new_ticket_comment(user, ticket_id, contents, close):
 
     _ticket, project_id = _check_ticket_auth(user.id, ticket_id)
 
@@ -737,6 +737,12 @@ def create_new_ticket_comment(user, ticket_id, contents):
         ticket_id = ticket_id,
         contents = contents,
     )
+    
+    if close == True:
+        ticket = Tickets.close_ticket(
+            session = DBSession,
+            ticket_id = ticket_id,
+        )
     
     # unpack tuple
     t_id, t_number, t_title, t_contents, t_a_id, t_closed, t_closed_dt, \
@@ -760,11 +766,18 @@ def create_new_ticket_comment(user, ticket_id, contents):
         project_id,
         config['root_domain'],
     )
-    action_contents = "{0} added a comment to ticket: {1} in project: {2}".format(
-        action_user_link,
-        action_ticket_link,
-        action_project_link,
-    )
+    if close == True:
+        action_contents = "{0} has closed ticket: {1} in project: {2}".format(
+            action_user_link,
+            action_ticket_link,
+            action_project_link,
+        )
+    else:
+        action_contents = "{0} added a comment to ticket: {1} in project: {2}".format(
+            action_user_link,
+            action_ticket_link,
+            action_project_link,
+        )
     action = create_action(
         user_id = user.id,
         project_id = project_id,

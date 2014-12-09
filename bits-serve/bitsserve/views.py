@@ -677,8 +677,8 @@ def web_create_ticket_comment(request):
     #result = {'user': None}
     result = {'success': False}
 
-    #if True:
-    try:
+    if True:
+    #try:
 
         user, token = check_auth(request)
 
@@ -686,6 +686,11 @@ def web_create_ticket_comment(request):
         #project_id = request.POST['project_id']
         ticket_id = request.POST['ticket_id']
         contents = request.POST['contents']
+        close = False
+        try:
+            close = request.POST['close_ticket']
+        except:
+            pass
     
         if contents.strip() == '':
             raise Exception('no contents to comment')
@@ -699,14 +704,15 @@ def web_create_ticket_comment(request):
             user = user,
             ticket_id = ticket_id,
             contents = contents,
+            close = close,
         )
 
         result['ticket_comment_id'] = ticket_comment.id
 
         result['success'] = True
 
-    except:
-        pass
+    #except:
+    #    pass
 
     return make_response(result)
 
