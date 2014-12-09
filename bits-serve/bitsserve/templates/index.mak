@@ -55,8 +55,8 @@
                                                 
                                                     <h5>
                                                         <div class="">
-                                                            <a href="/project?project_id=${ticket_assignment['project_id']}">${ticket_assignment['project_name']}</a> : 
-                                                            <a href="/ticket?ticket_id=${ticket_assignment['id']}">${ticket_assignment['title']}</a>
+                                                            <!--<a href="/project?project_id=${ticket_assignment['project_id']}">${ticket_assignment['project_name']}</a> : -->
+                                                            <a class="small-indent" href="/ticket?ticket_id=${ticket_assignment['id']}">${ticket_assignment['title']}</a>
                                                             <div class="small-text indent">
                                                                 #${ticket_assignment['number']} opened by <a href="/user?user_id=${user.id}">${ticket_assignment['owner']}</a> on ${ticket_assignment['created']}
                                                             </div>
@@ -94,8 +94,8 @@
                                                 
                                                     <h5>
                                                         <div class="">
-                                                            <a href="/project?project_id=${task_assignment['project_id']}">${task_assignment['project_name']}</a> : 
-                                                            <a href="/task?task_id=${task_assignment['id']}">${task_assignment['title']}</a>
+                                                            <!--<a href="/project?project_id=${task_assignment['project_id']}">${task_assignment['project_name']}</a> : -->
+                                                            <a class="small-indent" href="/task?task_id=${task_assignment['id']}">${task_assignment['title']}</a>
                                                             <div class="small-text indent">
                                                                 Opened by <a href="/user?user_id=${user.id}">${task_assignment['owner']}</a> on ${task_assignment['created']}
                                                             </div>

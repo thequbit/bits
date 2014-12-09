@@ -153,17 +153,15 @@
     
     <script>
 
-        function submit_comment(callback) {
+        function submit_comment(close) {
         
-            //var token = document.cookie.split('=')[1]; 
             var url = '/create_ticket_comment.json';
             var ticket_id = ${ticket['id']}
-            //var author_id = localStorage.getItem("user_id")
-            //var project_id = ${project['id']};
             var contents = $('#comment-contents').val();
             
-            if ( contents.trim() == '' ) {
-                //alert('Please make sure there is contents to our comment before submitting.');
+            if ( close == true && contents.trim() == '' ) {
+                contents = 'Closed.';
+            } else if ( contents.trim() == '' ) {
                 return;
             }
 
@@ -172,16 +170,14 @@
                 type: 'POST',
                 data: {
                     ticket_id : ticket_id,
-                    //author_id : author_id,
-                    //project_id : project_id,
-                    contents : contents
+                    contents : contents,
+                    close: close,
                 },
                 url: url,
                 success: function(data) {
                     if( data.success == true ) {
                         console.log('SUCCESS!');
                         window.location.href="/ticket?ticket_id=${ticket['id']}";
-                        callback();
                     }
                 },
                 error: function(data) {
@@ -190,33 +186,6 @@
                     // TODO: report error
                 }
             });
-        }
-
-        function close_ticket() {
-            
-            //var token = document.cookie.split('=')[1]; 
-            var url = '/close_ticket.json';
-            var ticket_id = ${ticket['id']}
-            
-            $.ajax({
-                dataType: 'json',
-                type: 'POST',
-                data: {
-                    ticket_id : ticket_id,
-                },
-                url: url,
-                success: function(data) {
-                    if( data.success == true ) {
-                        window.location.href="/ticket?ticket_id=${ticket['id']}";
-                    }
-                },
-                error: function(data) {
-                    console.log('an error happened while closing ticket ...');
-                    console.log(data)
-                    // TODO: report error
-                }
-            });
-            
         }
 
         function assign_user(email) {
@@ -305,8 +274,7 @@
             });
         }
 
-        //var assigned_user_id = '';
-    
+        
         $(document).ready( function() {
         
             $('#assigned-drop').on('click', function(e) {
@@ -323,11 +291,11 @@
             });
         
             $('#submit-comment').on('click', function(e) {
-                submit_comment();
+                submit_comment(false);
             });
             
             $('#submit-comment-and-close').on('click', function(e) {
-                close_ticket();
+                submit_comment(true);
             });
 
             $('#edit-ticket-contents').on('click', function(e) {
