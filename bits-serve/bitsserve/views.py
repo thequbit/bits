@@ -11,8 +11,10 @@ import markdown
 
 from utils import (
 
-    make_response,
+    str2bool,
     
+    make_response,
+   
     check_auth,
     do_login,
 
@@ -686,9 +688,10 @@ def web_create_ticket_comment(request):
         #project_id = request.POST['project_id']
         ticket_id = request.POST['ticket_id']
         contents = request.POST['contents']
+        
         close = False
         try:
-            close = request.POST['close_ticket']
+            close = str2bool(request.POST['close'])
         except:
             pass
     

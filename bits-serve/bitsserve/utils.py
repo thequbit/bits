@@ -62,6 +62,12 @@ def sanitize(text):
     
     return text
 
+def str2bool(text):
+    b = False
+    if text.strip().lower() == 'true':
+        b = True
+    return b
+
 def make_response(resp_dict):
 
     print "[DEBUG]"
@@ -737,13 +743,19 @@ def create_new_ticket_comment(user, ticket_id, contents, close):
         ticket_id = ticket_id,
         contents = contents,
     )
+  
+    print "\n\n"
+    print type(close)
+    print '\n\n'
+    print close
+    print "\n\n"
     
     if close == True:
-        ticket = Tickets.close_ticket(
+        t = Tickets.close_ticket(
             session = DBSession,
             ticket_id = ticket_id,
         )
-    
+      
     # unpack tuple
     t_id, t_number, t_title, t_contents, t_a_id, t_closed, t_closed_dt, \
         t_created, o_first, o_last, o_email, p_id, p_name, p_desc, \
