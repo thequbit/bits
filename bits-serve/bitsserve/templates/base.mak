@@ -524,7 +524,15 @@
     % if user == None:
 
         <script>
+        
+            console.log('Saving redirect url: ' + document.URL);
+        
+            // remember where we are redirecting to
+            localStorage.setItem('redirect_url', document.URL);
+        
+            // go to the login screen
             window.location.href = "/login";
+            
         </script>
 
     % else:

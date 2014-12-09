@@ -55,9 +55,9 @@
 
         $(document).ready(function() {
             
-            // if we find ourselves here, force the user to re-login
-            localStorage.clear();
-
+            // clear our cookie data
+            document.cookie = '';
+            
             $('#login-button').on('click', function(e) {
                 email = $('#login-email').val();
                 password = $('#login-password').val();
@@ -69,21 +69,30 @@
                     success: function(data) {
                         console.log(data);
                         if ( data.success == true ) {
-                            // save token to local store
-                            //localStorage.token = data.token;
-                            //localStorage.first = data.user.first;
-                            //localStorage.last = data.user.last;
-                            //localStorage.email = data.user.email;
-                            //localStorage.user_type = data.user.user_type;
-                            //localStorage.user_type_description = data.user.user_type_description;
-
+                            
                             // save our token to a cookie, so it gets sent to the server each time
                             var expiration_date = new Date();
                             expiration_date.setFullYear(expiration_date.getFullYear() + 1);
-                            document.cookie="token=" + data.token + "; expires=" + expiration_date.toGMTString() + "; path=/";
+                            cookie_data = "token=" + data.token + "; expires=" + expiration_date.toGMTString() + ";";
+                            
+                            console.log('cookie:');
+                            console.log(cookie_data);
+                            
+                            document.cookie = cookie_data;
+
 
                             // do redirect
-                            window.location.href = "/"
+                            
+                            var redirect_url = localStorage.getItem("redirect_url");
+                            localStorage.clear();
+                            
+                            console.log('redirect_url: ' + redirect_url);
+                            
+                            if ( redirect_url == undefined || redirect_url == null || redirect_url == '' ) {
+                                redirect_url = '/';
+                            }
+                            window.location.href = redirect_url;
+                            
 
                         } else {
                             // TODO: report invalid creds
