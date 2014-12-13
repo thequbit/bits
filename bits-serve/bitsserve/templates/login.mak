@@ -73,13 +73,19 @@
                             // save our token to a cookie, so it gets sent to the server each time
                             var expiration_date = new Date();
                             expiration_date.setFullYear(expiration_date.getFullYear() + 1);
-                            cookie_data = "token=" + data.token + "; expires=" + expiration_date.toGMTString() + ";";
                             
+   							cookie_data = [
+								"token=" + data.token + ";",
+								"expires=" + expiration_date.toGMTString() + "; ",
+								//"path=/; ",
+								"domain=" + window.location.hostname + "; "
+							].join('');
+							
                             console.log('cookie:');
                             console.log(cookie_data);
                             
                             document.cookie = cookie_data;
-
+							//localStorage.setItem('token', token);
 
                             // do redirect
                             
@@ -88,7 +94,7 @@
                             
                             console.log('redirect_url: ' + redirect_url);
                             
-                            if ( redirect_url == undefined || redirect_url == null || redirect_url == '' ) {
+                            if ( redirect_url == undefined || redirect_url == null || redirect_url == '' || redirect_url == '/logout' ) {
                                 redirect_url = '/';
                             }
                             window.location.href = redirect_url;
