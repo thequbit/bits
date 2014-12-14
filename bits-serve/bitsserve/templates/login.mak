@@ -58,8 +58,8 @@
             // clear our cookie data
             //document.cookie = '';
             
-			console.log('cookie:');
-			console.log(document.cookie);
+			//console.log('cookie:');
+			//console.log(document.cookie);
 			
             $('#login-button').on('click', function(e) {
                 email = $('#login-email').val();
@@ -75,7 +75,11 @@
                             
                             // save our token to a cookie, so it gets sent to the server each time
                             var expiration_date = new Date();
-                            expiration_date.setFullYear(expiration_date.getFullYear() + 1);
+                            expiration_date.setFullYear(expiration_date.getFullYear() + 1); // token will expire in 30 days
+                                                                                            // in database, but we will set this
+                                                                                            // to some very large value in the
+                                                                                            // future we don't have to worry about
+                                                                                            // it.
                             
    							cookie_data = [
 								"token=" + data.token + ";",
@@ -84,8 +88,8 @@
 								"domain=" + window.location.hostname + "; "
 							].join('');
 							
-                            console.log('cookie:');
-                            console.log(cookie_data);
+                            //console.log('cookie:');
+                            //console.log(cookie_data);
                             
                             document.cookie = cookie_data;
 							//localStorage.setItem('token', token);
@@ -95,9 +99,10 @@
                             var redirect_url = localStorage.getItem("redirect_url");
                             localStorage.clear();
                             
-                            console.log('redirect_url: ' + redirect_url);
+                            //console.log('redirect_url: ' + redirect_url);
                             
-                            if ( redirect_url == undefined || redirect_url == null || redirect_url == '' || redirect_url == '/logout' ) {
+                            // make sure the redirect url is valid (and prevent redirect loop by preventing logout url redirection)
+                            if ( redirect_url == undefined || redirect_url == null || redirect_url == '' || redirect_url.indexOf('logout') > -1 ) {
                                 redirect_url = '/';
                             }
                             window.location.href = redirect_url;

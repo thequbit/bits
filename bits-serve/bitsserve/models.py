@@ -255,7 +255,7 @@ class LoginTokens(Base):
                     user_id = user.id,
                     token = str(uuid.uuid4()),
                     token_expire_datetime = datetime.datetime.now() + \
-                        datetime.timedelta(hours=24),
+                        datetime.timedelta(hours=24*30), # expire in 30 days
                     login_datetime = datetime.datetime.now(),
                 )
                 session.add(login_token)
