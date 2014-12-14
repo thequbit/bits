@@ -59,7 +59,7 @@
             //document.cookie = '';
             
 			console.log('cookie:');
-			console.log(cookie_data);
+			console.log(document.cookie);
 			
             $('#login-button').on('click', function(e) {
                 email = $('#login-email').val();
