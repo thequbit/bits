@@ -56,8 +56,11 @@
         $(document).ready(function() {
             
             // clear our cookie data
-            document.cookie = '';
+            //document.cookie = '';
             
+			console.log('cookie:');
+			console.log(cookie_data);
+			
             $('#login-button').on('click', function(e) {
                 email = $('#login-email').val();
                 password = $('#login-password').val();

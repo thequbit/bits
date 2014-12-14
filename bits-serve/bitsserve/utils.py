@@ -109,9 +109,20 @@ def check_auth(request):
 
     try:
         token = request.cookies['token']
+        
+        print "request.cookies[]:"
+        print request.cookies
+        print "\n"
+        
+        print "check_auth() token:"
+        print token
+        print "\n"
+        
         if token == None or token == '':
             raise Exception('invalid token format')
-    except:
+    except Exception, e:
+        print "check_auth() exception: {0}".format(str(e)) 
+        print "\n"
         pass
         
     try:

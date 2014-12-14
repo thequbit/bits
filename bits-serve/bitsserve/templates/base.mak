@@ -529,6 +529,8 @@
 
         <script>
         
+			console.log('cookie: ' + document.cookie);
+		
             console.log('Saving redirect url: ' + document.URL);
         
             // remember where we are redirecting to
