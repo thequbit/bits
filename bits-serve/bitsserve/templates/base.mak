@@ -247,9 +247,11 @@
             padding: 10px;
         }
 
+        /*
         div.container-inner p {
             margin-bottom: 0px !important;
         }
+        */
 
         div.short-line-height {
             line-height: 100% !important;
@@ -530,6 +532,11 @@
             margin-top: 10px;
             margin-bottom: 5px;
             margin-left: 10px;
+        }
+        
+        .box p {
+            margin-top: 3px;
+            margin-bottom: 3px;
         }
         
     </style>
