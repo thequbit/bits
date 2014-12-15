@@ -293,8 +293,8 @@ def web_open_tickets(request):
 def web_my_tickets(request):
 
     result = {'user': None}
-    if True:
-    #try:
+    #if True:
+    try:
 
         user, token = check_auth(request)
         result['user'] = user
@@ -310,8 +310,8 @@ def web_my_tickets(request):
 
         result['project'] = get_project(user.id, project_id)
 
-    #except:
-    #    pass
+    except:
+        pass
 
     return result 
 
@@ -581,8 +581,8 @@ def web_authenticate(request):
 
     result = {'user': None}
     result['success'] = False
-    if True:
-    #try:
+    #if True:
+    try:
         try:
             email = request.GET['email']
             password = request.GET['password']
@@ -603,8 +603,8 @@ def web_authenticate(request):
 
         result['success'] = True
 
-    #except:
-    #    pass
+    except:
+        pass
 
     return make_response(result)
 
@@ -617,8 +617,8 @@ def web_close_ticket(request):
     result = {'user': None}
     result['success'] = False
 
-    if True:
-    #try:
+    #if True:
+    try:
 
         user, token = check_auth(request)
 
@@ -630,8 +630,8 @@ def web_close_ticket(request):
 
         result['success'] = True
 
-    #except:
-    #    pass
+    except:
+        pass
 
     return make_response(result)
 
@@ -755,8 +755,8 @@ def web_create_ticket_comment(request):
     #result = {'user': None}
     result = {'success': False}
 
-    if True:
-    #try:
+    #if True:
+    try:
 
         user, token = check_auth(request)
 
@@ -790,8 +790,8 @@ def web_create_ticket_comment(request):
 
         result['success'] = True
 
-    #except:
-    #    pass
+    except:
+        pass
 
     return make_response(result)
 
@@ -925,8 +925,8 @@ def web_complete_task(request):
     result = {'user': None}
     result['success'] = False
 
-    if True:
-    #try:
+    #if True:
+    try:
 
         user, token = check_auth(request)
 
@@ -938,8 +938,8 @@ def web_complete_task(request):
 
         result['success'] = True
 
-    #except:
-    #    pass
+    except:
+        pass
 
     return make_response(result)
 
@@ -971,8 +971,8 @@ def web_save_user_settings(request):
 def web_add_user(request):
 
     result = {'success': False}
-    if True:
-    #try:
+    #if True:
+    try:
     
         user, token = check_auth(request)
         
@@ -998,8 +998,8 @@ def web_add_user(request):
         
         result['success'] = True
         
-    #except:
-    #    pass
+    except:
+        pass
         
     return make_response(result)
 
