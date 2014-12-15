@@ -31,7 +31,6 @@
 
     <br/><br/>
     
-    
     <div class="row">
         <div class="medium-12 column">
             <div style="display: inline-block; margin-left: 20px;">
@@ -50,7 +49,7 @@
                 <a href="/closedtickets?project_id=${project['id']}">Closed</a>
                
             </div>
-            
+            <hr/>
         </div>
     </div>
 

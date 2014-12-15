@@ -38,14 +38,15 @@
                             
                             <div class="indent">
                             
-                                <h7>
-                                    <div class="plus-link">
-                                        <a id="${ sanitize(project['name']) }-tickets-link">+</a>
-                                    </div>
-                                    Tickets <small>assigned to ${user.first} ${user.last}.</small>
-                                </h7>
-                                
                                 % if len(project['ticket_assignments']) != 0:
+                                
+                                    <h7>
+                                        <div class="plus-link">
+                                            <a id="${ sanitize(project['name']) }-tickets-link">+</a>
+                                        </div>
+                                        Tickets <small>assigned to ${user.first} ${user.last}.</small>
+                                    </h7>
+                                
                                     % for ticket_assignment in project['ticket_assignments']:
                                         
                                         <div class="bottom-buffer">
@@ -70,21 +71,22 @@
                                         
                                     % endfor
                                 % else:
-                                    <div class="indent small-light-text">You have no tickets assigned to you.</div>
+                                    <!--<div class="indent small-light-text">You have no tickets assigned to you.</div>-->
                                 % endif
                                 
                             </div>
                             
                             <div class="indent">
                             
-                                <h7>
-                                    <div class="plus-link">
-                                        <a id="${ sanitize(project['name']) }-tasks-link">+</a>
-                                    </div>
-                                    Tasks <small>assigned to ${user.first} ${user.last}.</small>
-                                </h7>
-                
                                 % if len(project['task_assignments']) != 0:
+                                
+                                    <h7>
+                                        <div class="plus-link">
+                                            <a id="${ sanitize(project['name']) }-tasks-link">+</a>
+                                        </div>
+                                        Tasks <small>assigned to ${user.first} ${user.last}.</small>
+                                    </h7>
+                                
                                     % for task_assignment in project['task_assignments']:
                                         
                                         <div class="bottom-buffer">
@@ -109,7 +111,7 @@
                                         
                                     % endfor
                                 % else:
-                                    <div class="indent small-light-text">You have no tasks assigned to you.</div>
+                                    <!--<div class="indent small-light-text">You have no tasks assigned to you.</div>-->
                                 % endif
                             
                             </div>
@@ -172,10 +174,6 @@
         </div>
         
     </div>
-    
-    
-    
-    
     
     <div class="row">
         <div class="medium-12 columns">

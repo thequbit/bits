@@ -49,7 +49,7 @@
                 <a href="/closedtickets?project_id=${project['id']}">Closed</a>
                 <div style="background-color: #008CBA !important; height: 3px;"></div>
             </div>
-            
+            <hr/>
         </div>
     </div>
 

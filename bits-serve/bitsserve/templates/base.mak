@@ -433,8 +433,6 @@
            min-height: 150px;
         }
 
-        
-
         div.comment-container {
             
         }
@@ -489,16 +487,19 @@
         }
         
         div.plus-link {
+            margin-top: 5px;
+            margin-right: 5px;
+            padding-left: 4px;
+            max-height: 23px;
             min-width: 22px;
-            /*border: 1px solid #008CBA;
-            border-radius: 7px;*/
-            display: inline-block
+            display: inline-block;
+
         }
         
         div.plus-link a {
-            padding-bottom: 2px;
             font-weight: bold;
-            /*font-size: 120%;*/
+            font-family: Sans-Serif !important;
+            font-size: 120%;
         }
         
         div.show-hide-container {
@@ -523,7 +524,6 @@
             padding-top: 7px;
         }
         
-
     </style>
 
 </head>
@@ -533,9 +533,9 @@
 
         <script>
         
-			console.log('cookie: ' + document.cookie);
+			//console.log('cookie: ' + document.cookie);
 		
-            console.log('Saving redirect url: ' + document.URL);
+            //console.log('Saving redirect url: ' + document.URL);
         
             // remember where we are redirecting to
             localStorage.setItem('redirect_url', document.URL);
@@ -568,7 +568,6 @@
                 ${self.body()}
             </div>
         </div>
-    
         
         <script src="static/foundation/js/foundation/foundation.js"></script>
         
