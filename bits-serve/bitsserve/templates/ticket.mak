@@ -102,7 +102,7 @@
                     <div class="indent small-light-text">There are no comments yet for this ticket</div>
                 % else:
                     % for comment in comments:
-                        <div class="comment-containeri box shadow">
+                        <div class="comment-container box shadow">
                             <div class="small-light-text">
                                 On ${comment['created']} <a href="/user?user_id=${comment['owner_id']}">${comment['owner']}</a> wrote:
                             </div>

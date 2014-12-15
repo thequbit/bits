@@ -524,6 +524,14 @@
             padding-top: 7px;
         }
         
+        /* markdown stuff */
+        
+        .box pre {
+            margin-top: 10px;
+            margin-bottom: 5px;
+            margin-left: 10px;
+        }
+        
     </style>
 
 </head>
