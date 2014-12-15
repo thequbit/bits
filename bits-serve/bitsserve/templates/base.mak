@@ -397,14 +397,6 @@
             
         }
 
-        div.container-inner {
-            padding: 10px;            
-        }
-        
-        div.container-inner p {
-            margin-bottom: 0px !important;
-        }
-        
         h4.complete-label {
             margin-left: 20px;
             color: #008000;
@@ -439,14 +431,6 @@
             
         }
 
-        div.container-inner {
-            padding: 10px;            
-        }
-        
-        div.container-inner p {
-            margin-bottom: 0px !important;
-        }
-        
         h4.closed-label {
             margin-left: 20px;
             color: red;
@@ -535,8 +519,9 @@
         }
         
         .box p {
-            margin-top: 3px;
-            margin-bottom: 3px;
+            /*margin-top: 3px;*/
+            margin-bottom: 10px !important;
+            line-height: 1.4 !important;
         }
         
     </style>
