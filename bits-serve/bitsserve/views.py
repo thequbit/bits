@@ -581,8 +581,8 @@ def web_authenticate(request):
 
     result = {'user': None}
     result['success'] = False
-    #if True:
-    try:
+    if True:
+    #try:
         try:
             email = request.GET['email']
             password = request.GET['password']
@@ -603,8 +603,8 @@ def web_authenticate(request):
 
         result['success'] = True
 
-    except:
-        pass
+    #except:
+    #    pass
 
     return make_response(result)
 
