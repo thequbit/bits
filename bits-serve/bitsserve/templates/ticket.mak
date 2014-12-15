@@ -6,7 +6,7 @@
              > 
             <a href="/project?project_id=${project['id']}">${project['name']}</a>
              > 
-            <a href="/tickets?project_id=${project['id']}">Tickets</a>
+            <a href="/opentickets?project_id=${project['id']}">Tickets</a>
              > Ticket
             <div class="right top-links">
                 <a href="/projectsettings?project_id=${project['id']}">Settings</a>

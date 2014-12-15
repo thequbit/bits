@@ -72,7 +72,7 @@
         <div class="medium-4 columns">
             <div class="box shadow list-container">
                 <div class="box-title">
-                    <div class="ticket-title"><a href="/tickets?project_id=${project['id']}">Tickets ( ${len(tickets)} )</a></div>
+                    <div class="ticket-title"><a href="/opentickets?project_id=${project['id']}">Tickets ( ${len(tickets)} )</a></div>
                     <div class="right">
                         <a href="/newticket?project_id=${project['id']}">New</a>
                     </div>
@@ -92,7 +92,7 @@
                     <div class="row">
                         <div class="medium-12 columns">
                             <div class="right" style="padding-right: 5px;">
-                                <a href="/tickets?project_id=${project['id']}">view all</a>
+                                <a href="/opentickets?project_id=${project['id']}">view all</a>
                             </div>
                         </div>
                     </div>

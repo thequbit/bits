@@ -16,8 +16,13 @@
     <div class="row">
         <div class="medium-12 column">
             <div class="page-title">
+                <!--
                 <div class="right manage-link">
                     <a href="/manageproject?project_id=${project['id']}">Manage Project</a>
+                </div>
+                -->
+                <div class="right small-padding-top">
+                    <a href="/newticket?project_id=${project['id']}">New Ticket</a>
                 </div>
                 <h4>Tickets</h4>
             </div>
@@ -26,24 +31,25 @@
 
     <br/><br/>
     
-    
     <div class="row">
         <div class="medium-12 column">
             <div style="display: inline-block; margin-left: 20px;">
-                <a href="/tickets?project_id=${project['id']}&closed=0">Open Tickets</a>
-                % if closed == False:
-                    <div style="background-color: #008CBA !important; height: 3px;"></div>
-                % endif
+                <a href="/opentickets?project_id=${project['id']}">Open</a>
+               
             </div>
             <div style="display: inline-block; margin-left: 20px;">
-                <a href="/tickets?project_id=${project['id']}&closed=1">Closed Tickets</a>
-                % if closed == True:
-                    <div style="background-color: #008CBA !important; height: 3px;"></div>
-                % endif
+                <a href="/mytickets?project_id=${project['id']}">Mine</a>
+                
             </div>
-            <div class="right">
-                <a href="/newticket?project_id=${project['id']}">New Ticket</a>
+            <div style="display: inline-block; margin-left: 20px;">
+                <a href="/unassignedtickets?project_id=${project['id']}">Unassigned</a>
+                
             </div>
+            <div style="display: inline-block; margin-left: 20px;">
+                <a href="/closedtickets?project_id=${project['id']}">Closed</a>
+                <div style="background-color: #008CBA !important; height: 3px;"></div>
+            </div>
+            
         </div>
     </div>
 
@@ -55,9 +61,11 @@
                     <h5>
                         <div class="bottom-border"><a class="small-indent" href="/ticket?ticket_id=${ticket['id']}">${ticket['title']}</a>
                             <div class="small-text indent">#${ticket['number']} opened by <a href="/user?user_id=${user.id}">${ticket['owner']}</a> on ${ticket['created']}</div>
-                            % if ticket['closed'] == True:
-                                <div class="small-text">Closed <!-- by <a href="/user?user_id=${user.id}">${ticket['owner']}</a>-->on ${ticket['closed_datetime']}</div>
-                            % endif
+                        
+                            <div class="small-text">
+                                Closed <!-- by <a href="/user?user_id=${user.id}">${ticket['owner']}</a>-->on ${ticket['closed_datetime']}
+                            </div>
+                        
                         </div>
                     </h5>
                     
@@ -68,7 +76,7 @@
             % endfor
         % else:
             <div class="box small-light-text">
-                There are no tickets for this project yet.
+                No tickets have been closed for project yet.
             </div>
         % endif
         </div>

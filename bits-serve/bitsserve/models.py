@@ -856,17 +856,38 @@ class Tickets(Base):
         return ticket_query
 
     @classmethod
-    def get_tickets_by_project_id(cls, session, project_id, closed):
+    def get_tickets_by_project_id(cls, session, project_id, closed, \
+            unassigned, user_id):
         """ Get all of the tickets, and their conents by project id
         """
         with transaction.manager:
             ticket_query = Tickets._build_ticket_query(session)
-            tickets = ticket_query.filter(
-                Tickets.project_id == project_id,
-                Tickets.closed == closed,
-            ).order_by(
+            
+            if user_id != None:
+            
+                ticket_query = ticket_query.filter(
+                    Tickets.assigned_id == user_id,
+                )
+                
+            if unassigned == True:
+                
+                ticket_query = ticket_query.filter(
+                    Tickets.project_id == project_id,
+                    Tickets.closed == False,
+                    Tickets.assigned_id == None,
+                )
+                
+            else:
+            
+                ticket_query = ticket_query.filter(
+                    Tickets.project_id == project_id,
+                    Tickets.closed == closed,
+                )
+                
+            tickets = ticket_query.order_by(
                 desc(Tickets.creation_datetime),
             ).all()
+            
         return tickets
 
     @classmethod

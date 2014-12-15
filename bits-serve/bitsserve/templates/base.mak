@@ -519,6 +519,10 @@
             padding-left: 10px;
         }
         
+        .small-padding-top {
+            padding-top: 7px;
+        }
+        
 
     </style>
 

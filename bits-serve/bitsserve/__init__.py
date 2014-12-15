@@ -32,8 +32,11 @@ def main(global_config, **settings):
 
     config.add_route('newticket', '/newticket')
     config.add_route('ticket', '/ticket')
-    config.add_route('tickets', '/tickets')
-
+    config.add_route('opentickets', '/opentickets')
+    config.add_route('mytickets', '/mytickets')
+    config.add_route('unassignedtickets', '/unassignedtickets')
+    config.add_route('closedtickets', '/closedtickets')
+    
     config.add_route('newtask', '/newtask')
     config.add_route('task', '/task')
     config.add_route('tasks', '/tasks')

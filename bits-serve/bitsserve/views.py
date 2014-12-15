@@ -263,8 +263,8 @@ def web_project(request):
 
     return result
 
-@view_config(route_name='tickets', renderer='templates/tickets.mak')
-def web_tickets(request):
+@view_config(route_name='opentickets', renderer='templates/opentickets.mak')
+def web_open_tickets(request):
 
     result = {'user': None}
     #if True:
@@ -275,15 +275,12 @@ def web_tickets(request):
 
         project_id = int(request.GET['project_id'])
 
-        closed = False
-        try:
-            closed = int(request.GET['closed']);
-        except:
-            pass
-
-        result['closed'] = closed
-
-        result['tickets'] = get_tickets(project_id, closed)
+        result['tickets'] = get_tickets(
+            project_id = project_id,
+            closed = False,
+            unassigned = False,
+            user_id = None,
+        )
 
         result['project'] = get_project(user.id, project_id)
 
@@ -291,6 +288,85 @@ def web_tickets(request):
         pass
 
     return result 
+    
+@view_config(route_name='mytickets', renderer='templates/mytickets.mak')
+def web_my_tickets(request):
+
+    result = {'user': None}
+    if True:
+    #try:
+
+        user, token = check_auth(request)
+        result['user'] = user
+
+        project_id = int(request.GET['project_id'])
+
+        result['tickets'] = get_tickets(
+            project_id = project_id,
+            closed = False,
+            unassigned = False,
+            user_id = user.id,
+        )
+
+        result['project'] = get_project(user.id, project_id)
+
+    #except:
+    #    pass
+
+    return result 
+
+@view_config(route_name='unassignedtickets', renderer='templates/unassignedtickets.mak')
+def web_unassigned_tickets(request):
+
+    result = {'user': None}
+    #if True:
+    try:
+
+        user, token = check_auth(request)
+        result['user'] = user
+
+        project_id = int(request.GET['project_id'])
+
+        result['tickets'] = get_tickets(
+            project_id = project_id,
+            closed = False,
+            unassigned = True,
+            user_id = None,
+        )
+
+        result['project'] = get_project(user.id, project_id)
+
+    except:
+        pass
+
+    return result 
+
+@view_config(route_name='closedtickets', renderer='templates/closedtickets.mak')
+def web_closed_tickets(request):
+
+    result = {'user': None}
+    #if True:
+    try:
+
+        user, token = check_auth(request)
+        result['user'] = user
+
+        project_id = int(request.GET['project_id'])
+
+        result['tickets'] = get_tickets(
+            project_id = project_id,
+            closed = True,
+            unassigned = False,
+            user_id = None,
+        )
+
+        result['project'] = get_project(user.id, project_id)
+
+    except:
+        pass
+
+    return result 
+
 
 @view_config(route_name='ticket', renderer='templates/ticket.mak')
 def web_ticket(request):
