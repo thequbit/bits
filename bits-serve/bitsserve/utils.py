@@ -108,15 +108,8 @@ def do_login(email, password):
 def check_auth(request):
 
     try:
+        
         token = request.cookies['token']
-        
-        print "request.cookies[]:"
-        print request.cookies
-        print "\n"
-        
-        print "check_auth() token:"
-        print token
-        print "\n"
         
         if token == None or token == '':
             raise Exception('invalid token format')
@@ -746,29 +739,35 @@ def get_ticket(user_id, ticket_id):
    
     return ticket
 
-def create_new_ticket_comment(user, ticket_id, contents, close):
+def create_new_ticket_comment(user, ticket_id, contents, close, reopen):
 
     _ticket, project_id = _check_ticket_auth(user.id, ticket_id)
-
+  
+    # note: close before reopen
+    if close == True:
+        t = Tickets.close_ticket(
+            session = DBSession,
+            ticket_id = ticket_id,
+        )  
+    elif reopen == True:
+        t = Tickets.reopen_ticket(
+            session = DBSession,
+            ticket_id = ticket_id,
+        )
+        
+        user_link = "[{0} {1}](/user?user_id={2})".format(user.first, user.last, user.id)
+        contents = "{0}\n\n<small>Ticket re-opened by {1}.</small>".format(
+            contents,
+            user_link,
+        )
+    
     ticket_comment = TicketComments.add_ticket_comment(
         session = DBSession,
         author_id = user.id,
         ticket_id = ticket_id,
         contents = contents,
     )
-  
-    print "\n\n"
-    print type(close)
-    print '\n\n'
-    print close
-    print "\n\n"
     
-    if close == True:
-        t = Tickets.close_ticket(
-            session = DBSession,
-            ticket_id = ticket_id,
-        )
-      
     # unpack tuple
     t_id, t_number, t_title, t_contents, t_a_id, t_closed, t_closed_dt, \
         t_created, o_first, o_last, o_email, p_id, p_name, p_desc, \
@@ -846,15 +845,9 @@ def get_ticket_comments(user_id, ticket_id):
          })
     return comments
 
-def assign_user_to_ticket(user, ticket_id, email):
+def assign_user_to_ticket(user, ticket_id, email, unassign):
 
     _ticket, project_id = _check_ticket_auth(user.id, ticket_id)
-    
-    ticket, target_user = Tickets.assign_user_to_ticket(
-        session = DBSession,
-        ticket_id = ticket_id,
-        email = email,
-    )
     
     # unpack tuple
     t_id, t_number, t_title, t_contents, t_a_id, t_closed, t_closed_dt, \
@@ -862,12 +855,7 @@ def assign_user_to_ticket(user, ticket_id, email):
         p_created, tt_name, tt_desc, tt_color = _ticket
     
     project_name, = Projects.get_name_from_id(DBSession, project_id)
-    action_target_user_link = "[{0} {1}]({3}user?user_id={2})".format(
-        target_user.first,
-        target_user.last,
-        target_user.id,
-        config['root_domain'],
-    )
+    
     action_ticket_link = "[{0}]({2}ticket?ticket_id={1})".format(
         t_title,
         t_id,
@@ -879,11 +867,37 @@ def assign_user_to_ticket(user, ticket_id, email):
         user.id,
         config['root_domain'],
     )
-    action_contents = "{0} has been assigned to ticket {1} by {2}".format(
-        action_target_user_link,
-        action_ticket_link,
-        action_user_link,
-    )
+    
+    if unassign == True:
+        ticket = Tickets.unassign_ticket(
+            session = DBSession,
+            ticket_id = ticket_id,
+        )
+        #target_user = None
+        action_contents = "{0} has marked ticket {1} as unassigned.".format(
+            action_user_link,
+            action_ticket_link,
+        )
+    else:
+        ticket, target_user = Tickets.assign_user_to_ticket(
+            session = DBSession,
+            ticket_id = ticket_id,
+            email = email,
+        )
+        action_target_user_link = "[{0} {1}]({3}user?user_id={2})".format(
+            target_user.first,
+            target_user.last,
+            target_user.id,
+            config['root_domain'],
+        )
+        action_contents = "{0} has been assigned to ticket {1} by {2}".format(
+            action_target_user_link,
+            action_ticket_link,
+            action_user_link,
+        )
+    
+    print "\n\n{0}\n\n".format(action_contents)
+    
     action = create_action(
         user_id = user.id,
         project_id = project_id,
@@ -981,7 +995,7 @@ def get_tasks(project_id, completed):
         tasks.append({
             'id': t_id,
             'title': t_title,
-            'contents': t_contents,
+            'contents': markdown.markdown(t_contents),
             'due': str(t_due),
             'completed': t_completed,
             'completed_datetime': t_completed_dt,
@@ -1009,7 +1023,7 @@ def get_task(task_id):
     task = {
         'id': t_id,
         'title': t_title,
-        'contents': t_contents,
+        'contents': markdown.markdown(t_contents),
         'due': str(t_due),
         'completed': t_completed,
         'completed_datetime': t_completed_dt,
@@ -1053,6 +1067,34 @@ def complete_task(user, task_id):
     task = Tasks.complete_task(
         session = DBSession,
         task_id = t_id,
+    )
+    
+    project_name, = Projects.get_name_from_id(DBSession, p_id)
+    action_project_link = "[{0}]({2}project?project_id={1})".format(
+        project_name,
+        p_id,
+        config['root_domain'],
+    )
+    action_ticket_link = "[{0}]({2}ticket?ticket_id={1})".format(
+        t_title,
+        t_id,
+        config['root_domain'],
+    )
+    action_user_link = "[{0} {1}]({3}user?user_id={2})".format(
+        user.first,
+        user.last,
+        user.id,
+        config['root_domain'],
+    )
+    action_contents = "{0} : {1} has been closed by {2}".format(
+        action_project_link,
+        action_ticket_link,
+        action_user_link,
+    )
+    action = create_action(
+        user_id = user.id,
+        project_id = project_id,
+        contents = action_contents,
     )
 
     return task

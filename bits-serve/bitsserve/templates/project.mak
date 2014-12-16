@@ -57,7 +57,7 @@
                             <div class="short-line-height extra-small-light-text">Opened by ${task['owner']} on ${task['created']}</div>
                         </div>
                     % endfor
-                    % if len(tickets) > 5:
+                    
                     <div class="row">
                         <div class="medium-12 columns">
                             <div class="right" style="padding-right: 5px;">
@@ -65,7 +65,7 @@
                             </div>
                         </div>
                     </div>
-                    % endif
+                    
                 % endif                
             </div>
         </div>
@@ -88,7 +88,7 @@
                             <div class="short-line-height extra-small-light-text"> #${ticket['number']} opened by ${ticket['owner']} on ${ticket['created']}</div>
                         </div>
                     % endfor
-                    % if len(tickets) > 5:
+                    
                     <div class="row">
                         <div class="medium-12 columns">
                             <div class="right" style="padding-right: 5px;">
@@ -96,7 +96,7 @@
                             </div>
                         </div>
                     </div>
-                    % endif
+                    
                 % endif
             </div>
         </div>
@@ -119,7 +119,7 @@
                             <div class="short-line-height extra-small-light-text"> opened by ${list['owner']} on ${list['created']}</div>
                         </div>
                     % endfor
-                    % if len(lists) > 5:
+                    
                     <div class="row">
                         <div class="medium-12 columns">
                             <div class="right" style="padding-right: 5px;">
@@ -127,7 +127,7 @@
                             </div>
                         </div>
                     </div>
-                    % endif
+                    
                 % endif
             </div>
         </div>
@@ -153,7 +153,7 @@
                             <div class="short-line-height extra-small-light-text"> opened by ${requirement['owner']} on ${requirement['created']}</div>
                         </div>
                     % endfor
-                    % if len(requirements) > 5:
+                    
                     <div class="row">
                         <div class="medium-12 columns">
                             <div class="right" style="padding-right: 5px;">
@@ -161,7 +161,7 @@
                             </div>
                         </div>
                     </div>
-                    % endif
+                    
                 % endif                
             </div>
         </div>
@@ -188,7 +188,7 @@
                             </div>
                         </div>
                     % endfor
-                    % if len(milestone) > 5:
+                    
                     <div class="row">
                         <div class="medium-12 columns">
                             <div class="right" style="padding-right: 5px;">
@@ -196,7 +196,7 @@
                             </div>
                         </div>
                     </div>
-                    % endif
+                    
                 % endif
             </div>
         </div>
@@ -223,7 +223,7 @@
                             </div>
                         </div>
                     % endfor
-                    % if len(notes) > 5:
+                    
                     <div class="row">
                         <div class="medium-12 columns">
                             <div class="right" style="padding-right: 5px;">
@@ -231,7 +231,7 @@
                             </div>
                         </div>
                     </div>
-                    % endif
+                    
                 % endif
             </div>
         </div>

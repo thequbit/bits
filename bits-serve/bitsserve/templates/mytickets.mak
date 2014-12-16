@@ -71,7 +71,7 @@
             % endfor
         % else:
             <div class="box small-light-text">
-                There are no open tickets for this project.
+                There are no tickets assigned to you for this project.
             </div>
         % endif
         </div>

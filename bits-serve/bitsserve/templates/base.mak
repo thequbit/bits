@@ -519,9 +519,16 @@
         }
         
         .box p {
-            /*margin-top: 3px;*/
-            margin-bottom: 10px !important;
+            margin-bottom: 12px !important;
             line-height: 1.4 !important;
+        }
+        
+        a.unassign-ticket-link {
+            background: rgba(255, 0, 0, 0.1);
+        }
+        
+        a.assign-ticket-link {
+            /*background: rgba(0, 0, 255, 0.05);*/
         }
         
     </style>

@@ -19,6 +19,17 @@
             margin: auto;
             padding: 15px;
         }
+        
+        div.bad-login {
+            margin: auto;
+            margin-top: 45px;
+            background: rgba(255, 0, 0, .8);
+            color: white;
+            max-width: 250px;
+            padding: 10px;
+            text-align: center;
+            display: none;
+        }
 
     </style>
 
@@ -40,6 +51,7 @@
                 <input placeholder="password" type="password" id="login-password">
                 <a href="#" class="small radius button right" id="login-button">Login</a>
             </div>
+            <div id="bad-login-notification" class="bad-login">Invalid login.  Please try again.</div>
         </div>
     </div>
 
@@ -55,13 +67,10 @@
 
         $(document).ready(function() {
             
-            // clear our cookie data
-            //document.cookie = '';
-            
-			//console.log('cookie:');
-			//console.log(document.cookie);
-			
             $('#login-button').on('click', function(e) {
+            
+                $('#bad-login-notification').hide();
+            
                 email = $('#login-email').val();
                 password = $('#login-password').val();
                 url = 'authenticate.json?email='+email+'&password='+password;
@@ -111,12 +120,16 @@
                         } else {
                             // TODO: report invalid creds
                             localStorage.clear();
+                            
+                            $('#bad-login-notification').show();
                         }
                     },
                     error: function(data) {
                         // TODO: report error
-                        console.log('error on login attempt ...');
-                        console.log(data);
+                        //console.log('error on login attempt ...');
+                        //console.log(data);
+                        
+                        $('#bad-login-notification').show();
                     }
                 });
             });

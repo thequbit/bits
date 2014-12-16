@@ -817,6 +817,22 @@ class Tickets(Base):
         return ticket
 
     @classmethod
+    def reopen_ticket(cls, session, ticket_id):
+        """ Sets a ticket's status to open from closed
+        """
+        with transaction.manager:
+            ticket = session.query(
+                Tickets,
+            ).filter(
+                Tickets.id == ticket_id,
+            ).first()
+            ticket.closed = False
+            ticket.closed_datetime = None #datetime.datetime.now()
+            session.add(ticket)
+            transaction.commit()
+        return ticket
+
+    @classmethod
     def _build_ticket_query(cls, session):
         #with transaction.manager:
         if True:
@@ -966,6 +982,15 @@ class Tickets(Base):
             session.add(ticket)
             transaction.commit()
         return ticket, user
+
+    @classmethod
+    def unassign_ticket(cls, session, ticket_id):
+        with transaction.manager:
+            ticket = Tickets.get_raw_ticket_by_id(session, ticket_id)
+            ticket.assigned_id = None
+            session.add(ticket)
+            transaction.commit()
+        return ticket
 
     @classmethod
     def update_ticket_contents(cls, session, ticket_id, contents):
@@ -1743,6 +1768,7 @@ class Actions(Base):
                 Actions.id,
             ).order_by(
                 Actions.project_id,
+                desc(Actions.creation_datetime),
             ).all()
         return actions
 
@@ -1755,6 +1781,8 @@ class Actions(Base):
                 Actions,
             ).filter(
                 Actions.organization_id == organization_id,
+            ).order_by(
+                desc(Actions.creation_datetime),
             ).limit(limit)
         return actions
         
@@ -1763,8 +1791,10 @@ class Actions(Base):
         with transaction.manager:
             actions = session.query(
                 Actions,
+            #).order_by(
+            #    Actions.id,
             ).order_by(
-                Actions.id,
+                desc(Actions.creation_datetime),
             ).all()
         return actions
 

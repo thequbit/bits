@@ -39,8 +39,6 @@
 
     <br/><br/>
 
-
-
     <div class="row">
         <div class="medium-8 columns">
             <div class="ticket-container">
@@ -85,18 +83,19 @@
                         <br/>
                     % endif
                     <div class="small-light-text">
-                        <a id="assigned-name" aria-expanded="false" href="#" data-dropdown="assigned-drop">re-assign Ticket</a>
+                        <a id="assigned-name" aria-expanded="false" href="#" data-dropdown="assigned-drop">Assign Ticket</a>
                     </div>
                     <ul id="assigned-drop" class="f-dropdown" data-dropdown-content aria-hidden="true" tabindex="-1" data-options="is_hover:true">
+                        <li><a class="unassign-ticket-link" href="#" user_email="" user_name="">Unassign Ticket</a></li>
                     % for assigned_user in assigned_users:
-                        <li><a href="#" user_email="${assigned_user['email']}" user_name="${assigned_user['user']}">${assigned_user['user']}</a></li>
+                        <li><a class="assign-ticket-link" href="#" user_email="${assigned_user['email']}" user_name="${assigned_user['user']}">${assigned_user['user']}</a></li>
                     % endfor
                     </ul>
                     
                 </div>
                 <br/>           
  
-                <h5>Comments</h5>            
+                <h5>Comments</h5>
 
                 % if not comments:
                     <div class="indent small-light-text">There are no comments yet for this ticket</div>
@@ -118,9 +117,15 @@
                     <label>Add Comment</label>
                     <textarea id="comment-contents" placeholder="markdown supported"></textarea>
                     <a href="#" id="submit-comment" class="small radius button">Submit</a>
-                    <div class="right">
-                        <a href="#" id="submit-comment-and-close" class="small radius button">Submit and Close</a>
-                    </div>
+                    % if ticket['closed'] == False:
+                        <div class="right">
+                            <a href="#" id="submit-comment-and-close" class="small radius button">Submit and Close</a>
+                        </div>
+                    % else:
+                        <div class="right">
+                            <a href="#" id="reopen-ticket" class="small radius button">Reopen Ticket</a>
+                        </div>
+                    % endif
                 </div>
             </div>
 
@@ -153,7 +158,9 @@
     
     <script>
 
-        function submit_comment(close) {
+        function submit_comment(close, reopen) {
+        
+            console.log('submitting comment.');
         
             var url = '/create_ticket_comment.json';
             var ticket_id = ${ticket['id']}
@@ -161,9 +168,12 @@
             
             if ( close == true && contents.trim() == '' ) {
                 contents = 'Closed.';
-            } else if ( contents.trim() == '' ) {
+            } else if ( reopen == false && contents.trim() == '' ) {
+                console.log('bad submit');
                 return;
             }
+
+            console.log('making ajax call');
 
             $.ajax({
                 dataType: 'json',
@@ -172,6 +182,7 @@
                     ticket_id : ticket_id,
                     contents : contents,
                     close: close,
+                    reopen: reopen,
                 },
                 url: url,
                 success: function(data) {
@@ -188,7 +199,7 @@
             });
         }
 
-        function assign_user(email) {
+        function assign_user(email, unassign) {
 
             console.log('sending comment')
 
@@ -204,6 +215,7 @@
                 data: {
                     ticket_id: ticket_id,
                     email: email,
+                    unassign: unassign,
                 },
                 url: url,
                 success: function(data) {
@@ -278,7 +290,9 @@
         $(document).ready( function() {
         
             $('#assigned-drop').on('click', function(e) {
+                
                 assigned_user_email = $(e.target).attr('user_email');
+                
                 assigned_user_name = $(e.target).attr('user_name');
                 $('#assigned-name').html(assigned_user_name);
                 
@@ -287,15 +301,28 @@
                 
                 $('#assigned-container').html('Please wait ...');
                 
-                assign_user(assigned_user_email);
+                console.log('user email: ' + assigned_user_email);
+                
+                var unassign = false;
+                if ( assigned_user_email == '' ) {
+                    unassign = true;
+                }
+                
+                console.log('unassigned: ' + unassign );
+                
+                assign_user(assigned_user_email, unassign);
             });
         
             $('#submit-comment').on('click', function(e) {
-                submit_comment(false);
+                submit_comment(false, false);
             });
             
             $('#submit-comment-and-close').on('click', function(e) {
-                submit_comment(true);
+                submit_comment(true, false);
+            });
+            
+            $('#reopen-ticket').on('click', function(e) {
+                submit_comment(false, true);
             });
 
             $('#edit-ticket-contents').on('click', function(e) {
