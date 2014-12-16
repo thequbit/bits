@@ -242,8 +242,8 @@ def web_projectsettings(request):
 def web_project(request):
 
     result = {'user': None}
-    #if True:
-    try:
+    if True:
+    #try:
 
         user, token = check_auth(request)
         result['user'] = user
@@ -258,8 +258,8 @@ def web_project(request):
 
         result['lists'] = [] #get_lists(project_id)
 
-    except:
-        pass
+    #except:
+    #    pass
 
     return result
 
@@ -372,8 +372,8 @@ def web_closed_tickets(request):
 def web_ticket(request):
 
     result = {'user': None}
-    #if True:
-    try:
+    if True:
+    #try:
 
         user, token = check_auth(request)
         result['user'] = user
@@ -396,8 +396,8 @@ def web_ticket(request):
 
         result['project'] = get_project(user.id, ticket['project_id'])
 
-    except:
-        pass
+    #except:
+    #    pass
 
     return result
 
@@ -801,6 +801,29 @@ def web_create_ticket_comment(request):
     #    pass
 
     return make_response(result)
+
+@view_config(route_name='update_ticket_comment.json')
+def web_update_ticket_comment(request):
+
+    result = {'success': False}
+
+    if True:
+    #try:
+
+        user, token = check_auth(request)
+
+        #author_id = request.POST['author_id']
+        #project_id = request.POST['project_id']
+        ticket_id = request.POST['ticket_id']
+        comment_id = request.POST['comment_id']
+        contents = request.POST['contents']
+        
+        result['success'] = True
+        
+    #except:
+    #    pass
+
+    return make_response(result);
 
 @view_config(route_name='assign_user_to_ticket.json')
 def web_assign_user_to_ticket(request):

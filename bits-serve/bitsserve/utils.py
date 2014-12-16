@@ -476,7 +476,7 @@ def _check_ticket_auth(user_id, ticket_id):
         raise Exception('no such ticket')
 
     # unpack tuple to get project_id
-    t_id, t_number, t_title, t_contents, t_a_id, t_closed, t_closed_dt, \
+    t_id, taid, t_number, t_title, t_contents, t_a_id, t_closed, t_closed_dt, \
         t_created, o_first, o_last, o_email, p_id, p_name, p_desc, \
         p_created, tt_name, tt_desc, tt_color = _ticket
 
@@ -566,9 +566,9 @@ def close_ticket(user, ticket_id):
     )
 
     # unpack tuple
-    t_id, t_number, t_title, t_contents, t_a_id, t_closed, t_closed_dt, \
-        t_created, o_first, o_last, o_email, p_id, p_name, p_desc, \
-        p_created, tt_name, tt_desc, tt_color = _ticket
+    t_id, t_aid, t_number, t_title, t_contents, t_a_id, t_closed, \
+        t_closed_dt, t_created, o_first, o_last, o_email, p_id, p_name, \
+        p_desc, p_created, tt_name, tt_desc, tt_color = _ticket
     
     project_name, = Projects.get_name_from_id(DBSession, project_id)
     action_project_link = "[{0}]({2}project?project_id={1})".format(
@@ -634,9 +634,10 @@ def get_ticket_assignments(user, limit):
 
     tickets = []
     current_project_name = ''
-    for t_id, t_number, t_title, t_contents, t_a_id, t_closed, t_closed_dt, \
-            t_created, o_first, o_last, o_email, p_id, p_name, p_desc, \
-            p_created, tt_name, tt_desc, tt_color in _tickets:
+    for t_id, t_aid, t_number, t_title, t_contents, t_a_id, t_closed, \
+            t_closed_dt, t_created, o_first, o_last, o_id, o_email, \
+            p_id, p_name, p_desc, p_created, tt_name, tt_desc, tt_color \
+            in _tickets:
         header = False
         if current_project_name != p_name:
             current_project_name = p_name
@@ -670,9 +671,10 @@ def get_tickets(project_id, closed=False, unassigned=False, user_id=None):
     )
 
     tickets = []
-    for t_id, t_number, t_title, t_contents, t_a_id, t_closed, t_closed_dt, \
-            t_created, o_first, o_last, o_email, p_id, p_name, p_desc, \
-            p_created, tt_name, tt_desc, tt_color in _tickets:
+    for t_id, t_aid, t_number, t_title, t_contents, t_a_id, t_closed, \
+            t_closed_dt, t_created, o_first, o_last, o_email, \
+            p_id, p_name, p_desc, p_created, tt_name, tt_desc, tt_color \
+            in _tickets:
             
         closed_datetime = None
         if t_closed_dt != None:
@@ -680,6 +682,7 @@ def get_tickets(project_id, closed=False, unassigned=False, user_id=None):
             
         tickets.append({
             'id': t_id,
+            'author_id': t_aid,
             'created': t_created.strftime("%b %d, %Y"),
             'owner': '{0} {1}'.format(o_first, o_last),
             'owner_email': o_email,
@@ -699,9 +702,9 @@ def get_ticket(user_id, ticket_id):
 
     _ticket, project_id = _check_ticket_auth(user_id, ticket_id)
 
-    t_id, t_number, t_title, t_contents, t_a_id, t_closed, t_closed_dt, \
-        t_created, o_first, o_last, o_email, p_id, p_name, p_desc, p_created, \
-        tt_name, tt_desc, tt_color = _ticket
+    t_id, t_aid, t_number, t_title, t_contents, t_a_id, t_closed, \
+        t_closed_dt, t_created, o_first, o_last, o_email, p_id, p_name, \
+        p_desc, p_created, tt_name, tt_desc, tt_color = _ticket
         
     ticket = None
     if True:
@@ -720,6 +723,7 @@ def get_ticket(user_id, ticket_id):
 
         ticket = {
             'id': t_id,
+            'author_id': t_aid,
             'project_id': p_id,
             'created': t_created.strftime("%b %d, %Y"),
             'owner': '{0} {1}'.format(o_first, o_last),
@@ -769,9 +773,9 @@ def create_new_ticket_comment(user, ticket_id, contents, close, reopen):
     )
     
     # unpack tuple
-    t_id, t_number, t_title, t_contents, t_a_id, t_closed, t_closed_dt, \
-        t_created, o_first, o_last, o_email, p_id, p_name, p_desc, \
-        p_created, tt_name, tt_desc, tt_color = _ticket
+    t_id, t_aid, t_number, t_title, t_contents, t_a_id, t_closed, \
+        t_closed_dt, t_created, o_first, o_last, o_email, p_id, p_name, \
+        p_desc, p_created, tt_name, tt_desc, tt_color = _ticket
     
     action_user_link = "[{0} {1}]({3}user?user_id={2})".format(
         user.first,
@@ -850,9 +854,9 @@ def assign_user_to_ticket(user, ticket_id, email, unassign):
     _ticket, project_id = _check_ticket_auth(user.id, ticket_id)
     
     # unpack tuple
-    t_id, t_number, t_title, t_contents, t_a_id, t_closed, t_closed_dt, \
-        t_created, o_first, o_last, o_email, p_id, p_name, p_desc, \
-        p_created, tt_name, tt_desc, tt_color = _ticket
+    t_id, t_aid, t_number, t_title, t_contents, t_a_id, t_closed, \
+        t_closed_dt, t_created, o_first, o_last, o_email, p_id, p_name, \
+        p_desc, p_created, tt_name, tt_desc, tt_color = _ticket
     
     project_name, = Projects.get_name_from_id(DBSession, project_id)
     
@@ -1137,11 +1141,7 @@ def get_task_assignments(user, limit):
             'duration': duration,
             'header': header,
         })
-        
-    print '\n\n'
-    print tasks
-    print '\n\n'
-
+       
     return tasks
 
 def get_lists(project_id):

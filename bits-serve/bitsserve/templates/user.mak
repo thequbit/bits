@@ -107,6 +107,8 @@
                                 $('#${action['project_name'].replace(' ','-')}-link').html('Hide Actions');
                             }
                             
+                            return false;
+                            
                         });
                     % endif
                 % endif

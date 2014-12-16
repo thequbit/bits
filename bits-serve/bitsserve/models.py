@@ -838,6 +838,7 @@ class Tickets(Base):
         if True:
             ticket_query = session.query(
                 Tickets.id,
+                Tickets.author_id,
                 Tickets.number,
                 Tickets.title,
                 Tickets.contents,

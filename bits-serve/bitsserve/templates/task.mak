@@ -128,6 +128,8 @@
                     // TODO: report error
                 }
             });
+            
+            return false;
            
         });
 

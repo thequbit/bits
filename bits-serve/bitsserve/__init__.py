@@ -59,6 +59,7 @@ def main(global_config, **settings):
     config.add_route('create_ticket.json','create_ticket.json')
     config.add_route('close_ticket.json','close_ticket.json')
     config.add_route('create_ticket_comment.json','create_ticket_comment.json')
+    config.add_route('update_ticket_comment.json','update_ticket_comment.json')
     config.add_route('assign_user_to_ticket.json', 'assign_user_to_ticket.json')
     config.add_route('update_ticket_contents.json', 'update_ticket_contents.json')
     config.add_route('update_ticket_title.json', 'update_ticket_title.json')

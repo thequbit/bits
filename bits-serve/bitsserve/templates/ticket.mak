@@ -23,11 +23,13 @@
                 </div>
                 <div id="ticket-title">
                     <h4>Ticket #${ticket['number']} : ${ticket['title']}
-                    % if ticket['closed'] == False:
-                        <small>
-                            <a href="#" id="edit-ticket-title">edit</a>
-                        </small>
-                    % endif
+                    % if ticket['author_id'] == user.id:
+                        % if ticket['closed'] == False:
+                            <small>
+                                <a href="#" id="edit-ticket-title">edit</a>
+                            </small>
+                        % endif
+                     % endif
                     </h4>
                     % if ticket['closed'] == True:
                         <h4 class="closed-label">[CLOSED]</h4>
@@ -65,12 +67,14 @@
                             </div>
                             <div id="ticket-contents">
                                 ${ticket['contents'] | n}
-                                <div class="edit-link">
-                                    <br/>
-                                    <div class="right small-text">
-                                        <a href="#" id="edit-ticket-contents">edit</a>
+                                % if ticket['author_id'] == user.id:
+                                    <div class="edit-link">
+                                        <br/>
+                                        <div class="right small-text">
+                                            <a href="#" id="edit-ticket-contents">edit</a>
+                                        </div>
                                     </div>
-                                </div>
+                                % endif
                             </div>
                         </div>
                     </div>
@@ -92,8 +96,7 @@
                     % endfor
                     </ul>
                     
-                </div>
-                <br/>           
+                </div>           
  
                 <h5>Comments</h5>
 
@@ -107,7 +110,16 @@
                             </div>
                             <div class="container-inner">
                                 ${comment['contents'] | n}
+                                % if comment['owner_id'] == user.id:
+                                    <div class="edit-link">
+                                        <div class="right small-text">
+                                            <a href="#" commentid="${comment['id']}" class="edit-comment-contents">edit</a>
+                                        </div>
+                                    </div>
+                                    <div style="height: 10px;"></div>
+                                % endif
                             </div>
+                            
                         </div>
                     % endfor
                 % endif
@@ -155,12 +167,19 @@
         </div> 
     </div>
     
+    <style>
+    
+        
+    
+    </style>
     
     <script>
 
         function submit_comment(close, reopen) {
         
             console.log('submitting comment.');
+        
+            show_loading();
         
             var url = '/create_ticket_comment.json';
             var ticket_id = ${ticket['id']}
@@ -203,7 +222,9 @@
 
             console.log('sending comment')
 
-            $('#submit-button-container').html('Please wait ...');
+            //$('#submit-button-container').html('Please wait ...');
+
+            show_loading();
 
             //var token = document.cookie.split('=')[1];
             var url = '/assign_user_to_ticket.json';
@@ -234,6 +255,8 @@
 
         function update_ticket_contents() {
 
+            show_loading();
+
             var ticket_id = ${ticket['id']};
             var contents = $('#new-ticket-contents').val();
             var url = "/update_ticket_contents.json?";
@@ -261,6 +284,8 @@
 
         function update_ticket_title() {
 
+            show_loading();
+
             var ticket_id = ${ticket['id']};
             var title = $('#new-ticket-title').val();
             var url = "/update_ticket_title.json?";
@@ -286,6 +311,11 @@
             });
         }
 
+        function update_comment_contents() {
+            
+        }
+        
+        
         
         $(document).ready( function() {
         
@@ -299,7 +329,7 @@
                 $('#assigned-drop').removeClass('open');
                 $('#assigned-drop').css('left', '-99999px');
                 
-                $('#assigned-container').html('Please wait ...');
+                //$('#assigned-container').html('Please wait ...');
                 
                 console.log('user email: ' + assigned_user_email);
                 
@@ -308,21 +338,29 @@
                     unassign = true;
                 }
                 
-                console.log('unassigned: ' + unassign );
+                //console.log('unassigned: ' + unassign );
                 
                 assign_user(assigned_user_email, unassign);
+                
+                return false;
             });
         
             $('#submit-comment').on('click', function(e) {
                 submit_comment(false, false);
+                
+                return false;
             });
             
             $('#submit-comment-and-close').on('click', function(e) {
                 submit_comment(true, false);
+                
+                return false;
             });
             
             $('#reopen-ticket').on('click', function(e) {
                 submit_comment(false, true);
+                
+                return false;
             });
 
             $('#edit-ticket-contents').on('click', function(e) {
@@ -341,7 +379,11 @@
                 
                     update_ticket_contents();
 
+                    return false;
+
                 });
+                
+                return false;
 
             });
 
@@ -354,8 +396,18 @@
                 
                     update_ticket_title();
                 
+                    return false;
+                
                 });
  
+                return false;
+ 
+            });
+            
+            $('a.edit-comment-contents').on('click', function(e) {
+                //alert('preventing default');
+                //e.preventDefault();
+                return false;
             });
         
         });

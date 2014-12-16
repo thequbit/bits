@@ -531,6 +531,33 @@
             /*background: rgba(0, 0, 255, 0.05);*/
         }
         
+        .loading-screen {
+            display: none;
+            background: black;
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            opacity: 0.5;
+            color: white;
+        }
+        
+        .loading-box {
+            display: none;
+            position: absolute;
+            top: 250px;
+            /*margin: auto;*/
+            width: 350px;
+            height: 50px;
+            border: 1px solid white;
+            padding: 20px 20px 20px 20px;
+            padding-bottom: 40px;
+            text-align: center;
+            background: #999999;
+            opacity: 1 !important;
+            font-size: 110%;
+        }
+        
+        
     </style>
 
 </head>
@@ -591,6 +618,27 @@
                     active_class: 'open'
                 }
             });
+        </script>
+    
+        <script>
+        
+            function show_loading() {
+            
+                $(document.body).append('<div class="loading-screen"></div>');
+                $(document.body).append('<div class="loading-box">Updating, please wait ...</div>')
+                
+                $('div.loading-screen').css('width', document.body.offsetWidth + 'px');
+                $('div.loading-screen').css('height', document.body.offsetHeight + 'px');
+                
+                //console.log((document.body.offsetWidth/2) - (350/2) + 'px');
+                
+                $('div.loading-box').css('left', (document.body.offsetWidth/2) - (350/2) + 'px');
+                //$('div.loading-box').css('top', document.body.offsetHeight + 'px');
+                
+                $('div.loading-screen').fadeIn();
+                $('div.loading-box').show();
+            }
+        
         </script>
     
     % endif
