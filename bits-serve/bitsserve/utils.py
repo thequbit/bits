@@ -600,9 +600,9 @@ def close_ticket(user, ticket_id):
     
     return ticket
 
-def update_ticket_contents(user, ticket_id, contents):
+def update_ticket_contents(user_id, ticket_id, contents):
 
-    _ticket, project_id = _check_ticket_auth(user.id, ticket_id)
+    _ticket, project_id = _check_ticket_auth(user_id, ticket_id)
 
     ticket = Tickets.update_ticket_contents(
         session = DBSession,
@@ -635,7 +635,7 @@ def get_ticket_assignments(user, limit):
     tickets = []
     current_project_name = ''
     for t_id, t_aid, t_number, t_title, t_contents, t_a_id, t_closed, \
-            t_closed_dt, t_created, o_first, o_last, o_id, o_email, \
+            t_closed_dt, t_created, o_first, o_last, o_email, \
             p_id, p_name, p_desc, p_created, tt_name, tt_desc, tt_color \
             in _tickets:
         header = False
@@ -815,6 +815,26 @@ def create_new_ticket_comment(user, ticket_id, contents, close, reopen):
     
     return ticket_comment
 
+def update_ticket_comment( user_id, ticket_id, comment_id, contents):
+
+    _ticket, project_id = _check_ticket_auth(user_id, ticket_id)
+    
+    _ticket_comment = TicketComments.get_by_id(
+        session = DBSession,
+        comment_id = comment_id,
+    )
+    
+    if ( _ticket_comment.author_id != user_id ):
+        raise Exception('invalid credentials')
+    
+    ticket_comment = TicketComments.update_ticket_comment(
+        session = DBSession,
+        ticket_comment_id = comment_id,
+        contents = contents,
+    )
+
+    return ticket_comment;
+
 def get_ticket_comments(user_id, ticket_id):
 
     _ticket, project_id = _check_ticket_auth(user_id, ticket_id)
@@ -838,6 +858,7 @@ def get_ticket_comments(user_id, ticket_id):
             updated_datetime = tc_updated_dt.strftime("%b %d, %Y")
         comments.append({
             'id': tc_id,
+            'raw_contents': tc_contents,
             'contents': markdown.markdown(tc_contents),
             'flagged': tc_flagged,
             'flagged_datetime': flagged_datetime,

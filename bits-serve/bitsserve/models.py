@@ -1050,7 +1050,7 @@ class TicketComments(Base):
         return ticket_comment
 
     @classmethod
-    def update_ticket_comment(cls, session, ticket_comment_id, content):
+    def update_ticket_comment(cls, session, ticket_comment_id, contents):
         """ Updates the content of a ticket comment
         """
         with transaction.manager:
@@ -1060,7 +1060,7 @@ class TicketComments(Base):
                 TicketComments.id == ticket_comment_id,
             ).first()
             ticket_comment.contents = contents
-            ticket_comments.update_datetime = datetime.datetime.now()
+            ticket_comment.update_datetime = datetime.datetime.now()
             session.add(ticket_comment)
             transaction.commit()
         return ticket_comment
@@ -1116,6 +1116,17 @@ class TicketComments(Base):
                 TicketComments.creation_datetime,
             ).all()
         return ticket_comments
+
+    @classmethod
+    def get_by_id(cls, session, comment_id):
+        with transaction.manager:
+            ticket_comment = session.query(
+                TicketComments,
+            ).filter(
+                TicketComments.id == comment_id,
+            ).first()
+        return ticket_comment
+    
 
 class Tasks(Base):
 

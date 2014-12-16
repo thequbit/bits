@@ -37,6 +37,7 @@ from utils import (
     get_ticket,
     get_ticket_comments,
     create_new_ticket_comment,
+    update_ticket_comment,
     assign_user_to_ticket,
     close_ticket,
     update_ticket_contents,
@@ -111,8 +112,8 @@ def logout(request):
 def web_index(request):
 
     result = {'user': None}
-    #if True:
-    try:
+    if True:
+    #try:
 
         user, token = check_auth(request)
         result['user'] = user
@@ -129,8 +130,8 @@ def web_index(request):
         
         result['actions'] = actions
         
-    except:
-        pass
+    #except:
+    #    pass
 
     return result
 
@@ -818,6 +819,13 @@ def web_update_ticket_comment(request):
         comment_id = request.POST['comment_id']
         contents = request.POST['contents']
         
+        ticket = update_ticket_comment(
+            user_id = user.id,
+            ticket_id = ticket_id,
+            comment_id = comment_id,
+            contents = contents,
+        )
+        
         result['success'] = True
         
     #except:
@@ -874,7 +882,7 @@ def web_update_ticket_contents(request):
         contents = request.POST['contents']
 
         update_ticket_contents(
-            user = user,
+            user_id = user.id,
             ticket_id = ticket_id,
             contents = contents,
         )

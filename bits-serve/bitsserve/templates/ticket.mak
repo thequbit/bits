@@ -109,15 +109,21 @@
                                 On ${comment['created']} <a href="/user?user_id=${comment['owner_id']}">${comment['owner']}</a> wrote:
                             </div>
                             <div class="container-inner">
-                                ${comment['contents'] | n}
-                                % if comment['owner_id'] == user.id:
-                                    <div class="edit-link">
-                                        <div class="right small-text">
-                                            <a href="#" commentid="${comment['id']}" class="edit-comment-contents">edit</a>
+                                <div id="edit-comment-wrapper-${comment['id']}" style="display: none;">
+                                    <textarea id="new-comment-contents-${comment['id']}">${comment['raw_contents'] | h}</textarea>
+                                    <a href="#" comment_id="${comment['id']}" class="small radius button submit-comment-update">Submit</a>
+                                </div>
+                                <div id="comment-contents-${comment['id']}" class="comment-contents">
+                                    ${comment['contents'] | n}
+                                    % if comment['owner_id'] == user.id:
+                                        <div class="edit-link">
+                                            <div class="right small-text">
+                                                <a href="#" comment_id="${comment['id']}" class="edit-comment-contents">edit</a>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div style="height: 10px;"></div>
-                                % endif
+                                        <div style="height: 10px;"></div>
+                                    % endif
+                                </div>
                             </div>
                             
                         </div>
@@ -259,7 +265,7 @@
 
             var ticket_id = ${ticket['id']};
             var contents = $('#new-ticket-contents').val();
-            var url = "/update_ticket_contents.json?";
+            var url = "/update_ticket_contents.json";
 
             $.ajax({
                 dataType: 'json',
@@ -311,7 +317,34 @@
             });
         }
 
-        function update_comment_contents() {
+        function update_comment_contents( comment_id ) {
+            
+            //show_loading();
+            
+            var newcontents = $('#new-comment-contents-' + comment_id).val();
+            var url = "/update_ticket_comment.json";
+            
+            $.ajax({
+                dataType: 'json',
+                type: 'POST',
+                data: {
+                    ticket_id: "${ticket['id']}",
+                    comment_id: comment_id,
+                    contents: newcontents,
+                },
+                url: url,
+                success: function(data) {
+                    if( data.success == true ) {
+                        window.location.href="/ticket?ticket_id=${ticket['id']}";
+                    }
+                },
+                error: function(data) {
+                    console.log('an error happened while updating the ticket comment ...');
+                    console.log(data)
+                    // TODO: report error
+                }
+            
+            });
             
         }
         
@@ -362,15 +395,21 @@
                 
                 return false;
             });
+            
+            /*
+            $('submit-comment-update').on('click', function(e) {
+                
+                var comment_id = e.target.getAttribute('comment_id');
+                
+                submit_comment_update(comment_id);
+                
+            });
+            */
 
             $('#edit-ticket-contents').on('click', function(e) {
 
                 var html = '';
-                //html += '<textarea id="new-ticket-contents"></textarea>';
-                //html += '<div id="submit-button-container">'
-                //html += '<a href="#" id="submit-ticket" class="small radius button">Submit</a>';
-                //html += '</div>'
-
+                
                 $('#ticket-contents').hide();
                 $('#edit-ticket-wrapper').show();
 
@@ -405,8 +444,22 @@
             });
             
             $('a.edit-comment-contents').on('click', function(e) {
-                //alert('preventing default');
-                //e.preventDefault();
+                
+                var comment_id = e.target.getAttribute('comment_id');
+                
+                $('#comment-contents-' + comment_id).hide();
+                $('#edit-comment-wrapper-' + comment_id).show();
+                
+                $('a.submit-comment-update').on('click', function(e) {
+                
+                    var innercomment_id = e.target.getAttribute('comment_id');
+                
+                    update_comment_contents( innercomment_id );
+                    
+                    return false;
+                    
+                });
+                
                 return false;
             });
         
