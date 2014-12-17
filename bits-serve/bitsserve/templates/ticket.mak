@@ -321,7 +321,7 @@
 
         function update_comment_contents( comment_id ) {
             
-            //show_loading();
+            show_loading();
             
             var newcontents = $('#new-comment-contents-' + comment_id).val();
             var url = "/update_ticket_comment.json";

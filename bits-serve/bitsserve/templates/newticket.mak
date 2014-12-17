@@ -74,6 +74,8 @@
 
         $('#submit-ticket').on('click', function(e) {
 
+            show_loading();
+
             var token = document.cookie.split('=')[1];
             var url = '/create_ticket.json';
             var project_id = ${project['id']}

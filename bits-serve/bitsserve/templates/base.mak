@@ -531,6 +531,11 @@
             /*background: rgba(0, 0, 255, 0.05);*/
         }
         
+        .project-container {
+            padding: 10px;
+            border: 1px solid 
+        }
+        
         .loading-screen {
             display: none;
             background: black;
