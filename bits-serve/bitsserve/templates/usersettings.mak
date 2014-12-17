@@ -64,7 +64,7 @@
         $('#save-settings').on('click', function(e) {
             
             var token = document.cookie.split('=')[1]; 
-            var url = '/save_user_settings.json?token=' + token;
+            var url = '/save_user_settings.json';
             
             var theme = 'light';
             if ( $('input[name=theme]:radio')[1].checked == true ) {
