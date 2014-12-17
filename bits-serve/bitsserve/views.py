@@ -264,6 +264,33 @@ def web_project(request):
 
     return result
 
+@view_config(route_name='projects', renderer='templates/projects.mak')
+def web_projects(request):
+
+    result = {'user': None}
+    if True:
+    #try:
+
+        user, token = check_auth(request)
+        result['user'] = user
+
+        result['projects'] = build_index_projects(user, limit=25)
+
+        #project_id = request.GET['project_id']
+            
+        #result['project'] = get_project(user.id, project_id)
+
+        #result['tasks'] = get_tasks(project_id, completed=False)
+
+        #result['tickets'] = get_tickets(project_id)
+
+        #result['lists'] = [] #get_lists(project_id)
+
+    #except:
+    #    pass
+
+    return result
+
 @view_config(route_name='opentickets', renderer='templates/opentickets.mak')
 def web_open_tickets(request):
 
