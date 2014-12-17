@@ -13,6 +13,8 @@
         <div class="medium-12 columns bottom-border">
             <a href="/">Home</a>
              >
+            <a href="/projects">Projects</a>
+             >
             New Project
             <div class="right top-links">
                 <a href="/usersettings">${user.first} ${user.last}</a>

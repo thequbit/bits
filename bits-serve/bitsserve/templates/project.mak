@@ -9,8 +9,11 @@
     
     <div class="row">
         <div class="large-12 columns bottom-border">
+            
             <a href="/">Home</a>
              > 
+            <a href="/projects">Projects</a>
+             >
             <a href="/project?project_id=${project['id']}">${project['name']}</a>
             
             <div class="right top-links">

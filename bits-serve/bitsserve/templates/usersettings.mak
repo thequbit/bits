@@ -8,6 +8,8 @@
         <div class="medium-12 columns bottom-border">
             <a href="/">Home</a>
              >
+            <a href="/users">Users</a>
+             >
             <a href="/user?user_id=${user.id}">${user.first} ${user.last}</a>
              > User Settings
             <div class="right top-links">
