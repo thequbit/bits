@@ -40,11 +40,11 @@
                 <div style="background-color: #008CBA !important; height: 3px;"></div>
             </div>
             <div style="display: inline-block; margin-right: 10px;">
-                <a href="/mytickets?project_id=${project['id']}">Assigned</a>
+                <a href="/mytickets?project_id=${project['id']}">Mine</a>
                 
             </div>
             <div style="display: inline-block; margin-right: 10px;">
-                <a href="/mytickets?project_id=${project['id']}">Opened</a>
+                <a href="/mytickets?project_id=${project['id']}">Owner</a>
                 
             </div>
             <div style="display: inline-block; margin-right: 10px;">
