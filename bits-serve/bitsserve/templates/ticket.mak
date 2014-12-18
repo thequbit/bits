@@ -183,7 +183,11 @@
     
     <script>
 
+        var startTime = undefined;
+
         function submit_comment(close, reopen) {
+        
+            startTime = new Date().getTime();
         
             console.log('submitting comment.');
         
@@ -215,19 +219,25 @@
                 success: function(data) {
                     if( data.success == true ) {
                         console.log('SUCCESS!');
-                        window.location.href="/ticket?ticket_id=${ticket['id']}";
+                        console.log('submit_comment() executed in ' + ( new Date().getTime() - startTime )/1000 + ' seconds.');
                     }
                 },
                 error: function(data) {
                     console.log('an error happened while creating ticket ...');
                     console.log(data)
                     // TODO: report error
+                },
+                complete: function( data ) {
+                    window.location.href="/ticket?ticket_id=${ticket['id']}";
                 }
+                
             });
         }
 
         function assign_user(email, unassign) {
-
+        
+            startTime = new Date().getTime();
+        
             console.log('sending comment')
 
             //$('#submit-button-container').html('Please wait ...');
@@ -250,19 +260,24 @@
                 success: function(data) {
                     if( data.success == true ) {
                         console.log('SUCCESS!');
-                        window.location.href="/ticket?ticket_id=" + data.ticket_id;
+                        console.log('assign_user() executed in ' + ( new Date().getTime() - startTime )/1000 + ' seconds.');
                     }
                 },
                 error: function(data) {
                     console.log('an error happened while creating ticket ...');
                     // TODO: report error
+                },
+                complete: function( data ) {
+                    window.location.href="/ticket?ticket_id=${ticket['id']}";
                 }
             });
 
         }
 
         function update_ticket_contents() {
-
+        
+            startTime = new Date().getTime();
+        
             show_loading("updating ticket ...");
 
             var ticket_id = ${ticket['id']};
@@ -279,19 +294,25 @@
                 url: url,
                 success: function(data) {
                     if( data.success == true ) {
-                        window.location.href="/ticket?ticket_id=${ticket['id']}";
+                        console.log('SUCCESS!');
+                        console.log('update_ticket_contents() executed in ' + ( new Date().getTime() - startTime )/1000 + ' seconds.');
                     }
                 },
                 error: function(data) {
                     console.log('an error happened while closing ticket ...');
                     console.log(data)
                     // TODO: report error
+                },
+                complete: function( data ) {
+                    window.location.href="/ticket?ticket_id=${ticket['id']}";
                 }
             });
         }
 
         function update_ticket_title() {
-
+        
+            startTime = new Date().getTime();
+        
             show_loading("updating ticket ...");
 
             var ticket_id = ${ticket['id']};
@@ -308,19 +329,25 @@
                 url: url,
                 success: function(data) {
                     if( data.success == true ) {
-                        window.location.href="/ticket?ticket_id=${ticket['id']}";
+                        console.log('SUCCESS!');
+                        console.log('update_ticket_title() executed in ' + ( new Date().getTime() - startTime )/1000 + ' seconds.');
                     }
                 },
                 error: function(data) {
                     console.log('an error happened while closing ticket ...');
                     console.log(data)
                     // TODO: report error
+                },
+                complete: function( data ) {
+                    window.location.href="/ticket?ticket_id=${ticket['id']}";
                 }
             });
         }
 
         function update_comment_contents( comment_id ) {
-            
+                    
+            startTime = new Date().getTime();
+        
             show_loading("updating comment ...");
             
             var newcontents = $('#new-comment-contents-' + comment_id).val();
@@ -337,13 +364,17 @@
                 url: url,
                 success: function(data) {
                     if( data.success == true ) {
-                        window.location.href="/ticket?ticket_id=${ticket['id']}";
+                        console.log('SUCCESS!');
+                        console.log('update_comment_contents() executed in ' + ( new Date().getTime() - startTime )/1000 + ' seconds.');
                     }
                 },
                 error: function(data) {
                     console.log('an error happened while updating the ticket comment ...');
                     console.log(data)
                     // TODO: report error
+                },
+                complete: function( data ) {
+                    window.location.href="/ticket?ticket_id=${ticket['id']}";
                 }
             
             });

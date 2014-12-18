@@ -123,12 +123,15 @@
                 success: function(data) {
                     if( data.success == true ) {
                         console.log('SUCCESS!');
-                        window.location.href="/task?task_id=${task['id']}";
+                        
                     }
                 },
                 error: function(data) {
                     console.log('an error happened while creating task ...');
                     // TODO: report error
+                },
+                complete: function( data ) {
+                    window.location.href="/task?task_id=${task['id']}";
                 }
             });
             

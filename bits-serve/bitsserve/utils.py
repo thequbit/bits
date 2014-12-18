@@ -174,6 +174,8 @@ def get_organization_users(organization_id):
 
 def create_action(user_id, project_id, contents, additional_display=''):
 
+    start_add_action = time.time()
+
     action = Actions.add_action(
         session = DBSession,
         organization_id = 1, # TODO: fix this with multi-tenant stuff
@@ -181,6 +183,8 @@ def create_action(user_id, project_id, contents, additional_display=''):
         project_id = project_id,
         contents = contents,
     )
+
+    print "\n\ncutils.create_action().Actions.add_action() executed in {0} seconds.\n\n".format( time.time() - start_add_action )
 
     if project_id != None:
         upas = UserProjectAssignments.get_users_assigned_to_project(
@@ -749,6 +753,9 @@ def create_new_ticket_comment(user, ticket_id, contents, close, reopen):
 
     _ticket, project_id = _check_ticket_auth(user.id, ticket_id)
   
+    if _ticket == None:
+        raise Exception('invalid ticket')
+  
     # note: close before reopen
     if close == True:
         t = Tickets.close_ticket(
@@ -767,12 +774,18 @@ def create_new_ticket_comment(user, ticket_id, contents, close, reopen):
             user_link,
         )
     
+    start_add_ticket_comment = time.time()
+    
     ticket_comment = TicketComments.add_ticket_comment(
         session = DBSession,
         author_id = user.id,
         ticket_id = ticket_id,
         contents = contents,
     )
+    
+    print "\n\nutils.create_new_ticket_comment().TicketComments.add_ticket_comment() executed in {0} seconds.\n\n".format( time.time() - start_add_ticket_comment )
+    
+    start_build_action_text = time.time()
     
     # unpack tuple
     t_id, t_aid, t_number, t_title, t_contents, t_a_id, t_closed, \
@@ -790,10 +803,10 @@ def create_new_ticket_comment(user, ticket_id, contents, close, reopen):
         t_id,
         config['root_domain'],
     )
-    project_name, = Projects.get_name_from_id(DBSession, project_id)
+    #project_name, = Projects.get_name_from_id(DBSession, project_id)
     action_project_link = "[{0}]({2}project?project_id={1})".format(
-        project_name,
-        project_id,
+        p_name,
+        p_id,
         config['root_domain'],
     )
     if close == True:
@@ -808,12 +821,19 @@ def create_new_ticket_comment(user, ticket_id, contents, close, reopen):
             action_ticket_link,
             action_project_link,
         )
+        
+    print "\n\nutils.create_new_ticket_comment() -[build action text] -  executed in {0} seconds.\n\n".format( time.time() - start_build_action_text )
+        
+    start_creation_action = time.time()
+        
     action = create_action(
         user_id = user.id,
         project_id = project_id,
         contents = action_contents,
         additional_display = contents,
     )
+    
+    print "\n\nutils.create_new_ticket_comment().create_action executed in {0} seconds.\n\n".format( time.time() - start_creation_action )
     
     return ticket_comment
 
@@ -1255,10 +1275,18 @@ def send_notification(user_id, action_id, additional_display):
 
     success = False
 
+    # check to make sure we can actually send the email
+    if not config['notification_email_password'] or config['notification_email_password'] == '' or \
+            not config['notification_email_server'] or config['notification_email_server'] == '' or \
+            not config['notification_email_server_port'] or config['notification_email_server_port'] == '' or \
+            not config['notification_email_address'] or config['notification_email_address'] == '':
+            
+        return False
+
     try:
     #if True:
 
-        password =  config['notification_email_password']; #"h1chaos4ever"
+        password =  config['notification_email_password'];
         
         server = smtplib.SMTP()
         server.connect(config['notification_email_server'], config['notification_email_server_port'])

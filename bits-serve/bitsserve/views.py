@@ -807,6 +807,8 @@ def web_create_ticket_comment(request):
     """ Get all of the organizations that the user has access to
     """
 
+    start = time.time()
+
     #result = {'user': None}
     result = {'success': False}
 
@@ -835,10 +837,16 @@ def web_create_ticket_comment(request):
         if reopen == False and contents.strip() == '':
             raise Exception('no contents to comment')
     
+        start_get_ticket = time.time()
+    
         ticket = get_ticket(user.id, ticket_id)
+        
+        print "\n\ncreate_ticket_comment.json().get_ticket() executed in {0} seconds.\n\n".format( time.time() - start_get_ticket )
 
         if ticket == None:
             raise Exception('invalid ticket id')
+
+        start_create_new_ticket_comment = time.time()
 
         ticket_comment = create_new_ticket_comment(
             user = user,
@@ -848,12 +856,16 @@ def web_create_ticket_comment(request):
             reopen = reopen,
         )
 
+        print "\n\ncreate_ticket_comment.json().create_new_ticket_comment() executed in {0} seconds.\n\n".format( time.time() - start_create_new_ticket_comment )
+
         result['ticket_comment_id'] = ticket_comment.id
 
         result['success'] = True
 
     #except:
     #    pass
+
+    print "\n\ncreate_ticket_comment.json() executed in {0} seconds.\n\n".format( time.time() - start )
 
     return make_response(result)
 
