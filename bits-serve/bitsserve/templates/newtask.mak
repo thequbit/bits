@@ -82,7 +82,7 @@
 
         $('#submit-task').on('click', function(e) {
 
-            show_loading();
+            show_loading("creating task ...");
 
             var token = document.cookie.split('=')[1];
             var url = '/create_task.json';

@@ -1118,7 +1118,7 @@ def complete_task(user, task_id):
     )
     action = create_action(
         user_id = user.id,
-        project_id = project_id,
+        project_id = p_id,
         contents = action_contents,
     )
 

@@ -108,10 +108,9 @@
 
         $('#mark-complete').on('click', function(e) {
             
-            show_loading();
+            show_loading("marking task complete ...");
             
-            //var token = document.cookie.split('=')[1]; 
-            var url = '/complete_task.json'; //?token=' + token;
+            var url = '/complete_task.json';
             var task_id = ${task['id']}
             
             $.ajax({

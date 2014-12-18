@@ -187,7 +187,7 @@
         
             console.log('submitting comment.');
         
-            show_loading();
+            show_loading("submitting Comment ...");
         
             var url = '/create_ticket_comment.json';
             var ticket_id = ${ticket['id']}
@@ -232,7 +232,7 @@
 
             //$('#submit-button-container').html('Please wait ...');
 
-            show_loading();
+            show_loading("assigning user ...");
 
             //var token = document.cookie.split('=')[1];
             var url = '/assign_user_to_ticket.json';
@@ -263,7 +263,7 @@
 
         function update_ticket_contents() {
 
-            show_loading();
+            show_loading("updating ticket ...");
 
             var ticket_id = ${ticket['id']};
             var contents = $('#new-ticket-contents').val();
@@ -292,7 +292,7 @@
 
         function update_ticket_title() {
 
-            show_loading();
+            show_loading("updating ticket ...");
 
             var ticket_id = ${ticket['id']};
             var title = $('#new-ticket-title').val();
@@ -321,7 +321,7 @@
 
         function update_comment_contents( comment_id ) {
             
-            show_loading();
+            show_loading("updating comment ...");
             
             var newcontents = $('#new-comment-contents-' + comment_id).val();
             var url = "/update_ticket_comment.json";

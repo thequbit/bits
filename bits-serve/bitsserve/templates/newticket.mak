@@ -74,7 +74,7 @@
 
         $('#submit-ticket').on('click', function(e) {
 
-            show_loading();
+            show_loading("submitting ticket ...");
 
             var token = document.cookie.split('=')[1];
             var url = '/create_ticket.json';

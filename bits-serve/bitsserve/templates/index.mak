@@ -20,7 +20,7 @@
             <!--<h5>Collections</h5>-->
             <div class="box shadow list-container">
                 <div class="box-title">
-                    Projects
+                    <a href="/projects">Projects</a>
                     <div class="right">
                         <a href="/newproject">New Project</a>
                     </div>

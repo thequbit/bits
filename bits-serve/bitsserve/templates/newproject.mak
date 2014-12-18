@@ -67,7 +67,7 @@
 
         $('#submit-project').on('click', function(e) {
 
-            show_loading();
+            show_loading("creating project ...");
 
             var token = document.cookie.split('=')[1];
             var url = '/create_project.json';

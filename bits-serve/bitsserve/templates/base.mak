@@ -533,7 +533,7 @@
         
         .project-container {
             padding: 10px;
-            border: 1px solid 
+            /*border: 1px solid */
         }
         
         .loading-screen {
@@ -627,10 +627,10 @@
     
         <script>
         
-            function show_loading() {
+            function show_loading(message) {
             
                 $(document.body).append('<div class="loading-screen"></div>');
-                $(document.body).append('<div class="loading-box">Updating, please wait ...</div>')
+                $(document.body).append('<div class="loading-box">Please wait, ' + message + '</div>')
                 
                 $('div.loading-screen').css('width', document.body.offsetWidth + 'px');
                 $('div.loading-screen').css('height', document.body.offsetHeight + 'px');
