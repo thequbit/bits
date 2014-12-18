@@ -274,7 +274,7 @@ def web_projects(request):
         user, token = check_auth(request)
         result['user'] = user
 
-        result['projects'] = build_index_projects(user, limit=25)
+        result['projects'] = get_user_projects(user) #build_index_projects(user, limit=25)
 
         #project_id = request.GET['project_id']
             
