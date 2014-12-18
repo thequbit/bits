@@ -36,7 +36,7 @@
     <div class="row">
         <div class="medium-12 column">
             <div style="display: inline-block; margin-right: 10px;">
-                <a href="/opentickets?project_id=${project['id']}">Open</a>
+                <a href="/opentickets?project_id=${project['id']}">Open</a>                
                 
             </div>
             <div style="display: inline-block; margin-right: 10px;">
@@ -45,15 +45,15 @@
             </div>
             <div style="display: inline-block; margin-right: 10px;">
                 <a href="/ownertickets?project_id=${project['id']}">Owner</a>
-                
-            </div>
-            <div style="display: inline-block; margin-right: 10px;">
-                <a href="/unassignedtickets?project_id=${project['id']}">Unassigned</a>
                 <div style="background-color: #008CBA !important; height: 3px;"></div>
             </div>
             <div style="display: inline-block; margin-right: 10px;">
-                <a href="/closedtickets?project_id=${project['id']}">Closed</a>
+                <a href="/unassignedtickets?project_id=${project['id']}">Unassigned</a>
                 
+            </div>
+            <div style="display: inline-block; margin-right: 10px;">
+                <a href="/closedtickets?project_id=${project['id']}">Closed</a>
+               
             </div>
             <hr/>
         </div>
@@ -67,7 +67,6 @@
                     <h5>
                         <div class="bottom-border"><a class="small-indent" href="/ticket?ticket_id=${ticket['id']}">${ticket['title']}</a>
                             <div class="small-text indent">#${ticket['number']} opened by <a href="/user?user_id=${user.id}">${ticket['owner']}</a> on ${ticket['created']}</div>
-                            
                         </div>
                     </h5>
                     
@@ -78,7 +77,7 @@
             % endfor
         % else:
             <div class="box small-light-text">
-                There are no unassigned tickets for this project.
+                There are no open tickets for this project.
             </div>
         % endif
         </div>

@@ -35,19 +35,23 @@
     
     <div class="row">
         <div class="medium-12 column">
-            <div style="display: inline-block; margin-left: 20px;">
+            <div style="display: inline-block; margin-right: 10px;">
                 <a href="/opentickets?project_id=${project['id']}">Open</a>
                 
             </div>
-            <div style="display: inline-block; margin-left: 20px;">
+            <div style="display: inline-block; margin-right: 10px;">
                 <a href="/mytickets?project_id=${project['id']}">Mine</a>
                 <div style="background-color: #008CBA !important; height: 3px;"></div>
             </div>
-            <div style="display: inline-block; margin-left: 20px;">
+            <div style="display: inline-block; margin-right: 10px;">
+                <a href="/ownertickets?project_id=${project['id']}">Owner</a>
+                
+            </div>
+            <div style="display: inline-block; margin-right: 10px;">
                 <a href="/unassignedtickets?project_id=${project['id']}">Unassigned</a>
                 
             </div>
-            <div style="display: inline-block; margin-left: 20px;">
+            <div style="display: inline-block; margin-right: 10px;">
                 <a href="/closedtickets?project_id=${project['id']}">Closed</a>
                
             </div>

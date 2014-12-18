@@ -44,7 +44,7 @@
                 
             </div>
             <div style="display: inline-block; margin-right: 10px;">
-                <a href="/mytickets?project_id=${project['id']}">Owner</a>
+                <a href="/ownertickets?project_id=${project['id']}">Owner</a>
                 
             </div>
             <div style="display: inline-block; margin-right: 10px;">

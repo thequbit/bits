@@ -640,7 +640,7 @@
                 $('div.loading-box').css('left', (document.body.offsetWidth/2) - (350/2) + 'px');
                 //$('div.loading-box').css('top', document.body.offsetHeight + 'px');
                 
-                $('div.loading-screen').fadeIn();
+                $('div.loading-screen').show();
                 $('div.loading-box').show();
             }
         

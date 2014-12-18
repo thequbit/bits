@@ -660,7 +660,8 @@ def get_ticket_assignments(user, limit):
         
     return tickets
 
-def get_tickets(project_id, closed=False, unassigned=False, user_id=None):
+def get_tickets(project_id, closed=False, unassigned=False, user_id=None, \
+        opened=False):
 
     _tickets = Tickets.get_tickets_by_project_id(
         session = DBSession,
@@ -668,6 +669,7 @@ def get_tickets(project_id, closed=False, unassigned=False, user_id=None):
         closed = closed,
         unassigned = unassigned,
         user_id = user_id,
+        opened = opened,
     )
 
     tickets = []

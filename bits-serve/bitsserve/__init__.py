@@ -34,6 +34,7 @@ def main(global_config, **settings):
     config.add_route('ticket', '/ticket')
     config.add_route('opentickets', '/opentickets')
     config.add_route('mytickets', '/mytickets')
+    config.add_route('ownertickets', '/ownertickets')
     config.add_route('unassignedtickets', '/unassignedtickets')
     config.add_route('closedtickets', '/closedtickets')
     

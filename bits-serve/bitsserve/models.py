@@ -874,7 +874,7 @@ class Tickets(Base):
 
     @classmethod
     def get_tickets_by_project_id(cls, session, project_id, closed, \
-            unassigned, user_id):
+            unassigned, user_id, opened):
         """ Get all of the tickets, and their conents by project id
         """
         with transaction.manager:
@@ -882,9 +882,17 @@ class Tickets(Base):
             
             if user_id != None:
             
-                ticket_query = ticket_query.filter(
-                    Tickets.assigned_id == user_id,
-                )
+                if opened == True:
+
+                    ticket_query = ticket_query.filter(
+                        Tickets.author_id == user_id,
+                    )
+
+                else:
+            
+                    ticket_query = ticket_query.filter(
+                        Tickets.assigned_id == user_id,
+                    )
                 
             if unassigned == True:
                 

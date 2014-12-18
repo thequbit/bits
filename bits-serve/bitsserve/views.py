@@ -343,6 +343,33 @@ def web_my_tickets(request):
 
     return result 
 
+@view_config(route_name='ownertickets', renderer='templates/ownertickets.mak')
+def web_owner_tickets(request):
+
+    result = {'user': None}
+    #if True:
+    try:
+
+        user, token = check_auth(request)
+        result['user'] = user
+
+        project_id = int(request.GET['project_id'])
+
+        result['tickets'] = get_tickets(
+            project_id = project_id,
+            closed = False,
+            unassigned = False,
+            user_id = user.id,
+            opened = True,
+        )
+
+        result['project'] = get_project(user.id, project_id)
+
+    except:
+        pass
+
+    return result 
+
 @view_config(route_name='unassignedtickets', renderer='templates/unassignedtickets.mak')
 def web_unassigned_tickets(request):
 
