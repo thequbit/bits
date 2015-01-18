@@ -112,8 +112,8 @@ def logout(request):
 def web_index(request):
 
     result = {'user': None}
-    if True:
-    #try:
+    #if True:
+    try:
 
         user, token = check_auth(request)
         result['user'] = user
@@ -130,8 +130,8 @@ def web_index(request):
         
         result['actions'] = actions
         
-    #except:
-    #    pass
+    except:
+        pass
 
     return result
 

@@ -266,6 +266,18 @@ class LoginTokens(Base):
     def check_authentication(cls, session, token):
         """ Check to see if the token is valid for the user
         """
+
+        # delete all of the tokens that are expired
+        with transaction.manager:
+            expired_login_tokens = session.query(
+                LoginTokens,
+            ).filter(
+                LoginTokens.token_expire_datetime < datetime.datetime.now(),
+            ).all()
+            for token in expired_login_tokens:
+                session.delete(token)
+            transaction.commit()
+
         with transaction.manager:
             user = None
             login_token = session.query(
@@ -879,36 +891,26 @@ class Tickets(Base):
         """
         with transaction.manager:
             ticket_query = Tickets._build_ticket_query(session)
-            
             if user_id != None:
-            
                 if opened == True:
-
                     ticket_query = ticket_query.filter(
                         Tickets.author_id == user_id,
                     )
-
                 else:
-            
                     ticket_query = ticket_query.filter(
                         Tickets.assigned_id == user_id,
                     )
-                
             if unassigned == True:
-                
                 ticket_query = ticket_query.filter(
                     Tickets.project_id == project_id,
                     Tickets.closed == False,
                     Tickets.assigned_id == None,
                 )
-                
-            else:
-            
+            else: 
                 ticket_query = ticket_query.filter(
                     Tickets.project_id == project_id,
                     Tickets.closed == closed,
                 )
-                
             tickets = ticket_query.order_by(
                 desc(Tickets.creation_datetime),
             ).all()
@@ -942,7 +944,8 @@ class Tickets(Base):
             ).filter(
                 Tickets.closed == False,
             ).order_by(
-                Tickets.project_id,
+                #Tickets.project_id,
+                Tickets.number,
             ).all()
             
         return tickets

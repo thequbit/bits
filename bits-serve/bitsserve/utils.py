@@ -107,21 +107,18 @@ def do_login(email, password):
 
 def check_auth(request):
 
+    token = None
+
+    # try and get token from cookies
     try:
-        
         token = request.cookies['token']
-        
-        if token == None or token == '':
-            raise Exception('invalid token format')
-    except Exception, e:
-        print "check_auth() exception: {0}".format(str(e)) 
-        print "\n"
+    except: 
         pass
-        
+    
+    # try and get token from GET field, note this will overdide
+    # any existing token from the cookies 
     try:
         token = request.GET['token']
-        if token == None or token == '':
-            raise Exception('invalid token format')
     except:
         pass
         
