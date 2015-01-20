@@ -151,10 +151,6 @@ def build_index_projects(user, limit=25):
         if lookup.get(name, None) is not None:
             projects[lookup[name]]['ticket_assignments'].append(ticket_assignment)
 
-    print "\n\nbuild_index_projects()\n\n"
-    print projects
-    print "\n\n"            
-
     task_assignments = get_task_assignments(user, limit=25)
             
     for task_assignment in task_assignments:
