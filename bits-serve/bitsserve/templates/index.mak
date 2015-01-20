@@ -206,18 +206,12 @@
         <%! from bitsserve.utils import sanitize %>
     
         $(document).ready( function() {
-
             % for project in projects:
-            
                 // tickets for ${ project['name'] }
-            
                 % for ticket_assignment in project['ticket_assignments']:
-                
                     % if ticket_assignment != None:
                         % if ticket_assignment['header'] == True:
                             $('#${ sanitize(ticket_assignment['project_name']) }-tickets-link').on('click', function(e) {
-                            
-                                console.log('click!');
                                 if ( $('div.${ sanitize(ticket_assignment['project_name']) }-ticket-item').is(":visible") ) {
                                     console.log('hiding ticket_assignment');
                                     $('div.${ sanitize(ticket_assignment['project_name']) }-ticket-item').hide();
@@ -231,18 +225,13 @@
                             });
                         % endif
                     % endif
-                    
                 % endfor
                 
                 // tasks for ${ project['name'] }
-                
                 % for task_assignment in project['task_assignments']:
-                
                     % if task_assignment != None:
                         % if task_assignment['header'] == True:
                             $('#${ sanitize(task_assignment['project_name']) }-tasks-link').on('click', function(e) {
-                            
-                                console.log('click!');
                                 if ( $('div.${ sanitize(task_assignment['project_name']) }-task-item').is(":visible") ) {
                                     console.log('hiding task_assignment');
                                     $('div.${ sanitize(task_assignment['project_name']) }-task-item').hide();
@@ -251,19 +240,13 @@
                                     console.log('showing task_assignment');
                                     $('div.${ sanitize(task_assignment['project_name']) }-task-item').show();
                                     $('#${ sanitize(task_assignment['project_name']) }-tasks-link').html('-');
-                                }
-                                
+                                }                            
                             });
                         % endif
                     % endif
-                    
                 % endfor
-                
-            % endfor
-            
-            
-            
 
+            % endfor
         });
         
     

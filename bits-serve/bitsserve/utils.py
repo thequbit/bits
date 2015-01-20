@@ -150,7 +150,11 @@ def build_index_projects(user, limit=25):
         name = ticket_assignment['project_name']
         if lookup.get(name, None) is not None:
             projects[lookup[name]]['ticket_assignments'].append(ticket_assignment)
-            
+
+    print "\n\nbuild_index_projects()\n\n"
+    print projects
+    print "\n\n"            
+
     task_assignments = get_task_assignments(user, limit=25)
             
     for task_assignment in task_assignments:
@@ -633,6 +637,8 @@ def get_ticket_assignments(user, limit):
         limit = limit,
     )
 
+    seen_projects = []
+
     tickets = []
     current_project_name = ''
     for t_id, t_aid, t_number, t_title, t_contents, t_a_id, t_closed, \
@@ -640,8 +646,8 @@ def get_ticket_assignments(user, limit):
             p_id, p_name, p_desc, p_created, tt_name, tt_desc, tt_color \
             in _tickets:
         header = False
-        if current_project_name != p_name:
-            current_project_name = p_name
+        if not p_name in seen_projects:
+            seen_projects.append(p_name)
             header = True
         tickets.append({
             'id': t_id,
