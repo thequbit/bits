@@ -34,6 +34,19 @@
                 <h5>New Ticket</h5>
                 <input type="text" id="ticket-title" placeholder="ticket title"></text>
                 <textarea id="ticket-contents" placeholder="markdown supported"></textarea>
+                <div class="right">
+                Ticket Priority: <a style="width: 200px; height: 35px;" id="priority-name" aria-expanded="false" href="#" data-dropdown="priority-drop">Ticket Priority</a>
+                <ul id="priority-drop" class="f-dropdown" data-dropdown-content aria-hidden="true" tabindex="-1" data-options="is_hover:true">
+                    % for ticket_priority in ticket_priorities:
+                        <li style="background-color: ${ticket_priority['color']}">
+                            <a style="color: white !important; font-weight: bold;" href="#" ticket_priority_id="${ticket_priority['ticket_priority_id']}" ticket_priority_name="${ticket_priority['name']}" ticket_priority_color="${ticket_priority['color']}" >
+                                ${ticket_priority['name']}
+                            </a>
+                        </li>
+                    % endfor
+                </ul>
+                </div>
+                <!--<div style="height: 10px;"></div>-->
                 Ticket Assigned to: <a id="assigned-name" aria-expanded="false" href="#" data-dropdown="assigned-drop">Assign Ticket</a>
                 <ul id="assigned-drop" class="f-dropdown" data-dropdown-content aria-hidden="true" tabindex="-1" data-options="is_hover:true">
                     % for assigned_user in assigned_users:
@@ -62,7 +75,9 @@
                     % for ticket in tickets:
                         <div class="box-inner-container">
                             <a href="/ticket?ticket_id=${ticket['id']}">${ticket['title']}</a>
-                            <div class="short-line-height extra-small-light-text">#${ticket['number']} opened by ${ticket['owner']} on ${ticket['created']}</div>
+                            <div class="short-line-height extra-small-light-text">
+                                #${ticket['number']} opened by ${ticket['owner']} on ${ticket['created']}
+                            </div>
                         </div>
                     % endfor
                 % endif
@@ -117,6 +132,20 @@
         
         $(document).ready(function() {
         
+            $('#priority-drop').on('click', function(e) {
+                ticket_priority_id = $(e.target).attr('ticket_priority_id');
+                ticket_priority_name = $(e.target).attr('ticket_priority_name');
+                ticket_priority_color = $(e.target).attr('ticket_priority_color');
+                $('#priority-name').html(ticket_priority_name);
+                $('#priority-name').css('background-color',ticket_priority_color);
+                $('#priority-name').css('padding','4px');
+                $('#priority-name').css('border-radius','2px');
+                $('#priority-name').css('color','white');
+
+                $('#priority-drop').removeClass('open');
+                $('#priority-drop').css('left', '-99999px');
+            });
+
             $('#assigned-drop').on('click', function(e) {
                 assigned_user_id = $(e.target).attr('user_id');
                 assigned_user_name = $(e.target).attr('user_name');

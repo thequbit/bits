@@ -952,6 +952,29 @@ def assign_user_to_ticket(user, ticket_id, email, unassign):
     
     return ticket
 
+def get_ticket_priorities(project_id):
+
+    _ticket_priorities = TicketPriorities.get_ticket_priorities_by_project_id(
+        session = DBSession,
+        project_id = project_id,
+    )
+
+    ticket_priorities = []
+    for tp_id, tp_author_id, tp_project_id, tp_name, tp_description, \
+            tp_weight, tp_color, tp_creation_datetime in _ticket_priorities:
+        ticket_priorities.append({
+            'ticket_priority_id': tp_id,
+            'author_id': tp_author_id,
+            'project_id': tp_project_id,
+            'name': tp_name,
+            'description': tp_description,
+            'weight': tp_weight,
+            'color': tp_color,
+            'creation': str(tp_creation_datetime),
+        })
+
+    return ticket_priorities
+
 def create_new_task(user, project_id, title, contents, assigned_id, due):
 
     valid = UserProjectAssignments.check_project_assignment(

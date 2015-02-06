@@ -44,6 +44,8 @@ from utils import (
     update_ticket_title,
     get_ticket_assignments,
 
+    get_ticket_priorities,
+
     create_new_task,
     get_tasks,
     get_task,
@@ -518,8 +520,8 @@ def web_task(request):
 def web_new_ticket(request):
 
     result = {'user': None}
-    #if True:
-    try:
+    if True:
+    #try:
     
         user, token = check_auth(request)
         result['user'] = user
@@ -531,9 +533,11 @@ def web_new_ticket(request):
         result['assigned_users'] = get_users_assigned_to_project(user.id, project_id)
    
         result['tickets'] = get_tickets(project_id)
+
+        result['ticket_priorities'] = get_ticket_priorities(project_id)
  
-    except:
-        pass
+    #except:
+    #    pass
 
     return result
 
