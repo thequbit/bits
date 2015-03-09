@@ -105,4 +105,47 @@ def main(argv=sys.argv):
             password = "password",
         )
 
-    
+    high_priority = TicketPriorities.get_by_name(
+        session = DBSession,
+        name = 'high',
+    )
+    if high_priority == None:
+        TicketPriorities.add_ticket_priority(
+            session = DBSession,
+            author_id = system_user.id,
+            project_id = None,
+            name = 'high',
+            description = 'High Priority Ticket',
+            weight = 0,
+            color = "#B22222",
+        )
+
+    medium_priority = TicketPriorities.get_by_name(
+        session = DBSession,
+        name = 'medium',
+    )
+    if medium_priority == None:
+        TicketPriorities.add_ticket_priority(
+            session = DBSession,
+            author_id = system_user.id,
+            project_id = None,
+            name = 'medium',
+            description = 'Medium Priority Ticket',
+            weight = 1,
+            color = "#DAA520",
+        )
+
+    low_priority = TicketPriorities.get_by_name(
+        session = DBSession,
+        name = 'low',
+    )
+    if low_priority == None:
+        TicketPriorities.add_ticket_priority(
+            session = DBSession,
+            author_id = system_user.id,
+            project_id = None,
+            name = 'low',
+            weight = 2,
+            description = 'Low Priority Ticket',
+            color = "#22B222",
+        )

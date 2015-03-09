@@ -764,14 +764,31 @@ class TicketPriorities(Base):
         return ticket_priority
 
     @classmethod
+    def get_by_name(cls, session, name):
+        with transaction.manager:
+            ticket_priority = session.query(
+                TicketPriorities,
+            ).filter(
+                TicketPriorities.name == name,
+            ).first()
+        return ticket_priority
+
+    @classmethod
     def get_ticket_priorities_by_project_id(cls, session, project_id):
         """ Returns the list of ticket priorities for a project.
         """
         with transaction.manager:
             ticket_priorities = session.query(
-                TicketPriorities,
+                TicketPriorities.id,
+                TicketPriorities.author_id, 
+                TicketPriorities.project_id,
+                TicketPriorities.name,
+                TicketPriorities.description,
+                TicketPriorities.weight,
+                TicketPriorities.color,
+                TicketPriorities.creation_datetime,
             ).filter(
-                TicketPriorities.project_id == project_id,
+                #TicketPriorities.project_id == project_id,
             ).all()
         return ticket_priorities
 
