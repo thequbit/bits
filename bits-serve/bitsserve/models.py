@@ -255,7 +255,7 @@ class LoginTokens(Base):
                     user_id = user.id,
                     token = str(uuid.uuid4()),
                     token_expire_datetime = datetime.datetime.now() + \
-                        datetime.timedelta(hours=24*30), # expire in 30 days
+                        datetime.timedelta(hours=24*365), # expire in 365 days
                     login_datetime = datetime.datetime.now(),
                 )
                 session.add(login_token)
@@ -286,6 +286,7 @@ class LoginTokens(Base):
                 LoginTokens.token == token,
                 LoginTokens.token_expire_datetime > datetime.datetime.now(),
             ).first()
+            #print "[{0}] query for login token returned: '{1}'".format(datetime.datetime.now(), login_token.token)
             if login_token != None:
                 user = Users.get_by_id(
                     session = session,
@@ -773,6 +774,24 @@ class TicketPriorities(Base):
                 TicketPriorities.project_id == project_id,
             ).all()
         return ticket_priorities
+
+class TicketPriorityAssignments(Base):
+
+    __tablename__ = 'ticketpriorityassignments'
+    id = Column(Integer, primary_key=True)
+    ticket_id = Column(Integer, ForeignKey('tickets.id'))
+    ticket_priority_id = Column(Integer, ForeignKey('ticketpriorities'))
+
+    @classmethod
+    def assign_priority(cls, session, ticket_id, ticket_priority_id):
+        with transaction.manager:
+            assignment = TicketPriorityAssignments(
+                ticket_id = ticket_id,
+                ticket_priority_id = ticket_priority_id,
+            )
+            session.add(assignment)
+            transaction.commit()
+        return assignment
 
 class Tickets(Base):
 

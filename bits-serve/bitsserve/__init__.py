@@ -1,6 +1,9 @@
 from pyramid.config import Configurator
 from sqlalchemy import engine_from_config
 
+
+from pyramid.session import SignedCookieSessionFactory
+
 from .models import (
     DBSession,
     Base,
@@ -16,6 +19,9 @@ def main(global_config, **settings):
     
     config = Configurator(settings=settings)
     config.include('pyramid_chameleon')
+
+    my_session_factory = SignedCookieSessionFactory('max_secret_yellr_password')
+    config.set_session_factory(my_session_factory)
 
     config.add_static_view('static', 'static', cache_max_age=3600)
 

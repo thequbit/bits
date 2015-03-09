@@ -111,17 +111,22 @@ def check_auth(request):
 
     # try and get token from cookies
     try:
-        token = request.cookies['token']
-    except: 
+        #token = request.cookies['token']
+        token = request.session['token']
+    except:
+        print "token field was not within cookies list" 
         pass
-    
+
     # try and get token from GET field, note this will overdide
     # any existing token from the cookies 
-    try:
-        token = request.GET['token']
-    except:
-        pass
+    #try:
+    #    token = request.GET['token']
+    #except:
+    #    print "token field was not within GET list"
+    #    pass
         
+    #print "Token: '{0}'".format(token)
+
     if token == None or token == '':
         raise Exception('Invalid Token')
         

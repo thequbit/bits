@@ -243,8 +243,8 @@ def web_projectsettings(request):
 def web_project(request):
 
     result = {'user': None}
-    if True:
-    #try:
+    #if True:
+    try:
 
         user, token = check_auth(request)
         result['user'] = user
@@ -259,8 +259,8 @@ def web_project(request):
 
         result['lists'] = [] #get_lists(project_id)
 
-    #except:
-    #    pass
+    except:
+        pass
 
     return result
 
@@ -268,8 +268,8 @@ def web_project(request):
 def web_projects(request):
 
     result = {'user': None}
-    if True:
-    #try:
+    #if True:
+    try:
 
         user, token = check_auth(request)
         result['user'] = user
@@ -286,8 +286,8 @@ def web_projects(request):
 
         #result['lists'] = [] #get_lists(project_id)
 
-    #except:
-    #    pass
+    except:
+        pass
 
     return result
 
@@ -427,8 +427,8 @@ def web_closed_tickets(request):
 def web_ticket(request):
 
     result = {'user': None}
-    if True:
-    #try:
+    #if True:
+    try:
 
         user, token = check_auth(request)
         result['user'] = user
@@ -451,8 +451,8 @@ def web_ticket(request):
 
         result['project'] = get_project(user.id, ticket['project_id'])
 
-    #except:
-    #    pass
+    except:
+        pass
 
     return result
 
@@ -636,8 +636,8 @@ def web_authenticate(request):
 
     result = {'user': None}
     result['success'] = False
-    #if True:
-    try:
+    if True:
+    #try:
         try:
             email = request.GET['email']
             password = request.GET['password']
@@ -653,13 +653,16 @@ def web_authenticate(request):
             result['error_code'] = 2
             raise Exception('error')
 
-        result['token'] = token
+        #result['token'] = token
         result['user'] = user
+
+        # save token to session
+        request.session['token'] = token
 
         result['success'] = True
 
-    except:
-        pass
+    #except:
+    #    pass
 
     return make_response(result)
 
@@ -812,8 +815,8 @@ def web_create_ticket_comment(request):
     #result = {'user': None}
     result = {'success': False}
 
-    if True:
-    #try:
+    #if True:
+    try:
 
         user, token = check_auth(request)
 
@@ -862,8 +865,8 @@ def web_create_ticket_comment(request):
 
         result['success'] = True
 
-    #except:
-    #    pass
+    except:
+        pass
 
     print "\n\ncreate_ticket_comment.json() executed in {0} seconds.\n\n".format( time.time() - start )
 
@@ -874,8 +877,8 @@ def web_update_ticket_comment(request):
 
     result = {'success': False}
 
-    if True:
-    #try:
+    #if True:
+    try:
 
         user, token = check_auth(request)
 
@@ -894,8 +897,8 @@ def web_update_ticket_comment(request):
         
         result['success'] = True
         
-    #except:
-    #    pass
+    except:
+        pass
 
     return make_response(result);
 
@@ -904,8 +907,8 @@ def web_assign_user_to_ticket(request):
 
     result = {'success': False}
     
-    if True:
-    #try:
+    #if True:
+    try:
     
         user, token = check_auth(request)
     
@@ -929,8 +932,8 @@ def web_assign_user_to_ticket(request):
     
         result['success'] = True
     
-    #except:
-    #    pass
+    except:
+        pass
 
     return make_response(result)
 
@@ -998,8 +1001,8 @@ def web_create_task(request):
     result = {'user': None}
     result['success'] = False
 
-    if True:
-    #try:
+    #if True:
+    try:
 
         user, token = check_auth(request)
 
@@ -1022,8 +1025,8 @@ def web_create_task(request):
         
         result['success'] = True
 
-    #except:
-    #    pass
+    except:
+        pass
 
     return make_response(result)
 
@@ -1036,8 +1039,8 @@ def web_complete_task(request):
     result = {'user': None}
     result['success'] = False
 
-    if True:
-    #try:
+    #if True:
+    try:
 
         user, token = check_auth(request)
 
@@ -1049,8 +1052,8 @@ def web_complete_task(request):
 
         result['success'] = True
 
-    #except:
-    #   pass
+    except:
+       pass
 
     return make_response(result)
 

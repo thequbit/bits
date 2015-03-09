@@ -83,24 +83,24 @@
                         if ( data.success == true ) {
                             
                             // save our token to a cookie, so it gets sent to the server each time
-                            var expiration_date = new Date();
-                            expiration_date.setFullYear(expiration_date.getFullYear() + 1); // token will expire in 30 days
-                                                                                            // in database, but we will set this
-                                                                                            // to some very large value in the
-                                                                                            // future we don't have to worry about
-                                                                                            // it.
+                            //var expiration_date = new Date();
+                            //expiration_date.setFullYear(expiration_date.getFullYear() + 1); // token will expire in 30 days
+                            //                                                                // in database, but we will set this
+                            //                                                                // to some very large value in the
+                            //                                                                // future we don not have to worry about
+                            //                                                                // it.
                             
-   							cookie_data = [
-								"token=" + data.token + ";",
-								"expires=" + expiration_date.toGMTString() + "; ",
-								//"path=/; ",
-								"domain=" + window.location.hostname + "; "
-							].join('');
+                            //cookie_data = [
+			    //    "token=" + data.token + ";",
+                            //    "expires=" + expiration_date.toGMTString() + "; ",
+                            //    //"path=/; ",
+                            //    "domain=" + window.location.hostname + "; "
+			    //.join('');
 							
                             //console.log('cookie:');
                             //console.log(cookie_data);
                             
-                            document.cookie = cookie_data;
+                            //document.cookie = cookie_data;
 							//localStorage.setItem('token', token);
 
                             // do redirect
@@ -119,7 +119,7 @@
 
                         } else {
                             // TODO: report invalid creds
-                            localStorage.clear();
+                            //localStorage.clear();
                             
                             $('#bad-login-notification').show();
                         }
