@@ -97,17 +97,29 @@ class CreationMixin():
 
     @classmethod
     def get_by_id(cls, dbsession, id):
-        _thing = dbsession.query(
-            cls,
-            Users,
-        ).join(
-            Users, Users.id == cls.author_id,
-        ).filter(
-            cls.id == id,
-        ).first()
-        thing = _thing[0]
-        if hasattr(thing, 'creator'):
-            thing.creator = _thing[1]
+        keys = set(cls.__dict__)
+        if 'author_id' in keys:
+            _thing = dbsession.query(
+                cls,
+                Users,
+            ).outerjoin(
+                Users, Users.id == cls.author_id,
+            ).filter(
+                cls.id == id,
+            ).first()
+            thing = _thing[0]
+            if hasattr(thing, 'author'):
+                thing.author = _thing[1]
+        else:
+            _thing = dbsession.query(
+                cls,
+                #Users,
+            #).join(
+            #    Users, Users.id == cls.author_id,
+            ).filter(
+                cls.id == id,
+            ).first()
+            thing = _thing
         return thing
 
     @classmethod
@@ -622,6 +634,7 @@ class Organizations(Base, TimeStampMixin, CreationMixin):
 
     __tablename__ = 'organizations'
     __single__ = 'Organization'
+    #author_id = Column(UnicodeText, nullable=False)
     name = Column(UnicodeText,nullable=False)
     description = Column(UnicodeText, nullable=False)
 
