@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<!--
+	Interphase by TEMPLATED
+	templated.co @templatedco
+	Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
+-->
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>bits2</title>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<meta name="description" content="" />
+		<meta name="keywords" content="" />
+		<!--[if lte IE 8]><script src="/static/theme/css/ie/html5shiv.js"></script><![endif]-->
+		<script src="/static/theme/js/jquery.min.js"></script>
+		<script src="/static/theme/js/skel.min.js"></script>
+		<script src="/static/theme/js/skel-layers.min.js"></script>
+		<script src="/static/theme/js/init.js"></script>
+		<noscript>
+			<link rel="stylesheet" href="/static/theme/css/skel.css" />
+			<link rel="stylesheet" href="/static/theme/css/style.css" />
+			<link rel="stylesheet" href="/static/theme/css/style-xlarge.css" />
+		</noscript>
+		<link rel="stylesheet" href="/static/css/site.css" />
+		<!--</noscript>-->
+		<!--[if lte IE 8]><link rel="stylesheet" href="/static/theme/css/ie/v8.css" /><![endif]-->
+	</head>
+	<body>
+
+		<!-- Header -->
+			<header id="header">
+				<h1><a href="index.html">bits2</a></h1>
+				<nav id="nav">
+					<ul>
+						<li><a href="/#projects">Projects</a></li>
+						<li><a href="/#settings">Settings</a></li>
+						<li><a href="/logout">Logout</a></li>
+					</ul>
+				</nav>
+			</header>
+
+		<!-- Login Prompt -->
+			<!--<section id="page-login" class="wrapper">
+				<div id="page-login-container" class="container">-->
+			<section class="wrapper">
+				<div class="container">
+					<h3>Login</h3>
+					<hr>
+					<div class="row uniform 50%">
+						<div class="6u 12u$(xsmall)">
+							<input name="email" id="email" value="" placeholder="Email" type="text">
+						</div>
+						<div class="6u$ 12u$(xsmall)">
+							<input name="password" id="password" value="" placeholder="Password" type="password">
+						</div>
+					</div>
+					<br/>
+					<div id="invalid_credentials">Invalid credentials, please try again.</div>
+					<br/>
+					<a id="login" class="button right">Login</a>
+					<br/><br/><br/><br/>
+				</div>
+				
+			</section>
+
+		<!-- Footer -->
+			<footer id="footer">
+				<div class="container">
+					<ul class="copyright">
+						<li>bits2</li>
+						<li>project and task management</li>
+						<li>timothy Duffy</li>
+					</ul>
+				</div>
+			</footer>
+
+		<script src="static/js/jquery.sha256.js"></script>
+		<!--<script src="static/js/jquery.modal.min.js"></script>-->
+
+		<script type="text/javascript" src="static/js/utils.js"></script>
+		<script type="text/javascript" src="static/js/auth.js"></script>
+
+		<script type="text/javascript">
+			
+			
+			$(document).ready(function() {
+
+				this._user = null;
+
+	            var auth = new Auth();
+
+	            //console.log('hi');
+	            auth.is_logged_in( function(success, user) {
+	                console.log(success, user);
+	            });
+
+		    	var _submit_login = function() {
+
+					var email = $('#email').val().toLowerCase().trim();
+					var password = $('#password').val();
+
+					// clear password field
+					$('#password').val('');
+
+					console.log('_submit_login()');
+
+					auth.login( email, password, function(success, user) {
+						//console.log('_submit_login().auth.login(), success: ', success, ', user: ', user);
+						if ( success ) {
+
+							//_user = user;
+
+							// write token to cookie ( really not the best idea ... )
+							document.cookie = 'token=' + user.token;
+
+							//if ( user.must_change_password ) {
+							//	_open_change_password_dialog();
+							//} else {
+								// redirect to /admin area
+								window.location = '/';
+
+								//alert(_user.token);
+
+							//}
+
+						} else {
+							$('#invalid_credentials').show();
+						}
+					});
+				};
+
+		    	$('#email').on('keyup', function(e) {
+					$('#invalid_credentials').hide();
+					if ( e.keyCode == 13 )
+						_submit_login();
+				});
+				$('#password').on('keyup', function(e) {
+					$('#invalid_credentials').hide();
+					if ( e.keyCode == 13 )
+						_submit_login();
+				});
+				$('#login').on('click', function() {
+					$('#invalid_credentials').hide();
+					_submit_login();
+				});
+
+			});		
+
+		</script>
+
+	</body>
+</html>

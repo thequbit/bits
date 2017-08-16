@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<!--
+	Interphase by TEMPLATED
+	templated.co @templatedco
+	Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
+-->
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>bits2</title>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<meta name="description" content="" />
+		<meta name="keywords" content="" />
+		<!--[if lte IE 8]><script src="/static/theme/css/ie/html5shiv.js"></script><![endif]-->
+		<script src="/static/theme/js/jquery.min.js"></script>
+		<script src="/static/theme/js/skel.min.js"></script>
+		<script src="/static/theme/js/skel-layers.min.js"></script>
+		<script src="/static/theme/js/init.js"></script>
+		<noscript>
+			<link rel="stylesheet" href="/static/theme/css/skel.css" />
+			<link rel="stylesheet" href="/static/theme/css/style.css" />
+			<link rel="stylesheet" href="/static/theme/css/style-xlarge.css" />
+		</noscript>
+		<link rel="stylesheet" href="/static/css/site.css" />
+		<!--[if lte IE 8]><link rel="stylesheet" href="/static/theme/css/ie/v8.css" /><![endif]-->
+	</head>
+	<body>
+
+		<!-- Header -->
+			<!--<header id="header">-->
+			<div id="top-header">
+				<h1>bits2</h1>
+				<!--<nav id="nav">
+					<ul>
+						<li><a href="/#/projects">Projects</a></li>
+						<li><a href="/#/settings">Settings</a></li>
+						<li><a href="/logout">Logout</a></li>
+					</ul>
+				</nav>-->
+			<!--</header>-->
+			</div>
+
+		<!-- Projects -->
+			<section id="page-projects" class="wrapper page">
+				<div id="page-projects-container" class="container">
+					<a class="button right" href="/#/new-project">New Project</a>
+					<a href="/#/projects">Projects</a>
+					<h2>Projects</h2>
+					<hr>
+					<div id="page-projects-contents">
+						<center><img src="/static/media/loading.gif"></img></center>
+					</div>
+				</div>
+			</section>
+
+		<!-- New Project -->
+			<section id="page-new-project" class="wrapper page">
+				<div id="page-new-project-container" class="container">
+					<a href="/#/projects">Projects</a> &gt; New Project
+					<h2>New Project</h2>
+					<hr/>
+					<div id="page-new-project-contents" class="contents">
+						<input id="page-new-project-title" type="text" placeholder="Project Title"></input>
+						<textarea id="page-new-project-description" placeholder="Project Description" rows="6"></textarea>
+						<select id="page-new-project-color">
+							<option value="rgba(255, 255, 255, 0.3)" style="background: rgba(255, 255, 255, 0.3);;">#FFFFFF</option>
+							<option value="rgba(255, 0, 0, 0.3)"     style="background: rgba(255, 0, 0, 0.3);;">#FF0000</option>
+							<option value="rgba(0, 255, 0, 0.3)"     style="background: rgba(0, 255, 0, 0.3);;">#00FF00</option>
+							<option value="rgba(0, 0, 255, 0.3)"     style="background: rgba(0, 0, 255, 0.3);;">#0000FF</option>
+							<option value="rgba(255, 255, 0, 0.3)"   style="background: rgba(255, 255, 0, 0.3);;">#FFFF00</option>
+							<option value="rgba(0, 255, 255, 0.3)"   style="background: rgba(0, 255, 255, 0.3);;">#00FFFF</option>
+							<option value="rgba(255, 0, 255, 0.3)"   style="background: rgba(255, 0, 255, 0.3);;">#FF00FF</option>
+							<option value="rgba(128, 0, 0, 0.3)"     style="background: rgba(128, 0, 0, 0.3);;">#800000</option>
+							<option value="rgba(0, 128, 0, 0.3)"     style="background: rgba(0, 128, 0, 0.3);;">#008000</option>
+							<option value="rgba(0, 0, 128, 0.3)"     style="background: rgba(0, 0, 128, 0.3);;">#000080</option>
+							<option value="rgba(128, 128, 128, 0.3)" style="background: rgba(128, 128, 128, 0.3);;">#808080</option>
+							<option value="rgba(128, 128, 0, 0.3)"   style="background: rgba(128, 128, 0, 0.3);;">#808000</option>
+							<option value="rgba(0, 128, 128, 0.3)"   style="background: rgba(0, 128, 128, 0.3);;">#008080</option>
+							<option value="rgba(128, 0, 128, 0.3)"   style="background: rgba(128, 0, 128, 0.3);">#800080</option>
+						</select>
+						<br/><br/>
+						<a id="page-new-project-create" class="button right">Create Project</a>
+						<br/><br/>
+					</div>
+				</div>
+			</section>
+
+		<!-- Project -->
+			<section id="page-project" class="wrapper page">
+				<div id="page-project-container" class="container">
+					<a href="/#/projects">Projects</a> &gt; <div id="page-project-bread-crumbs"></div>
+					<h2>Project</h2>
+					<hr/>
+					<div id="page-project-contents" class="contents">
+						<center><img src="/static/media/loading.gif"></img></center>
+					</div>
+				</div>
+			</section>
+
+		<!-- Milestones -->
+			<section id="page-milestones" class="wrapper page">
+				<div id="page-milestones-container" class="container">
+					<h2>Milestones</h2>
+					<hr/>
+					<div id="page-milestones-contents">
+						<center><img src="/static/media/loading.gif"></img></center>
+					</div>
+				</div>
+			</section>
+
+		<!-- Milestone -->
+			<section id="page-milestone" class="wrapper page">
+				<div id="page-milestone-container" class="container">
+					<h2>Milestone</h2>
+					<hr/>
+					<div id="page-milestone-contents">
+						<center><img src="/static/media/loading.gif"></img></center>
+					</div>
+				</div>
+			</section>
+
+		<!-- Tasks -->
+			<section id="page-tasks" class="wrapper page">
+				<div id="page-tasks-container" class="container">
+					<h2>Tasks</h2>
+					<hr/>
+					<div id="page-tasks-contents">
+						<center><img src="/static/media/loading.gif"></img></center>
+					</div>
+				</div>
+			</section>
+
+		<!-- New Task -->
+			<section id="page-new-task" class="wrapper page">
+				<div id="page-new-task-container" class="container">
+					<a href="/#/projects">Projects</a> &gt; <div id="page-new-task-bread-crumbs"></div>
+					<h2>New Task</h2>
+					<hr/>
+					<div id="page-new-task-contents">
+						<input id="page-new-task-title" type="text" placeholder="Task Title"></input>
+						<textarea id="page-new-task-description" placeholder="Task Description" rows="6"></textarea>
+						<h5>Priority</h5>
+						<select id="page-new-task-priority">
+							<option value="1">Immediate</option>
+							<option value="2">High</option>
+							<option value="3">Medium</option>
+							<option value="4">Low</option>
+						</select>
+						<h5>Assignee</h5>
+						<select id="page-new-task-assignee">
+						</select>
+						<br/><br/>
+						<a id="page-new-task-create" class="button right">Create Task</a>
+						<br/><br/>
+					</div>
+				</div>
+			</section>
+
+		<!-- Task -->
+			<section id="page-task" class="wrapper page">
+				<div id="page-task-container" class="container">
+					<a href="/#/projects">Projects</a> &gt; <div id="page-task-bread-crumbs"></div>
+					<h2 id="page-task-title"></h2>
+					<hr/>
+					<div id="page-task-contents">
+						<center><img src="/static/media/loading.gif"></img></center>
+					</div>
+				</div>
+			</section>
+
+		<!-- Settings -->
+			<section id="page-settings" class="wrapper page">
+				<div id="page-settings-container" class="container">
+					<h2>Settings</h2>
+					<hr/>
+					<div id="page-settings-contents">
+						
+					</div>
+				</div>
+			</section>
+					
+		<!-- Footer -->
+			<footer id="footer">
+				<div class="container">
+					<ul class="copyright">
+						<li>bits2</li>
+						<li>project and task management</li>
+						<li>timothy Duffy</li>
+					</ul>
+				</div>
+			</footer>
+
+		<script type="text/javascript" src="static/js/auth.js"></script>
+		<script type="text/javascript" src="static/js/utils.js"></script>
+		<script type="text/javascript" src="static/js/api.js"></script>
+		<script type="text/javascript" src="static/js/site.js"></script>
+		<script type="text/javascript">
+			
+			var auth = new Auth();
+			var utils = new Utils();
+			var api = new API();
+			var site = new Site();
+
+			$(document).ready()
+			{
+				console.log('Document Ready.  Launching Site.');
+				site.init();
+			}
+
+		</script>
+
+	</body>
+</html>
